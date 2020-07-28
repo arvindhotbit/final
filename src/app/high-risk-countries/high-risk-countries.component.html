@@ -1,0 +1,288 @@
+
+    
+    
+ <app-header></app-header>
+ 
+      
+ <div class="data-table-area mg-b-15">
+ <div class="container-fluid">
+ <div class="row">
+ <div class="col-12">
+ <div class="sparkline13-list">
+
+ <div class="sparkline13-graph">
+ <div class="datatable-dashv1-list custom-datatable-overright">
+
+<div class="">
+
+   <div class="main-sparkline13-hd">
+     <div class="part" >
+       <h1>High Risk Countries List  <small>(Select Row To Update)</small></h1>
+     
+     </div>
+
+     
+    
+       <div class="btn-group btn-group-sm">
+         <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</button>
+         
+     
+         
+   
+       <div class="dropdown btn-group ">
+         <button class=" dropdown-toggle btn btn-primary btn-sm"  type="button" data-toggle="dropdown"><i class="fa fa-toggle-down"></i> Column
+         </button>
+         <ul class="dropdown-menu trust-menu">
+
+
+           <!-- <li class="dropdown-item ">
+           <label for="ZONEID"> <input type="checkbox" [checked]="ZONEID" (change)="ZONEID=!ZONEID" id="ZONEID"/>&nbsp;ZONEID</label> 
+           </li> -->
+         
+        
+            
+         
+
+         </ul>
+       </div>
+       <ng-container *ngIf="!_isaccess">
+       <button (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
+       <button  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
+       </ng-container>
+     </div>
+    
+
+     
+   
+   
+ 
+
+
+</div>
+</div>
+   <div class="table-responsive">
+    <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
+      <thead class="table_header">
+   
+     
+   
+   
+   <tr>
+        <th class="text-center"><input type="checkbox" class="disabled"/></th>
+        <th>Sr.no</th>
+        <th ><span><input type="text" class="form-control"    placeholder="ZONE ID"/></span></th>
+        <th ><span><input type="text" class="form-control"   placeholder="RISK_LEVEL" /></span> </th>
+        <th ><span><input type="text" class="form-control"  placeholder="SANCTIONED_FLAG" /></span> </th>
+        <th ><span><input type="text" class="form-control"   placeholder="COUNTRY_CODE" /></span> </th>
+        <th><span><input type="text" class="form-control"    placeholder="COUNTRY_NAME" /></span> </th>
+        <th ><span><input type="text" class="form-control"   placeholder="WATCHLIST_NAME" /></span> </th>
+        <th><span><input type="text" class="form-control"    placeholder="WATCHLIST_TYPE" /></span> </th>
+        <th><span><input type="text" class="form-control"    placeholder="INITIAL_LOAD_FLAG" /></span> </th>
+
+        <ng-container *ngIf="_isaccess">
+          <th ><span><input type="text" class="form-control"    placeholder="OLD_ZONE ID"/></span></th>
+        <th ><span><input type="text" class="form-control"   placeholder="OLD_RISK_LEVEL" /></span> </th>
+        <th ><span><input type="text" class="form-control"  placeholder="OLD_SANCTIONED_FLAG" /></span> </th>
+        <th ><span><input type="text" class="form-control"   placeholder="OLD_COUNTRY_CODE" /></span> </th>
+        <th><span><input type="text" class="form-control"    placeholder="OLD_COUNTRY_NAME" /></span> </th>
+        <th ><span><input type="text" class="form-control"   placeholder="OLD_WATCHLIST_NAME" /></span> </th>
+        <th><span><input type="text" class="form-control"    placeholder="OLD_WATCHLIST_TYPE" /></span> </th>
+        <th><span><input type="text" class="form-control"    placeholder="OLD_INITIAL_LOAD_FLAG" /></span> </th>
+          <th ><span><input type="text" class="form-control"  placeholder="CHANGE_TYPE" /></span> </th>
+          <th colspan="2" style="text-align: center;">ACTION</th>
+        </ng-container>
+       
+        <th *ngIf="ref_keys">REF KEY</th>
+      
+      </tr> 
+    </thead>
+    <tbody  *ngIf="showdatapart?.length;else no_data_templ">
+      
+      <ng-container  *ngFor="let item of showdatapart | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
+        <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"   (click)="onEdit(item,'Update')" [class.selected]="item === selectedhrcRow">
+          <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"  id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}" (change)="selectID(item.REF_KEY,item.isSelected)"></td>
+          <td *ngIf="nsn">{{i+1}}</td>         
+          <td *ngIf="zoneid">{{item.ZONE_ID}}</td>
+          <td>{{item.RISK_LEVEL}}</td>
+          <td>{{item.SANCTIONED_FLAG}}</td>
+          <td>{{item.COUNTRY_CODE}}</td>
+          <td>{{item.COUNTRY_NAME}}</td>
+          <td>{{item.WATCHLIST_NAME}}</td>
+          <td>{{item.WATCHLIST_TYPE}}</td> 
+          <td>INITIAL_LOAD_FLAG</td>
+        
+    
+      
+          <ng-container *ngIf="_isaccess">
+          
+            <td *ngIf="zoneid">{{item.OLD_ZONE_ID}}</td>
+            <td>{{item.OLD_RISK_LEVEL}}</td>
+            <td >{{item.OLD_SANCTIONED_FLAG}}</td>
+            <td>{{item.OLD_COUNTRY_CODE}}</td>
+            <td>{{item.OLD_COUNTRY_NAME}}</td>
+            <td >{{item.OLD_WATCHLIST_NAME}}</td>
+            <td >{{item.OLD_WATCHLIST_TYPE}}</td>
+            <td>OLD_INITIAL_LOAD_FLAG</td>
+            <td >{{item.CHANGE_TYPE}}</td>
+            <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"  (click)="ChkdeleteSelected(myform,item)" [class.selected]="item === selectedhrcRow">Approve</button></td>
+            <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)" (click)="ChkNotdeleteSelected(myform,item)" [class.selected]="item === selectedhrcRow">Reject</button></td> 
+            </ng-container>
+       
+        </tr>
+      </ng-container>
+     
+    </tbody>
+    <ng-template #no_data_templ>
+      <tbody>
+        <tr >
+     <td style="text-align: center;" colspan="100%"> No data found...</td>
+    </tr>
+    </tbody>
+   </ng-template>
+    
+    </table>
+   </div>
+
+ <div class="row">
+   <div class="col-12">
+   
+    
+<div class="align-items-md-start d-flex justify-content-lg-end">
+<select id="PerPage"  [(ngModel)]="pageSize"  *ngIf="showdatapart?.length">
+ <option [ngValue]="5">5</option>
+ <option [ngValue]="10">10</option>
+ <option [ngValue]="25">25</option>
+ <option [ngValue]="50">50</option>
+</select> <pagination-controls  (pageChange)="p = $event"></pagination-controls>
+</div>
+      
+
+
+    
+   
+   
+   </div>
+ 
+ </div>
+
+
+ <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+   <div class="panel-body">
+     <h4>Add Record</h4>
+   </div>
+
+     {{myform.value|json}}
+ <div class="row">
+       <div class="col-md-4">
+         <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="_tableservice.selectedhrc.REF_KEY">
+         <div class="form-group">
+           <label>Zone Id</label>
+         <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel" [(ngModel)]="_tableservice.selectedhrc.ZONE_ID" required>
+         </div>
+         <div class="form-group">
+           <label>COUNTRY_CODE</label>
+         <input type="text" class="form-control" name="COUNTRY_CODE" #COUNTRY_CODE="ngModel" [(ngModel)]="_tableservice.selectedhrc.COUNTRY_CODE" required>
+       </div>
+       <div class="form-group">
+        <label>COUNTRY_NAME</label>
+      <input type="text" class="form-control" name="COUNTRY_NAME" #COUNTRY_NAME="ngModel" [(ngModel)]="_tableservice.selectedhrc.COUNTRY_NAME" required>
+    </div>
+    <div class="form-group">
+      <label>RISK_LEVEL</label>
+    <select class="form-control" name="RISK_LEVEL" #RISK_LEVEL="ngModel" [(ngModel)]="_tableservice.selectedhrc.RISK_LEVEL">
+      <option value="H">High</option>
+      <option value="M">Medium</option>
+      <option value="L">Low</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>SANCTIONED_FLAG</label>
+  <select class="form-control" name="SANCTIONED_FLAG" #SANCTIONED_FLAG="ngModel" [(ngModel)]="_tableservice.selectedhrc.SANCTIONED_FLAG" >
+    <option value="Y">Yes</option>
+    <option value="N">No</option>
+  </select>
+</div>
+<div class="form-group">
+  <label>INITIAL_LOAD_FLAG</label>
+<select class="form-control" class="form-control" name="INITIAL_LOAD_FLAG" #INITIAL_LOAD_FLAG="ngModel" [(ngModel)]="_tableservice.selectedhrc.INITIAL_LOAD_FLAG"  >
+  <option value="Y">Yes</option>
+  <option value="N">No</option>
+</select>
+</div>
+<div class="form-group">
+  <label>WATCHLIST_NAME</label>
+<input type="text" class="form-control" name="WATCHLIST_NAME" #WATCHLIST_NAME="ngModel" [(ngModel)]="_tableservice.selectedhrc.WATCHLIST_NAME" required>
+</div>
+<div class="form-group">
+  <label>WATCHLIST_TYPE</label>
+<input type="text" class="form-control" name="WATCHLIST_TYPE" #WATCHLIST_TYPE="ngModel" [(ngModel)]="_tableservice.selectedhrc.WATCHLIST_TYPE" required>
+</div>
+       </div>
+       
+       <div style="display: none;">
+       <div class="col-md-4">
+         <div class="form-group">
+           <label>User Id</label>
+           <input type="text" class="form-control" name="USER_ID"  [value]="UserId"  [(ngModel)]="UserId">
+         </div>
+         <div class="form-group">
+           <label>User Name</label>
+           <input type="text" class="form-control" name="USER_NAME"  [value]="UserName"  [(ngModel)]="UserName">
+         </div>
+         
+       </div>
+       <div class="col-md-4">
+        <div class="form-group">
+            <label>User Zone</label>
+            <input type="text" class="form-control" name="USER_ZONE" [value]="userzone"   [(ngModel)]="userzone">
+          </div>
+         <div class="form-group">
+           <label>Role</label>
+           <input type="text" class="form-control" name="ROLE" [value]="myData"  [(ngModel)]="myData">
+         </div>
+       </div>
+       <div class="col-md-4">
+         <div></div>
+           <input type="text" class="form-control" name="HIST_ID" value=""  [(ngModel)]="_tableservice.selectedhrc.HIST_ID">
+     
+
+           <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
+       
+     
+           <input type="text" class="form-control" name="CHANGE_TYPE" value=""  [(ngModel)]="_tableservice.selectedhrc.CHANGE_TYPE">
+
+          
+         
+       </div>
+     </div>
+
+     </div>
+
+
+ 
+   <input type="submit" class="btn btn-success"  value="{{btn_name}}">
+   
+ </form>
+
+
+
+
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <div class="footer-copyright-area">
+ <div class="container-fluid">
+ <div class="row">
+ <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+ <div class="footer-copy-right">
+ <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>

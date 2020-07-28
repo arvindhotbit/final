@@ -1,0 +1,318 @@
+<app-header></app-header>
+
+
+<div class="data-table-area mg-b-15">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="sparkline13-list">
+
+                    <div class="sparkline13-graph">
+                        <div class="datatable-dashv1-list custom-datatable-overright">
+
+                            <div class="">
+
+                                <div class="main-sparkline13-hd">
+                                    <div class="part">
+                                        <h1>Case Listing
+
+                                            <small>(Select Row To Update)</small></h1>
+
+                                    </div>
+
+
+
+                                    <div class="btn-group btn-group-sm">
+                                        <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i
+                                                class="fa fa-arrow-left"></i>
+                                            Back</button>
+
+
+
+
+                                        <div class="dropdown btn-group ">
+                                            <button class=" dropdown-toggle btn btn-primary btn-sm" type="button"
+                                                data-toggle="dropdown"><i class="fa fa-toggle-down"></i> Column
+                                            </button>
+                                            <ul class="dropdown-menu trust-menu">
+
+                                                <li class="dropdown-item ">
+                                                    <label for="zoneidms"> <input type="checkbox" [checked]="zoneidms"
+                                                            (change)="zoneidms=!zoneidms"
+                                                            id="zoneidms" />&nbsp;ZONEID</label>
+                                                </li>
+
+                                                <li class="dropdown-item ">
+                                                    <label for="matchscorems"> <input type="checkbox"
+                                                            [checked]="matchscorems"
+                                                            (change)="matchscorems=!matchscorems"
+                                                            id="matchscorems" />&nbsp;MATCHSCORE THRESHOLD</label>
+                                                </li>
+
+                                                <li class="dropdown-item ">
+                                                    <label for="paysysms"> <input type="checkbox" [checked]="paysysms"
+                                                            (change)="paysysms=!paysysms" id="paysysms" />&nbsp;PAYSYS
+                                                        ID</label>
+                                                </li>
+                                                <ng-container *ngIf="_isaccess">
+                                                    <li class="dropdown-item ">
+                                                        <label for="oldzoneidms"> <input type="checkbox"
+                                                                [checked]="oldzoneidms"
+                                                                (change)="oldzoneidms=!oldzoneidms"
+                                                                id="oldzoneidms" />&nbsp;OLD ZONE ID</label>
+                                                    </li>
+
+                                                    <li class="dropdown-item ">
+                                                        <label for="oldmatchscorems"> <input type="checkbox"
+                                                                [checked]="oldmatchscorems"
+                                                                (change)="oldmatchscorems=!oldmatchscorems"
+                                                                id="oldmatchscorems" />&nbsp;OLD MATCHSCORE
+                                                            THRESHOLD</label>
+                                                    </li>
+
+                                                    <li class="dropdown-item ">
+                                                        <label for="oldpaysysidms"> <input type="checkbox"
+                                                                [checked]="oldpaysysidms"
+                                                                (change)="oldpaysysidms=!oldpaysysidms"
+                                                                id="oldpaysysidms" />&nbsp;OLD PAYSYS ID</label>
+                                                    </li>
+
+                                                    <li class="dropdown-item ">
+                                                        <label for="changetypems"> <input type="checkbox"
+                                                                [checked]="changetypems"
+                                                                (change)="changetypems=!changetypems"
+                                                                id="changetypems" />&nbsp;CHANGE TYPE</label>
+                                                    </li>
+                                                </ng-container>
+
+
+
+
+                                            </ul>
+                                        </div>
+
+                                    </div>
+
+
+
+
+
+
+
+
+                                </div>
+                            </div>
+                        
+                            <div class="table-responsive" >
+                                <table class="table table-bordered table-condensed table-sm table-hover col-vs"
+                                    id="test1table">
+                                    <thead class="table_header">
+                                        <tr>
+                                            <th class="text-center"><input type="checkbox" class="disabled" /></th>
+                                            <th>Sr.no</th>
+                                            <th><span><input type="text"  [(ngModel)]="term1" class="form-control" placeholder="Case ID"
+                                                        /></span></th>
+                                           <th><span><input type="text" [(ngModel)]="term2" class="form-control"
+                                                        placeholder="Customer Name"  /></span>
+                                            </th>
+                                            <th><span><input type="text" [(ngModel)]="term3" class="form-control" placeholder="Sender Bic"
+                                                         /></span> </th>
+
+                                            <th><span><input type="text" [(ngModel)]="term4" class="form-control" placeholder="Receiver Bic"
+                                                         /></span></th>
+                                            <th><span><input type="text" [(ngModel)]="term5" class="form-control" placeholder="Paysys ID"
+                                                        /></span> </th>
+                                            <th><span><input type="text" [(ngModel)]="term6" class="form-control" placeholder="Channel"
+                                                        /></span> </th>
+                                            <th><span><input type="text" [(ngModel)]="term7" class="form-control" placeholder="Amount"
+                                                         /></span> </th>
+                                            <th class="d-flex">
+                                                <div><input type="datetime-local" class="form-control"
+                                                        placeholder="From"  [(ngModel)]="startdate"/></div>
+                                                <div><input type="datetime-local" [(ngModel)]="endate" class="form-control" placeholder="To"
+                                                        /></div>
+                                            </th> 
+
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngIf="showdatapart?.length;else no_data_templ">
+
+                                        <ng-container
+                                            *ngFor="let item of showdatapart |caselist:term1:term2:term3:term4:term5:term6:term7| paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
+                                            <tr>
+                                                <td style="text-align: center;"><input type="checkbox"
+                                                        [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}"
+                                                        name="deletecheck" value="{{item.REF_KEY}}"
+                                                        (change)="selectID(item.REF_KEY,item.isSelected)"></td>
+                                                <td>{{i+1}}</td>
+                                                <td (click)="getId(item,myform.value)">{{item.ECM_CASE_ID}}</td>
+                                                <td>{{item.ORDERING_CUSTOMER_NAME}}</td>
+                                                <td>{{item.SNDR_INST_BIC}}</td>
+                                                <td *ngIf="oldzoneidms">{{item.RECVR_INST_BIC}}</td>
+                                                <td *ngIf="oldmatchscorems">{{item.PAYSYS_ID}}</td>
+                                                <td *ngIf="oldpaysysidms">{{item.SRC_CHANNEL}}</td>
+                                                <td *ngIf="changetypems">{{item.TRANSFER_AMOUNT}}</td>
+                                                <td *ngIf="changetypems">{{item.ECM_CASE_CREATION_DATE | date :'short'}}</td>
+                                            </tr>
+                                        </ng-container>
+
+                                    </tbody>
+                                    <ng-template #no_data_templ>
+                                        <tbody>
+                                            <tr>
+                                                <td style="text-align: center;" colspan="100%"> No data found...</td>
+                                            </tr>
+                                        </tbody>
+                                    </ng-template>
+
+                                </table>
+                            </div>
+   
+                            <div class="row">
+                                <div class="col-12">
+
+
+                                    <div class="align-items-md-start d-flex justify-content-lg-end">
+                                        <select id="PerPage" [(ngModel)]="pageSize" *ngIf="showdatapart?.length">
+                                            <option [ngValue]="5">5</option>
+                                            <option [ngValue]="10">10</option>
+                                            <option [ngValue]="25">25</option>
+                                            <option [ngValue]="50">50</option>
+                                        </select>
+                                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                                    </div>
+
+
+
+
+
+
+                                </div>
+
+                            </div>
+                  
+                            <form #myform="ngForm" id="addForm">
+
+                                <!-- {{myform.value|json}} -->
+                                <div style="display: none;">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>User Id</label>
+                                            <input type="text" class="form-control" name="USER_ID" [value]="UserId"
+                                                [(ngModel)]="UserId">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>User Name</label>
+                                            <input type="text" class="form-control" name="USER_NAME" [value]="UserName"
+                                                [(ngModel)]="UserName">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>User Zone</label>
+                                            <input type="text" class="form-control" name="USER_ZONE" [value]="userzone"
+                                                [(ngModel)]="userzone">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Role</label>
+                                            <input type="text" class="form-control" name="ROLE" [value]="myData"
+                                                [(ngModel)]="myData">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </form>
+                  
+              <section class="seconddiv" style="display: none;">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-sm table-hover col-vs"
+                        id="test1table" datatable>
+                        <thead class="table_header">
+                            <tr>
+                                <th class="text-center"><input type="checkbox" class="disabled" /></th>
+                           
+                                <th><span><input type="text" class="form-control"
+                                            placeholder="Approval Status" /></span></th>
+                                <th><span><input type="text" class="form-control"
+                                            placeholder="Customer Name" /></span>
+                                </th>
+                                <th><span><input type="text" class="form-control"
+                                            placeholder="Scanned Field"  /></span> </th>
+
+                                <th><span><input type="text" class="form-control"
+                                            placeholder="Scanned Value"  /></span></th>
+                                <th><span><input type="text" class="form-control"
+                                            placeholder="Matched Value"  /></span> </th>
+                                <th><span><input type="text" class="form-control"
+                                            placeholder="UID/Serial No."  /></span> </th>
+                                <th><span><input type="text" class="form-control"
+                                            placeholder="Watchlist Name"  /></span> </th>
+                                <th><span><input type="text" class="form-control" placeholder="Score"
+                                            /></span> </th>
+                                <th><span><input type="text" class="form-control"
+                                            placeholder="Maker Comment"  /></span> </th>
+
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let cd of casedetail">
+                                <td style="text-align: center;"><input type="checkbox"
+                                  ></td>
+                      
+                                <td>{{cd.HIT_FLAG}}</td>
+                                <td>{{cd.MODE_TYPE}}</td>
+                                <td>{{cd.SCANNED_FIELD_NAME}}</td>
+                                <td>{{cd.SCANNED_FIELD_VALUE}}</td>
+                                <td>{{cd.MATCHED_FIELD_VALUE}}</td>
+                                <td>{{cd.UID_SERIAL_NO}}</td>
+                                <td>{{cd.WATCHLIST_NAME}}</td>
+                                <td>{{cd.MATCH_SCORE}}</td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                 
+                </div>
+
+                <div class="row">
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-header">
+                              <h6 class="card-title">   Message Text</h6> 
+                            </div>
+                            <div class="card-body">
+                                <div *ngFor="let msg of caseinfo">
+                                    <P>{{msg.RAW_MESSAGE}}</P>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </section>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer-copyright-area">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="footer-copy-right">
+                    <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

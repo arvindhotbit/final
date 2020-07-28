@@ -1,0 +1,17 @@
+.trust-menu
+{
+    padding: 1em;
+}
+
+.trust-menu > li > label{
+
+    font-size: 12px;
+}
+
+
+  tr.selected {
+    background-color:#123456 !important;
+    color:#fff;
+
+  }
+

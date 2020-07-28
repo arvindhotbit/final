@@ -1,0 +1,214 @@
+
+    
+    
+ <app-header></app-header>
+   
+      
+ <div class="data-table-area mg-b-15">
+  <div class="container-fluid">
+  <div class="row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+  <div class="sparkline13-list">
+ 
+  <div class="sparkline13-graph">
+  <div class="datatable-dashv1-list custom-datatable-overright">
+       
+        <div class="">
+          <div class="main-sparkline13-hd">
+            <div class="part">
+              <h1>{{listtitle}} <small>(Select Row To Update)</small>
+              </h1>
+            </div>
+        
+            <div class="btn-group btn-group-sm">
+      <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</button>
+       
+         <div class="dropdown btn-group">   
+           <button class="dropdown-toggle btn btn-primary btn-sm" type="button" data-toggle="dropdown"><i class="fa fa-toggle-down"></i> Column
+           </button>
+           <ul class="dropdown-menu trust-menu">
+             <li class="dropdown-item ">
+             <label for="SERIAL"> <input type="checkbox" [checked]="SERIAL" (change)="SERIAL=!SERIAL" id="SERIAL"/>&nbsp;Serial No.</label> 
+             </li>
+             <li class="dropdown-item">
+               <label for="PROGRAMKEYWORD">   <input type="checkbox" [checked]="PROGRAMKEYWORD" (change)="PROGRAMKEYWORD=!PROGRAMKEYWORD" id="PROGRAMKEYWORD"/>&nbsp;Program Keywords</label> 
+           </li>
+           <li class="dropdown-item">
+             <label for="PROGRAMKEYWORDDESC">  <input type="checkbox" [checked]="PROGRAMKEYWORDDESC " (change)="PROGRAMKEYWORDDESC =!PROGRAMKEYWORDDESC " id="PROGRAMKEYWORDDESC"/>&nbsp;Program Keywords Description</label>
+             </li>
+             <li class="dropdown-item">
+              <label for="PAYSYSID">  <input type="checkbox" [checked]="PAYSYSID " (change)="PAYSYSID =!PAYSYSID " id="PAYSYSID"/>&nbsp;PAYSYS_ID</label>
+              </li>
+              <li class="dropdown-item">
+                <label for="SCOPES">  <input type="checkbox" [checked]="SCOPES " (change)="SCOPES =!SCOPES " id="SCOPES"/>&nbsp;SCOPE</label>
+                </li>
+                <li class="dropdown-item">
+                  <label for="ZONEID">  <input type="checkbox" [checked]="ZONEID " (change)="ZONEID =!ZONEID " id="ZONEID"/>&nbsp;ZONE_ID</label>
+                  </li>
+ 
+ 
+           </ul>
+          </div>
+          <ng-container *ngIf="!_isaccesszvg">
+          <button (click)="addform()" class="btn btn-primary btn-sm" ><i class="fa fa-plus"></i> Add Form</button>
+         <button class="btn btn-primary btn-sm" (click)="deleteSelected(zvgform)"  [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
+         </ng-container>
+     </div>
+   </div>
+        </div>
+         
+         
+        <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
+              <thead class="table_header">
+               <tr class="text-center">   
+                <th class="text-center"> 
+                   <input type="checkbox"></th>         
+                  <th  *ngIf="SERIAL">Sr.no</th>
+                  <th *ngIf="ZONEID"><input type="text" class="form-control" placeholder="ZONE ID"/></th>
+                  <th *ngIf="PROGRAMKEYWORD"><input type="text" class="form-control" [(ngModel)]="pkey" placeholder="PROGRAM KEYWORD"/></th>
+                  <th *ngIf="PROGRAMKEYWORDDESC"><input type="text" class="form-control" [(ngModel)]="pkeyw" placeholder="PROGRAM KEYWORD DESC"/></th>
+                  <th *ngIf="PAYSYSID">PAYSYS ID</th>
+                  <th *ngIf="SCOPES">SCOPE</th>
+                  <th *ngIf="_isaccesszvg"><input type="text" class="form-control" placeholder="Old ZONE ID"/></th>
+                  <th  *ngIf="_isaccesszvg"><input type="text" class="form-control"  [(ngModel)]="oldpkey" placeholder="OLD PROGRAM KEYWORD"/></th>
+                  <th  *ngIf="_isaccesszvg"><input type="text" class="form-control" [(ngModel)]="oldpkeyword" placeholder="OLD PROGRAM KEYWORD DESC"/></th>
+                  <th  *ngIf="_isaccesszvg" ><input type="text" class="form-control" [(ngModel)]="changetype" placeholder="CHANGE TYPE"/></th>
+                  <th  *ngIf="_isaccesszvg" colspan="2" class="text-center">ACTION</th>
+               </tr>
+              </thead>
+              <tbody *ngIf="showzvg?.length;else no_data_templ">
+                <ng-container   *ngFor="let item of showzvg  | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index "> 
+               <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == updatemark)}"     (click)="onEdit(item)" [class.selected]="item === selectedZoneRow">
+                <td> <input type="checkbox" [(ngModel)]="item.isSelected"  id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}" (change)="selectID(item.REF_KEY,item.isSelected)"></td>
+                 <td *ngIf="SERIAL">{{i+1}}</td>
+                 <td *ngIf="ZONEID">{{item.ZONE_ID}}</td>
+                 <td *ngIf="PROGRAMKEYWORD">{{item.PROGRAM_KEYWORD}}</td>
+                 <td *ngIf="PROGRAMKEYWORDDESC">{{item.PROGRAM_KEYWORD_DESC}}</td>
+                 <td *ngIf="PAYSYSID">{{item.PAYSYS_ID}}</td>
+                 <td *ngIf="SCOPES">{{item.SCOPE}}</td>
+               
+              
+                 <ng-container *ngIf="_isaccesszvg">
+                 <td *ngIf="ZONEID">{{item.OLD_ZONE_ID}}</td>
+                   
+                  <td>{{item.OLD_PROGRAM_KEYWORD}}</td>
+                  <td>{{item.OLD_PROGRAM_KEYWORD_DESC}}</td>
+                  <td>{{item.CHANGE_TYPE}}</td>
+                  <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',zvgform)"  (click)="ChkdeleteSelected(zvgform,item)" [class.selected]="item === selectedZoneRow">Approve</button></td>
+                  <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',zvgform)" (click)="ChkNotdeleteSelected(zvgform,item)" [class.selected]="item === selectedZoneRow">Reject</button></td> 
+                  </ng-container>
+                
+               </tr>
+              </ng-container>
+              </tbody>
+              <ng-template #no_data_templ>
+                <tbody>
+                  <tr >
+               <td style="text-align: center;" colspan="8"> No data found...</td>
+              </tr>
+              </tbody>
+             </ng-template>
+         
+              
+            </table>
+            <div class="row">
+              <div class="col-12">
+              
+               
+        <div class="align-items-md-start d-flex justify-content-lg-end">
+          <select id="PerPage"  [(ngModel)]="pageSize" *ngIf="showzvg?.length">
+            <option [ngValue]="5">5</option>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+        </select> <pagination-controls  (pageChange)="p = $event"></pagination-controls>
+        </div>
+                 
+        
+      
+               
+              
+              
+              </div>
+            
+            </div>
+          
+           <ng-template #elseBlock>No record found</ng-template>
+
+        
+         <form #zvgform="ngForm" (ngSubmit)="submitform(zvgform)" id="addzoneform" style="display: none;">
+          <div class="panel-body">
+            <h4>Add Record</h4>
+          </div>
+        
+        <!-- {{zvgform.value|json}} -->
+        <div class="row">
+              <div class="col-md-4">
+                <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="_tableservice.selectedzvg.REF_KEY">
+                <div class="form-group">
+                  <label>Zone Id</label>
+                <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel" [(ngModel)]="_tableservice.selectedzvg.ZONE_ID">
+                </div>
+                <div class="form-group">
+                  <label>PROGRAM_KEYWORD</label>
+                <input type="text" class="form-control" name="PROGRAM_KEYWORD" #PROGRAM_KEYWORD="ngModel" [(ngModel)]="_tableservice.selectedzvg.PROGRAM_KEYWORD">
+              </div>
+              <div class="form-group">
+                <label>PROGRAM_KEYWORD_DESC</label>
+              <input type="text" class="form-control" name="PROGRAM_KEYWORD_DESC" #PROGRAM_KEYWORD_DESC="ngModel" [(ngModel)]="_tableservice.selectedzvg.PROGRAM_KEYWORD_DESC">
+            </div>
+            
+              
+              </div>
+           
+              <div class="col-md-4">
+            
+            <div class="form-group">
+              <label>PAYSYS_ID</label>
+            <input type="text" class="form-control" name="PAYSYS_ID" #PAYSYS_ID="ngModel" [(ngModel)]="_tableservice.selectedzvg.PAYSYS_ID">
+          </div>
+          <div class="form-group">
+            <label>SCOPE</label>
+          <select class="form-control" name="SCOPE" #SCOPE="ngModel" [(ngModel)]="_tableservice.selectedzvg.SCOPE">
+            <option value="Shared">Shared</option>
+            <option value="Private"> Private</option>
+            <option value="Disable">Disable</option>
+          </select>
+        </div>
+          <div style="display: none;">
+            <input type="text" class="form-control" name="USER_ZONE" value="QA"  [(ngModel)]="_tableservice.selectedzvg.USER_ZONE">
+        <input type="text" class="form-control" name="ROLE" [value]="myData"  [(ngModel)]="myData">
+        <input type="text" class="form-control" name="USER_NAME"  [value]="UserName"  [(ngModel)]="UserName">
+        <input type="text" class="form-control" name="USER_ID"  [value]="UserId"  [(ngModel)]="UserId">
+        <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
+          </div>
+        
+              </div>
+             
+            </div>
+    
+      
+        
+          <input type="submit" class="btn btn-success">
+          
+        </form>
+       </div>
+       </div>
+       </div>
+       </div>
+       </div>
+       </div>
+ </div>
+       
+        <div class="footer-copyright-area">
+        <div class="container-fluid">
+        <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="footer-copy-right">
+        <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+      

@@ -1,0 +1,51 @@
+
+    <div class="loading"></div>
+
+    <!-- APP WRAPPER -->
+    <div class="app app-fh">
+        <!-- START APP CONTAINER -->
+        <div class="app-container" style="background: url(https://www.sss-solutions.org/wp-content/uploads/2018/01/1116146294-login-page-background-image-112.jpg) center center no-repeat fixed;    background-size: cover;">
+            <div class="app-login-box p-3">
+           
+               <div class="app-login-box-title">
+                <div class="title" style="font-size: 40px;padding-top: 20px;padding-bottom: 20px;">Login</div>
+                  <div class="subtitle">Sign in to your account</div>
+              </div> 
+                <div class="app-login-box-container" >
+                     <div class="alert alert-success" *ngIf="message">{{message}}</div>
+                    <form #loginform="ngForm" (ngSubmit)="submitform(loginform)" id="addForm" autocomplete="off">
+                      
+                        <div class="form-group">
+                        	<label>User Id</label>
+                            <input type="text" class="form-control" name="userid" [placeholder]="useridplaceholder" [(ngModel)]="_authservice.authscheme.userid" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                        	<label>Password</label>
+                            <input type="password" class="form-control" name="password" [placeholder]="passwordplaceholder" [(ngModel)]="_authservice.authscheme.password" autocomplete="new-password">
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-6">
+                                    <div class="app-checkbox">
+                                        <label>
+                                            <input type="checkbox" name="app-checkbox-1" value="0" > Remember me</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-6">
+                                    <!-- <button class="btn btn-facebook pull-right" type="submit">Login</button> -->
+                                    <button [disabled]="loading" class="btn btn-primary float-right" type="submit">
+                                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                        Login
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+  
+               <div class="app-login-box-footer">&copy;  2002-2017 Trustling institute Inc.</div>
+            </div>
+        </div>
+        <!-- END APP CONTAINER -->
+    </div>
+
