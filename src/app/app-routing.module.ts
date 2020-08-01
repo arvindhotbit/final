@@ -20,7 +20,8 @@ import { PaymentScreeningForAdkComponent } from './payment-screening-for-adk/pay
 import { PepComponent } from './pep/pep.component';
 import { CaseListingComponent } from './case-listing/case-listing.component';
 import { AddzoneComponent } from './addzone/addzone.component';
-
+import { DepartmentComponent } from './admin/department/department.component';
+import { PaysysComponent } from './admin/paysys/paysys.component';
 import { ActivateGuard } from './activate.guard';
 const routes: Routes = [
       {path: 'internamanagement', component: InterlistManagementComponent },
@@ -42,7 +43,9 @@ const routes: Routes = [
       {path: 'politicaly-Exposed-Person', component:PepComponent},
       {path: 'payment-screen-adk', component:PaymentScreeningForAdkComponent},
       {path: 'add-zone', component:AddzoneComponent},
-      {path: 'case-listing', component:CaseListingComponent}
+      {path: 'case-listing', component:CaseListingComponent},
+      {path: 'department', component:DepartmentComponent},
+      {path: 'paysys', component:PaysysComponent},
   
 ];
 

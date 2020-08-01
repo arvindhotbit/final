@@ -59,6 +59,7 @@
          
          
         <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
+         
               <thead class="table_header">
                <tr class="text-center">   
                 <th class="text-center"> 
@@ -77,10 +78,10 @@
                </tr>
               </thead>
               <tbody *ngIf="showzvg?.length;else no_data_templ">
-                <ng-container   *ngFor="let item of showzvg  | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index "> 
+                <ng-container   *ngFor="let item of showzvg  |filter:pkey:pkeyw:oldpkey:oldpkeyword:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index "> 
                <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == updatemark)}"     (click)="onEdit(item)" [class.selected]="item === selectedZoneRow">
                 <td> <input type="checkbox" [(ngModel)]="item.isSelected"  id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}" (change)="selectID(item.REF_KEY,item.isSelected)"></td>
-                 <td *ngIf="SERIAL">{{i+1}}</td>
+                 <td *ngIf="SERIAL">{{ (p - 1) * pageSize + i + 1 }}</td>
                  <td *ngIf="ZONEID">{{item.ZONE_ID}}</td>
                  <td *ngIf="PROGRAMKEYWORD">{{item.PROGRAM_KEYWORD}}</td>
                  <td *ngIf="PROGRAMKEYWORDDESC">{{item.PROGRAM_KEYWORD_DESC}}</td>

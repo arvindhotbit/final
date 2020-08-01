@@ -22,8 +22,8 @@
                       </button>
                       <ul class="dropdown-menu trust-menu">
                         <li class="dropdown-item">
-                          <label for="zoneidcol"> <input type="checkbox" [checked]="zoneidcol" (change)="zoneidcol=!zoneidcol"
-                              id="zoneidcol" />&nbsp;Zone Id</label>
+                          <label for="zoneidcol"> <input type="checkbox" [checked]="zoneidcol"
+                              (change)="zoneidcol=!zoneidcol" id="zoneidcol" />&nbsp;Zone Id</label>
                         </li>
                         <li class="dropdown-item">
                           <label for="noisewordcol"> <input type="checkbox" [checked]="noisewordcol "
@@ -35,7 +35,8 @@
                         </li>
                         <li class="dropdown-item">
                           <label for="oldnoisewordcol"> <input type="checkbox" [checked]="oldnoisewordcol"
-                              (change)="oldnoisewordcol =!oldnoisewordcol " id="oldnoisewordcol" />&nbsp;Old Noise Word</label>
+                              (change)="oldnoisewordcol =!oldnoisewordcol " id="oldnoisewordcol" />&nbsp;Old Noise
+                            Word</label>
                         </li>
                         <li class="dropdown-item">
                           <label for="changetypecol"> <input type="checkbox" [checked]="changetypecol"
@@ -43,63 +44,80 @@
                         </li>
                       </ul>
                     </div>
+                    <ng-container *ngIf="_isaccess">
+                     <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
+                          (click)="ChkdeleteSelected(myform)"><i class="fa fa
+                          -check-square-o"></i> Approve</button>
+                      <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
+                          (click)="ChkdeleteSelected(myform)"><i class="fa fa-times"></i> Reject</button>
+                    </ng-container>
                     <ng-container *ngIf="!_isaccess">
                       <button (click)="addform()" class="btn btn-primary btn-sm"
-                        [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i> Add
-                        Form</button>
+                        [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i> {{formact}}</button>
                       <button class="btn btn-primary btn-sm" (click)="deleteSelected(myform)"
                         [class.disabled]="isdelete_button"><i class="fa fa-trash"></i> Delete</button>
                     </ng-container>
                   </div>
                 </div>
               </div>
-           <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
+              <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
                 <thead class="table_header">
                   <tr>
-                    <th class="text-center"><input type="checkbox" class="disabled"
-                         /></th>
+                    <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
+                    <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
                     <th>Sr.no</th>
-                    <th *ngIf="zoneidcol"><span><input type="text" class="form-control" 
-                          placeholder="Zone Id"  [(ngModel)]="zone"  /></span></th>
-                    <th *ngIf="noisewordcol"><span><input type="text" class="form-control" 
-                          placeholder="Noise Word" [(ngModel)]="noise"/></span> </th>
+                    <th *ngIf="zoneidcol"><span><input type="text" class="form-control" placeholder="Zone Id"
+                          [(ngModel)]="zone" /></span></th>
+                    <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="Noise Word"
+                          [(ngModel)]="noise" /></span> </th>
                     <ng-container *ngIf="_isaccess">
-                      <th *ngIf="oldzoneidcol"><span><input type="text" class="form-control" 
-                            placeholder="Old Zone Id" [(ngModel)]="oldzone"/></span> </th>
-                      <th *ngIf="oldnoisewordcol"><span><input type="text" class="form-control" 
-                            placeholder="Old Noise Word" [(ngModel)]="oldnoise"/></span> </th>
-                            <th *ngIf="changetypecol"><span><input type="text" class="form-control" 
-                              placeholder="Change Type" [(ngModel)]="changetype"/></span> </th>
-                      <th colspan="2" style="text-align: center;">ACTION</th>
+                      <th *ngIf="oldzoneidcol"><span><input type="text" class="form-control" placeholder="Old Zone Id"
+                            [(ngModel)]="oldzone" /></span> </th>
+                      <th *ngIf="oldnoisewordcol"><span><input type="text" class="form-control"
+                            placeholder="Old Noise Word" [(ngModel)]="oldnoise" /></span> </th>
+                      <th *ngIf="changetypecol">
+                        <span>
+                          
+                            <select name="changetype" class="form-control"  [(ngModel)]="changetype">
+                              <option value="INSERT">INSERT</option>
+                              <option value="DELETE">DELETE</option>
+                              <option value="UPDATE">UPDATE</option>
+                            </select>
+                          </span>
+                         </th>
+
                     </ng-container>
                     <th *ngIf="ref_keys">REF KEY</th>
                   </tr>
                 </thead>
                 <tbody *ngIf="showdata?.length;else no_data_templ">
-                  <ng-container 
-                    *ngFor="let item of showdata |neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index " >
-                    <tr 
+                  <ng-container
+                    *ngFor="let item of showdata |neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
+                    <tr
                       [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
                       (click)="onEdit(item,'Update')" [class.selected]="item === selectedNeutralRow">
-                      <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
-                          id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"
-                          (change)="selectID(item,$event)"></td>
-                      <td *ngIf="nsn">{{i+1}}</td>
+
+
+                      <td *ngIf="!_isaccess" style="text-align: center;">
+                        <input type="checkbox"
+                        [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+                          value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
+
+                      <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+                          [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
+                          value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
+
+                      <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
 
                       <td *ngIf="zoneidcol">{{item.ZONE_ID}}</td>
                       <td *ngIf="noisewordcol">{{item.NOISE_WORD}}</td>
-                      
+
                       <ng-container *ngIf="_isaccess">
-                        
+
                         <td *ngIf="oldzoneidcol">{{item.OLD_ZONE_ID}}</td>
                         <td *ngIf="oldnoisewordcol">{{item.OLD_NOISE_WORD}}</td>
                         <td *ngIf="changetypecol" style="text-align: center;">{{item.CHANGE_TYPE}}</td>
-                        <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
-                            (click)="ChkdeleteSelected(myform,item)"
-                            [class.selected]="item === selectedNeutralRow">Approve</button></td>
-                        <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
-                            (click)="ChkNotdeleteSelected(myform,item)"
-                            [class.selected]="item === selectedNeutralRow">Reject</button></td>
+
                       </ng-container>
                     </tr>
                   </ng-container>
@@ -111,14 +129,14 @@
                     </tr>
                   </tbody>
                 </ng-template>
-              </table> 
-              
-              
-            
-              
-              
-              
-              
+              </table>
+
+
+
+
+
+
+
               <div class="row">
                 <div class="col-12">
                   <div class="align-items-md-start d-flex justify-content-lg-end">
@@ -134,7 +152,7 @@
               </div>
               <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
                 <div class="panel-body">
-                  <h4>Add Record</h4>
+                  <h4>{{formact}}</h4>
                 </div>
                 <div class="row">
                   <div class="col-md-4">
@@ -176,12 +194,11 @@
                     </div>
                     <div class="col-md-4">
                       <div></div>
-                      <input type="text" class="form-control" name="HIST_ID" value=""
-                        [(ngModel)]="_tableservice.selectedneu.HIST_ID">
+                      <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}" [(ngModel)]="ybunch">
                       <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"
                         [(ngModel)]="apstatus">
-                      <input type="text" class="form-control" name="CHANGE_TYPE" value=""
-                        [(ngModel)]="_tableservice.selectedneu.CHANGE_TYPE">
+                      <input type="text" class="form-control" name="CHANGE_TYPE" value="{{changetype}}"
+                        [(ngModel)]="changetype">
                     </div>
                   </div>
                 </div>

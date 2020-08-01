@@ -231,9 +231,38 @@ export interface internalwatchlist {
 					{
 					 ROLE : string,
 					 ECM_CASE_ID : string,
-					 MESSAGE_ID : string
-
+					 MESSAGE_ID : string,
+                     CREATION_DTTM:Date
 					} 
+					export interface departscheme {
+						REF_KEY : string,
+						ROLE : String,
+						USER_ID : String,
+						USER_NAME : String,
+						 USER_ZONE : String,
+						 DEPARTMENT_ID :String,
+						 DESCRIPTIONS : String,
+						ZONE_ID : String,
+						HIST_ID : String,
+						APPROVE_STATUS : String,
+						CHANGE_TYPE : String
+					
+					}
+					export interface paysysscheme {
+						REF_KEY : string,
+						ROLE : String,
+						USER_ID : String,
+						USER_NAME : String,
+						 USER_ZONE : String,
+						 PAYSYS_ID : String,
+						 CASE_TYPE_NS :String,
+						 CASE_TYPE_PS : String,
+						ZONE_ID : String,
+						HIST_ID : String,
+						APPROVE_STATUS : String,
+						CHANGE_TYPE : String
+					
+					};
 
 
 	

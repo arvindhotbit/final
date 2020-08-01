@@ -39,7 +39,7 @@ import { PaymentScreeningForEPHComponent } from './payment-screening-for-eph/pay
 import { PaymentScreeningForAdkComponent } from './payment-screening-for-adk/payment-screening-for-adk.component';
 import { CaseListingComponent } from './case-listing/case-listing.component';
 import { CaseDetailComponent } from './case-detail/case-detail.component';
-// import { FilterPipe } from './filter/filter.pipe';
+import { FilterPipe } from './filter/filter.pipe';
 import { AuthserviceService } from './auth/authservice.service';
 import { NeutralfilterPipe } from './filter/neutralfilter.pipe';
 import { HeaderComponent } from './header/header.component';
@@ -52,6 +52,11 @@ import { NamescreenPipe } from './filter/namescreen.pipe';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AddzoneComponent } from './addzone/addzone.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { CustomRangeFilterPipe } from './custom-range-filter.pipe';
+import { DepartmentComponent } from './admin/department/department.component';
+import { PaysysComponent } from './admin/paysys/paysys.component';
+// NOT RECOMMENDED (Angular 9 doesn't support this kind of import)
 
 @NgModule({
   declarations: [
@@ -75,7 +80,7 @@ import { AddzoneComponent } from './addzone/addzone.component';
     PaymentScreeningForAdkComponent,
     CaseListingComponent,
     CaseDetailComponent,
-    // FilterPipe,
+    FilterPipe,
     NeutralfilterPipe,
     HeaderComponent,
     SensitiveWordComponent,
@@ -84,12 +89,16 @@ import { AddzoneComponent } from './addzone/addzone.component';
     PsadkPipe,
     NamescreenPipe,
      CaselistPipe,
-     AddzoneComponent
+     AddzoneComponent,
+     CustomRangeFilterPipe,
+     DepartmentComponent,
+     PaysysComponent
 
   ],
   imports: [ 
     MbscModule, 
     BrowserModule,
+    BsDatepickerModule.forRoot(),
     NgIdleKeepaliveModule.forRoot(),
     MomentModule,
     BrowserAnimationsModule,

@@ -122,7 +122,7 @@
                         <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
                             id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"
                             (change)="selectID(item.REF_KEY,item.isSelected)"></td>
-                        <td >{{i+1}}</td>
+                        <td >{{ (p - 1) * pageSize + i + 1 }}</td>
 
                         <td *ngIf="zoneidms">{{item.ZONE_ID}}</td>
                         <td *ngIf="matchscorems">{{item.MATCHSCORE_THRESHOLD}}</td>

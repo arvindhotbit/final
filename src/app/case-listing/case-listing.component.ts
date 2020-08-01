@@ -12,6 +12,7 @@ import { data, parseJSON } from 'jquery';
 import { Observable } from 'rxjs';
 import {Location} from '@angular/common';
 import * as $ from 'jquery';
+import { DateArray } from 'ngx-bootstrap/chronos/types';
 
 
 @Component({
@@ -74,24 +75,44 @@ term1:string;
   term5:string; 
   term6:string; 
   term7:string; 
-startdate:any;
-endate: any;
-matchdate:any;
+  startDate:any;
+  endDate:any;
+  filterdata:any;
+
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
-     }
+    var retrievedObject = localStorage.getItem('testObject');
+    var filterperseved = JSON.parse(retrievedObject);
+    var retrievedObject1 = localStorage.getItem('fromto');
+    var datefilterperseved = JSON.parse(retrievedObject1);
+    this.term1 = filterperseved.term1;
+    this.term2 = filterperseved.term2;
+    this.term3 = filterperseved.term3;
+    this.term4 = filterperseved.term4;
+    this.term5 = filterperseved.term5;
+    this.term6 = filterperseved.term6;
+    this.term7 = filterperseved.term7;
+    this.startDate = datefilterperseved.option1;
+    this.endDate = datefilterperseved.option2;
+
+   
+  }
 
   ngOnInit(): void {
     
 
     this.refreshEmployeeList();
-     this.matchdate = this.showdatapart.filter(m => new Date(m.date) > this.startdate && new Date(m.date) < this.endate);
-     console.log(this.matchdate);
+ 
+
    
+    
   }
+
+
+
 
 
   backClicked() {

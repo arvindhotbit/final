@@ -68,7 +68,7 @@ else if(res.role === "checkers")
 
 else if(res.role === "admin")
 {
-  this.router.navigate(['/register'])
+  this.router.navigate(['/home'])
 }
 else
 {

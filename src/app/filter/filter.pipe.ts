@@ -16,23 +16,23 @@ export class FilterPipe implements PipeTransform {
   //  });
   // }
 
-  transform(items: any[], PROGRAM_KEYWORD: string, PROGRAM_KEYWORD_DESC: string, CHANGE_TYPE : string,OLD_PROGRAM_KEYWORD: string, OLD_PROGRAM_KEYWORD_DESC: string,  ){
+  transform(items: any[], pkey: string, pkeyw: string, oldpkey : string,oldpkeyword: string, changetype: string,  ){
     if (items && items.length){
         return items.filter(item =>{
-            if (PROGRAM_KEYWORD && item.PROGRAM_KEYWORD.toLowerCase().indexOf(PROGRAM_KEYWORD.toLowerCase()) === -1){
+            if (pkey && item.PROGRAM_KEYWORD.toLowerCase().indexOf(pkey.toLowerCase()) === -1){
                 return false;
             }
-            if (PROGRAM_KEYWORD_DESC && item.PROGRAM_KEYWORD_DESC.toLowerCase().indexOf(PROGRAM_KEYWORD_DESC.toLowerCase()) === -1){
-                console.log(PROGRAM_KEYWORD_DESC);
+            if (pkeyw && item.PROGRAM_KEYWORD_DESC.toLowerCase().indexOf(pkeyw.toLowerCase()) === -1){
+               
                 return false;
             }
-            if (CHANGE_TYPE && item.CHANGE_TYPE.toLowerCase().indexOf(CHANGE_TYPE.toLowerCase()) === -1){
+            if (changetype && item.CHANGE_TYPE.toLowerCase().indexOf(changetype.toLowerCase()) === -1){
                 return false;
             }
-            if (OLD_PROGRAM_KEYWORD && item.OLD_PROGRAM_KEYWORD.toLowerCase().indexOf(OLD_PROGRAM_KEYWORD.toLowerCase()) === -1){
+            if (oldpkey && item.OLD_PROGRAM_KEYWORD.toLowerCase().indexOf(oldpkey.toLowerCase()) === -1){
                 return false;
             }
-            if (OLD_PROGRAM_KEYWORD_DESC && item.OLD_PROGRAM_KEYWORD_DESC.toLowerCase().indexOf(OLD_PROGRAM_KEYWORD_DESC.toLowerCase()) === -1){
+            if (oldpkeyword && item.OLD_PROGRAM_KEYWORD_DESC.toLowerCase().indexOf(oldpkeyword.toLowerCase()) === -1){
                 return false;
             }
                        return true;

@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable,Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
-import {Neutralscheme,Bicscheme,Interdefination,sanctioned,internalwatchlist,Highriskcountry,Zonevsglobal,sensitivescheme,pepscheme,Paymentscreenadk,matchscore,namescreen,casedetail,addzonescheme} from './tabular';
+import {Neutralscheme,Bicscheme,Interdefination,sanctioned,internalwatchlist,Highriskcountry,Zonevsglobal,sensitivescheme,pepscheme,Paymentscreenadk,matchscore,namescreen,casedetail,addzonescheme,departscheme,paysysscheme} from './tabular';
 
 
 @Injectable({
@@ -26,6 +26,8 @@ export class TableDataService {
     selectmatchscore:matchscore;
     selectns:namescreen;
     selectzone : addzonescheme;
+    selectdepartment :departscheme;
+    selectpaysys:paysysscheme;
   constructor(private http : HttpClient) {
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
@@ -72,10 +74,22 @@ neudeldisapproved(neuscheme:Neutralscheme)
 // {return this.http.delete(`${environment.apiUrl}/del_neutral_words` + `/${REF_KEY}`)};
 // Neutral-words api call end*************************************
 
+departlistpage()
+{ return this.http.post<any>(`${environment.apiUrl}/department_list`,{"ROLE":this.myData})};
 
 
 
+departlistpost(depart:departscheme)
+{ return this.http.post<any>(`${environment.apiUrl}/add_department`,depart)};
 
+
+paysyslistpage()
+{ return this.http.post<any>(`${environment.apiUrl}/paysys_list`,{"ROLE":this.myData})};
+
+
+
+paysyslistpost(paysys:paysysscheme)
+{ return this.http.post<any>(`${environment.apiUrl}/add_paysys`,paysys)};
 
 
 // Neutral-words api call start*************************************

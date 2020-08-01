@@ -95,6 +95,14 @@ export class DashboardComponent implements OnInit {
       { "name": "Case Listing", "icon": "fa-plus-circle", "pagelink": "case-listing" }
     ];
   }
+  else if (this.myData === "admin")
+  {
+    this.features = [
+    { "name": "Register", "icon": "fa-minus-circle", "pagelink": "register" },
+    { "name": "Department", "icon": "fa-minus-circle", "pagelink": "department" },
+    { "name": "PaysysId", "icon": "fa-minus-circle", "pagelink": "paysys" }
+    ];
+  }
     });
   }
 

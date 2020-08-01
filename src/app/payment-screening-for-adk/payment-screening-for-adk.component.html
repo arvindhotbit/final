@@ -128,7 +128,7 @@
       <ng-container  *ngFor="let item of showdatapart |psadk:mtx:fieldlabel:scan:tag:taga:oldmtx:oldfldl:scanold:tagold:tagaold:ct| paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
         <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"   (click)="onEdit(item,'Update')" [class.selected]="item === selectedpsadkRow">
           <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"  id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}" (change)="selectID(item.REF_KEY,item.isSelected)"></td>
-          <td *ngIf="nsn">{{i+1}}</td>    
+          <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>    
           
           <td *ngIf="mtxxxtypecol">{{item.MTXXX_TYPE}}</td>
           <td *ngIf="fieldlabelcol">{{item.FIELD_LABEL}}</td>

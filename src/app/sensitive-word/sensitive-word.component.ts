@@ -56,6 +56,7 @@ export class SensitiveWordComponent implements OnInit {
   isdelete_button:boolean = true;
   tbl_header:any = [];
   userzone :string;
+  xbunch:string;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
     this.myData = localStorage.getItem('Role');
@@ -155,12 +156,14 @@ export class SensitiveWordComponent implements OnInit {
   {
     this.SelectedIDs.push(id);
     this.isdelete_button = false;
+    this.xbunch = this.SelectedIDs.toString();
   }
 
     else
     {
       this.SelectedIDs.pop(id);
       this.isdelete_button = true;
+      this.xbunch = this.SelectedIDs.toString();
     }
     console.log("true" + this.SelectedIDs);
     console.log("false" + this.filteredArray);
@@ -221,13 +224,13 @@ deleteSelected(form: NgForm){
     if(myData === "makers")
     {
   
-      this.SelectedIDs.forEach( (obj) => {
-        this._tableservice.deletesensitive(obj).subscribe((res) => {
+      
+        this._tableservice.deletesensitive(this.xbunch).subscribe((res) => {
           this.refreshEmployeeList();
           this.resetForm(form);
           this.toastr.warning(res.message, 'Neutral Words');
         });
-      });
+     
     }
   
 }

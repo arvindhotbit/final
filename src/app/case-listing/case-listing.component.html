@@ -102,7 +102,7 @@
 
                                 </div>
                             </div>
-                        
+                
                             <div class="table-responsive" >
                                 <table class="table table-bordered table-condensed table-sm table-hover col-vs"
                                     id="test1table">
@@ -126,11 +126,27 @@
                                                         /></span> </th>
                                             <th><span><input type="text" [(ngModel)]="term7" class="form-control" placeholder="Amount"
                                                          /></span> </th>
-                                            <th class="d-flex">
-                                                <div><input type="datetime-local" class="form-control"
-                                                        placeholder="From"  [(ngModel)]="startdate"/></div>
-                                                <div><input type="datetime-local" [(ngModel)]="endate" class="form-control" placeholder="To"
-                                                        /></div>
+                                            <th><span>
+                                                        <input type="text"
+                                                        placeholder="Datepicker"
+                                                        class="form-control"
+                                                        bsDatepicker
+                                                        [bsConfig]="{ isAnimated: true }" [(ngModel)]="startDate" >
+                                                        <input type="text"
+                                                        placeholder="Datepicker"
+                                                        class="form-control"
+                                                        bsDatepicker
+                                                        [bsConfig]="{ isAnimated: true }" [(ngModel)]="endDate">
+                                                        </span>
+                                              
+                                          
+                                                    
+                                                    
+                                                        
+                                                   
+                                              
+                                                 
+                                                
                                             </th> 
 
 
@@ -140,13 +156,13 @@
                                     <tbody *ngIf="showdatapart?.length;else no_data_templ">
 
                                         <ng-container
-                                            *ngFor="let item of showdatapart |caselist:term1:term2:term3:term4:term5:term6:term7| paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
-                                            <tr>
+                                           >
+                                            <tr  *ngFor="let item of showdatapart | customRangeFilter:startDate:endDate| caselist:term1:term2:term3:term4:term5:term6:term7| paginate: { itemsPerPage: pageSize, currentPage: p }   let i=index">
                                                 <td style="text-align: center;"><input type="checkbox"
                                                         [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}"
                                                         name="deletecheck" value="{{item.REF_KEY}}"
                                                         (change)="selectID(item.REF_KEY,item.isSelected)"></td>
-                                                <td>{{i+1}}</td>
+                                                <td>{{ (p - 1) * pageSize + i + 1 }}</td>
                                                 <td (click)="getId(item,myform.value)">{{item.ECM_CASE_ID}}</td>
                                                 <td>{{item.ORDERING_CUSTOMER_NAME}}</td>
                                                 <td>{{item.SNDR_INST_BIC}}</td>
@@ -154,7 +170,7 @@
                                                 <td *ngIf="oldmatchscorems">{{item.PAYSYS_ID}}</td>
                                                 <td *ngIf="oldpaysysidms">{{item.SRC_CHANNEL}}</td>
                                                 <td *ngIf="changetypems">{{item.TRANSFER_AMOUNT}}</td>
-                                                <td *ngIf="changetypems">{{item.ECM_CASE_CREATION_DATE | date :'short'}}</td>
+                                                <td *ngIf="changetypems">{{item.CREATION_DTTM | date: 'medium'}}</td>
                                             </tr>
                                         </ng-container>
 
@@ -168,6 +184,10 @@
                                     </ng-template>
 
                                 </table>
+
+
+
+
                             </div>
    
                             <div class="row">
@@ -193,6 +213,11 @@
 
                             </div>
                   
+
+
+
+
+
                             <form #myform="ngForm" id="addForm">
 
                                 <!-- {{myform.value|json}} -->
