@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable,Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
-import {Neutralscheme,Bicscheme,Interdefination,sanctioned,internalwatchlist,Highriskcountry,Zonevsglobal,sensitivescheme,pepscheme,Paymentscreenadk,matchscore,namescreen,casedetail,addzonescheme,departscheme,paysysscheme} from './tabular';
+import {Neutralscheme,Bicscheme,Interdefination,sanctioned,internalwatchlist,Highriskcountry,Zonevsglobal,sensitivescheme,pepscheme,Paymentscreenadk,matchscore,namescreen,casedetail,addzonescheme,departscheme,paysysscheme,usersscheme,adepartscheme,azonescheme,apayscheme,unassignitem,createrole} from './tabular';
 
 
 @Injectable({
@@ -28,23 +28,34 @@ export class TableDataService {
     selectzone : addzonescheme;
     selectdepartment :departscheme;
     selectpaysys:paysysscheme;
+    selectusers:usersscheme;
+    assigndepart:adepartscheme;
+    assignzone : azonescheme;
+    assignpay :apayscheme;
+    selectunassignitem:unassignitem;
+    Userzone:string;
+    selectroleslist:createrole
   constructor(private http : HttpClient) {
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.Userzone = localStorage.getItem('UserZone');
     console.log(this.UserId);
    }
  
   
 
-
-
+   getassignzonelist()
+   { return this.http.post<any>(`${environment.apiUrl}/get_assign_zone`,{"ROLE":this.myData,"USER_ID":this.UserId})};
+ 
+    getchangezonelist(obj:any)
+    { return this.http.post<any>(`${environment.apiUrl}/neutral_words`,obj)};
 
 // Neutral-words api call start*************************************
 // neutrallistpage():Observable<Neutralscheme[]>
 // { return  this.http.get<Neutralscheme[]>(`${environment.apiUrl}/neutral_words`)};
 neutrallistpage()
-{ return this.http.post<any>(`${environment.apiUrl}/neutral_words`,{"ROLE":this.myData})};
+{ return this.http.post<any>(`${environment.apiUrl}/neutral_words`,{"ROLE":this.myData,"USER_ZONE":this.Userzone})};
 
 neutrallistpagechk()
 { return this.http.post<any>(`${environment.apiUrl}/neutral_words`,{"ROLE":this.myData})};
@@ -70,6 +81,11 @@ neudeldisapproved(neuscheme:Neutralscheme)
 { return this.http.post<any>(`${environment.apiUrl}/check_neutral_words`,neuscheme)};
 
 
+paysysdeletepage(REF_KEY:string)
+{ return this.http.post<any>(`${environment.apiUrl}/delete_paysys`,{"ROLE":this.myData,"REF_KEY":REF_KEY,"USER_ID":this.UserId,"USER_NAME":this.UserName})};
+
+departdeletepage(REF_KEY:string)
+{ return this.http.post<any>(`${environment.apiUrl}/delete_department`,{"ROLE":this.myData,"REF_KEY":REF_KEY,"USER_ID":this.UserId,"USER_NAME":this.UserName})};
 // neutrallistdelete(REF_KEY:string)
 // {return this.http.delete(`${environment.apiUrl}/del_neutral_words` + `/${REF_KEY}`)};
 // Neutral-words api call end*************************************
@@ -87,11 +103,22 @@ paysyslistpage()
 { return this.http.post<any>(`${environment.apiUrl}/paysys_list`,{"ROLE":this.myData})};
 
 
+rolelistviewpage()
+{ return this.http.post<any>(`${environment.apiUrl}/roles_list`,{"ROLE":this.myData})};
+
+
+userslistpost(users:usersscheme)
+{ return this.http.post<any>(`${environment.apiUrl}/get_User_List`,{"ROLE":users})};
 
 paysyslistpost(paysys:paysysscheme)
 { return this.http.post<any>(`${environment.apiUrl}/add_paysys`,paysys)};
 
+roleslistpost(croles:createrole)
+{ return this.http.post<any>(`${environment.apiUrl}/create_roles`,croles)};
 
+
+paysyslistput(paysys:paysysscheme)
+{ return this.http.post<any>(`${environment.apiUrl}/update_paysys`,paysys)};
 // Neutral-words api call start*************************************
 // neutrallistpage():Observable<Neutralscheme[]>
 // { return  this.http.get<Neutralscheme[]>(`${environment.apiUrl}/neutral_words`)};
@@ -469,8 +496,10 @@ fetchcase(){
 
     postcaseids(cs:casedetail)
     { return this.http.post<any>(`${environment.apiUrl}/ps_information`,cs)};
+    
 
-
+    postuserids(user:usersscheme)
+    { return this.http.post<any>(`${environment.apiUrl}/get_assign_items`,user)};
 
 // postms(ms:matchscore)
 // { return this.http.post<any>(`${environment.apiUrl}/add_match_score_threshold`,ms)};
@@ -503,6 +532,15 @@ pepdisapproved(pep:pepscheme)
 { return this.http.post<any>(`${environment.apiUrl}/check_screen_pep`,pep)};
 
 
+assigndepartservice(adepart:adepartscheme)
+{ return this.http.post<any>(`${environment.apiUrl}/assign_department`,adepart)};
 
+assignzoneservice(azone:azonescheme)
+{ return this.http.post<any>(`${environment.apiUrl}/assign_zone`,azone)};
 
+assignpayservice(apay:apayscheme)
+{ return this.http.post<any>(`${environment.apiUrl}/assign_paysyeId`,apay)};
+
+unassignitemservice(unasitem:unassignitem)
+{ return this.http.post<any>(`${environment.apiUrl}/unassign_items`,unasitem)};
 }

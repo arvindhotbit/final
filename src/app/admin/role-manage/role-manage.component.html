@@ -11,7 +11,7 @@
               <div class="">
                 <div class="main-sparkline13-hd">
                   <div class="part">
-                    <h1>Add Zone <small>(Select Row To Update)</small></h1>
+                    <h1>Roles List<small>(Select Row To Update)</small></h1>
                   </div>
                   <div class="btn-group btn-group-sm">
                     <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
@@ -56,18 +56,21 @@
            <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
                 <thead class="table_header">
                   <tr>
-                    <th class="text-center"><input type="checkbox" class="disabled"
-                         /></th>
+                    <th class="text-center" ><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
                     <th>Sr.no</th>
                     <th *ngIf="zoneidcol"><span><input type="text" class="form-control" 
-                          placeholder="Zone Id"  [(ngModel)]="zone"  /></span></th>
+                          placeholder="PAYSYS_ID"  [(ngModel)]="zone"  /></span></th>
                     <th *ngIf="noisewordcol"><span><input type="text" class="form-control" 
-                          placeholder="Noise Word" [(ngModel)]="noise"/></span> </th>
+                          placeholder="CASE_TYPE_NS" [(ngModel)]="noise"/></span> </th>
+                          <th *ngIf="noisewordcol"><span><input type="text" class="form-control" 
+                            placeholder="CASE_TYPE_PS" [(ngModel)]="noise"/></span> </th>
                     <ng-container *ngIf="_isaccess">
                       <th *ngIf="oldzoneidcol"><span><input type="text" class="form-control" 
                             placeholder="Old Zone Id" [(ngModel)]="oldzone"/></span> </th>
                       <th *ngIf="oldnoisewordcol"><span><input type="text" class="form-control" 
-                            placeholder="Old Noise Word" [(ngModel)]="oldnoise"/></span> </th>
+                            placeholder="Old CASE_TYPE_NS" [(ngModel)]="oldnoise"/></span> </th>
+                            <th *ngIf="oldnoisewordcol"><span><input type="text" class="form-control" 
+                                placeholder="Old CASE_TYPE_PS" [(ngModel)]="oldnoise"/></span> </th>
                             <th *ngIf="changetypecol"><span><input type="text" class="form-control" 
                               placeholder="Change Type" [(ngModel)]="changetype"/></span> </th>
                       <th colspan="2" style="text-align: center;">ACTION</th>
@@ -80,26 +83,28 @@
                     *ngFor="let item of showdata |neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index " >
                     <tr 
                       [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
-                      (click)="onEdit(item,'Update')" [class.selected]="item === selectedNeutralRow">
-                      <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
-                          id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"
-                          (change)="selectID(item,$event)"></td>
-                      <td *ngIf="nsn">{{i+1}}</td>
+                      (click)="onEdit(item,'Update')" [class.selected]="item === selectedpaysysRow">
+                      <td style="text-align: center;"><input type="checkbox"
+                        [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+                          value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
+                      <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
 
-                      <td *ngIf="zoneidcol">{{item.ZONE_ID}}</td>
-                      <td *ngIf="noisewordcol">{{item.COUNTRY_NAME}}</td>
+                      <td *ngIf="zoneidcol">{{item.ROLE_NAME}}</td>
+                      <td *ngIf="noisewordcol">{{item.ROLE_AUTHORITY}}</td>
+                      <td *ngIf="noisewordcol">{{item.CASE_TYPE_PS}}</td>
                       
                       <ng-container *ngIf="_isaccess">
                         
-                        <td *ngIf="oldzoneidcol">{{item.OLD_ZONE_ID}}</td>
-                        <td *ngIf="oldnoisewordcol">{{item.OLD_COUNTRY_NAME}}</td>
+                        <td *ngIf="oldzoneidcol">{{item.OLD_PAYSYS_ID}}</td>
+                        <td *ngIf="oldnoisewordcol">{{item.OLD_CASE_TYPE_NS}}</td>
+                        <td *ngIf="oldnoisewordcol">{{item.OLD_CASE_TYPE_PS}}</td>
                         <td *ngIf="changetypecol" style="text-align: center;">{{item.CHANGE_TYPE}}</td>
                         <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
                             (click)="ChkdeleteSelected(myform,item)"
-                            [class.selected]="item === selectedNeutralRow">Approve</button></td>
+                            [class.selected]="item === selectedpaysysRow">Approve</button></td>
                         <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
                             (click)="ChkNotdeleteSelected(myform,item)"
-                            [class.selected]="item === selectedNeutralRow">Reject</button></td>
+                            [class.selected]="item === selectedpaysysRow">Reject</button></td>
                       </ng-container>
                     </tr>
                   </ng-container>
@@ -133,24 +138,64 @@
                 </div>
               </div>
               <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+                {{myform.value|json}}
                 <div class="panel-body">
                   <h4>Add Record</h4>
                 </div>
                 <div class="row">
                   <div class="col-md-4">
                     <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
-                      [(ngModel)]="_tableservice.selectzone.REF_KEY">
+                      [(ngModel)]="paysyssendrefkey">
                     <div class="form-group">
-                      <label>Zone Id</label>
-                      <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel"
-                        [(ngModel)]="_tableservice.selectzone.ZONE_ID" required>
+                      <label>ROLE_NAME</label>
+                      <input type="text" class="form-control" name="ROLE_NAME" #ROLE_NAME="ngModel"
+                        [(ngModel)]="_tableservice.selectroleslist.ROLE_NAME" required>
                     </div>
-                    <div class="form-group">
-                      <label>Noise Word</label>
-                      <input type="text" class="form-control" name="COUNTRY_NAME" #COUNTRY_NAME="ngModel"
-                        [(ngModel)]="_tableservice.selectzone.COUNTRY_NAME" required>
-                    </div>
+               
+                 
                   </div>
+
+
+                  <div class="form-group" ngModelGroup="ROLE_AUTHORITY">
+                      <label for="">Neutral Words</label>
+                      <div class="form-group" ngModelGroup="neutral_words">
+                      <select [(ngModel)]="_viewneutral" name="view">
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                      </select>
+                      <select [(ngModel)]="_editneutral" name="edit">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                    <select [(ngModel)]="_updateneutral" name="update">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                    <select [(ngModel)]="_deleteneutral" name="delete">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                  </div>
+                  <div class="form-group" ngModelGroup="bic">
+                    <select [(ngModel)]="_viewneutral" name="view">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                    <select [(ngModel)]="_editneutral" name="edit">
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                  </select>
+                  <select [(ngModel)]="_updateneutral" name="update">
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                  </select>
+                  <select [(ngModel)]="_deleteneutral" name="delete">
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                  </select>
+                </div>
+                  </div>
+                  <input type="hidden" [(ngModel)]="_accessPages" name="pages" [value]="_accessPages" />
                   <div style="display: none;">
                     <div class="col-md-4">
                       <div class="form-group">
@@ -164,11 +209,7 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <div class="form-group">
-                        <label>User Zone</label>
-                        <input type="text" class="form-control" name="USER_ZONE" value="QA"
-                          [(ngModel)]="_tableservice.selectzone.USER_ZONE">
-                      </div>
+                   
                       <div class="form-group">
                         <label>Role</label>
                         <input type="text" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
@@ -176,12 +217,10 @@
                     </div>
                     <div class="col-md-4">
                       <div></div>
-                      <input type="text" class="form-control" name="HIST_ID" value=""
-                        [(ngModel)]="_tableservice.selectzone.HIST_ID">
+                   
                       <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"
                         [(ngModel)]="apstatus">
-                      <input type="text" class="form-control" name="CHANGE_TYPE" value=""
-                        [(ngModel)]="_tableservice.selectzone.CHANGE_TYPE">
+                   
                     </div>
                   </div>
                 </div>

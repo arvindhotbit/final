@@ -61,12 +61,23 @@ export class PaymentScreeningForAdkComponent implements OnInit {
   oldtagacol:boolean=false;
   oldtagcol:boolean=false;
   changetypecol:boolean=true;
-  mtx:string;fieldlabel:string;scan:string;tag:string;taga:string;oldmtx:string;oldfldl:string;scanold:string;tagold:string;tagaold:string;ct:string;
+  xbunch: string;
+  ybunch: string;
+  formact: string = "Add Record";
+  masterSelected: boolean;
+  checkedList: any;
+  histmasterSelected: boolean;
+  histcheckedList: any;
+  mtx:string;fieldlabelterm:string;scan:string;tag:string;taga:string;oldmtx:string;oldfldl:string;scanold:string;tagold:string;tagaold:string;changetype:string;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
+    this.masterSelected = false;
+    this.histmasterSelected = false;
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.getCheckedItemList();
+    this.getCheckedItemhistList();
      }
 
   ngOnInit(): void {
@@ -76,6 +87,61 @@ export class PaymentScreeningForAdkComponent implements OnInit {
    
   }
 
+
+
+  checkUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.masterSelected;
+      console.log("master", this.masterSelected);
+    }
+    this.getCheckedItemList();
+  }
+  isAllSelected() {
+    this.masterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemList();
+  }
+
+  getCheckedItemList() {
+    this.checkedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.checkedList.push(this.showdatapart[i].REF_KEY);
+    }
+
+    this.xbunch = this.checkedList.toString();
+    this.isdelete_button = false;
+  }
+
+
+
+
+
+  histcheckUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.histmasterSelected;
+      console.log(this.histmasterSelected);
+    }
+    this.getCheckedItemhistList();
+  }
+  histisAllSelected() {
+    this.histmasterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemhistList();
+  }
+
+  getCheckedItemhistList() {
+    this.histcheckedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.histcheckedList.push(this.showdatapart[i].HIST_ID);
+    }
+ 
+    this.ybunch = this.histcheckedList.toString();
+  
+  }
 
 
  resetForm(form?: NgForm) {
@@ -150,42 +216,6 @@ export class PaymentScreeningForAdkComponent implements OnInit {
   }
 
   
-  selectAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart.result[i].isSelected = this.selectedAllclone;
-      console.log(this.showdatapart.result[i].isSelected)
-    }
-  }
-
-
-  
-
- 
-  
-
-
-
-   selectID(id, isSelected){  
-    
-    if(isSelected === true)
-  {
-    this.SelectedIDs.push(id);
-    this.isdelete_button = false;
-  }
-
-    else
-    {
-      this.SelectedIDs.pop(id);
-      this.isdelete_button = true;
-    }
-
- 
-
-  }
-  
-  
- 
-
 
 
   submitform(form: NgForm){
@@ -226,25 +256,17 @@ onEdit(psadk: Paymentscreenadk,bt:string) {
 }
 
 
+deleteSelected(form: NgForm) {
+  this.delete_toggle = !this.delete_toggle; 
+    this._tableservice.deletepsadk(this.xbunch).subscribe((res) => {
+      this.refreshEmployeeList();
+      this.resetForm(form);
+      this.toastr.warning(res.message, 'Payment Screen ADK');
+    });
 
-
-deleteSelected(form: NgForm){
-  this.delete_toggle = !this.delete_toggle;
-  var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-  
-      this.SelectedIDs.forEach( (obj) => {
-        this._tableservice.deletepsadk(obj).subscribe((res) => {
-          this.refreshEmployeeList();
-          this.resetForm(form);
-          this.toastr.warning(res.message, 'Neutral Words');
-        });
-      });
-    }
-  
 }
+
+
 changetext(status:string,form:NgForm)
 {
   this.apstatus = status;
@@ -261,35 +283,14 @@ changetextr(status:string,form:NgForm)
   this.UserName = localStorage.getItem('Username');
   console.log(this.apstatus);
 }
-ChkdeleteSelected(form:NgForm,psadk:Paymentscreenadk)
-{
 
-    this._tableservice.selectpsadk = psadk;
-    this.selectedpsadkRow = psadk;
-    console.log(form.value,psadk);
+ChkdeleteSelected(form: NgForm) {
 
-      this._tableservice.psadkapproved({...form.value,...psadk}).subscribe((res) => {
-         this.refreshEmployeeList();
-        this.toastr.success(res.message, 'Approved');
-     
-      });
-  
+  this._tableservice.psadkapproved(form.value).subscribe((res) => {
+    this.refreshEmployeeList();
+    this.toastr.success(res.message, 'Approved');
 
-
-}
-ChkNotdeleteSelected(form:NgForm,psadk:Paymentscreenadk)
-{
-
-
-  this._tableservice.selectpsadk = psadk;
-  this.selectedpsadkRow = psadk;
-  console.log(form.value,psadk);
-    this._tableservice.psadkdisapproved({...form.value,...psadk}).subscribe((res) => {
-     this.refreshEmployeeList();
-
-      this.toastr.info(res.message, 'Disapproved');
-    });
-
+  });
 }
 
 }

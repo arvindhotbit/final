@@ -53,6 +53,7 @@ this._authservice.loginuser(formdata.value).subscribe(
 localStorage.setItem('token',res.token);
 localStorage.setItem('Id',res.id);
 localStorage.setItem('Role',res.role);
+localStorage.setItem('UserZone',res.user_zone);
 this.message = res.message,
 this.Username = res.result[0].cn +" "+ res.result[0].sn,
 localStorage.setItem('Username',this.Username);

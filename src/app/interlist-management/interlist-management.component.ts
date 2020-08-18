@@ -2,7 +2,7 @@ import { Component,Input, OnInit } from '@angular/core';
 import {AuthserviceService} from '../auth/authservice.service';
 import {TableDataService} from '../shared/table-data.service';
 import {Auth } from '../auth/auth';
-
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-interlist-management',
@@ -16,7 +16,7 @@ export class InterlistManagementComponent implements OnInit {
    logotitle = "Trustling - Real Time Screening";
    features = [];
 
-  constructor(public _authservice:AuthserviceService, public _tableservice:TableDataService) {
+  constructor(public _authservice:AuthserviceService, public _tableservice:TableDataService,private _location: Location) {
   
 
    }
@@ -25,6 +25,11 @@ export class InterlistManagementComponent implements OnInit {
    this.myData = localStorage.getItem('Role');
      this.check();
   }
+  backClicked() {
+    this._location.back();
+    }
+    
+    
   check()
   {
     if(this.myData === "checkers")

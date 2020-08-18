@@ -45,6 +45,13 @@
 
          </ul>
        </div>
+       <ng-container *ngIf="_isaccess">
+        <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
+             (click)="ChkdeleteSelected(myform)"><i class="fa fa
+             -check-square-o"></i> Approve</button>
+         <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
+             (click)="ChkdeleteSelected(myform)"><i class="fa fa-times"></i> Reject</button>
+       </ng-container>
        <ng-container *ngIf="!_isaccess">
        <button (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
        <button  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
@@ -68,31 +75,48 @@
    
    
    <tr>
-        <th class="text-center"><input type="checkbox" class="disabled"/></th>
+    <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
+    <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
         <th>Sr.no</th>
-        <th ><span><input type="text" class="form-control"    placeholder="ZONE ID"/></span></th>
-        <th ><span><input type="text" class="form-control"   placeholder="ENTRY_TYPE" /></span> </th>
-        <th ><span><input type="text" class="form-control"  placeholder="SANCTIONED_CITY" /></span> </th>
+        <th ><span><input type="text" class="form-control"     placeholder="ZONE ID" [(ngModel)]="a"/></span></th>
+        <th ><span><input type="text" class="form-control"    placeholder="ENTRY_TYPE" [(ngModel)]="b"/></span> </th>
+        <th ><span><input type="text" class="form-control"   placeholder="SANCTIONED_CITY" [(ngModel)]="c"/></span> </th>
  
 
         <ng-container *ngIf="_isaccess">
-          <th ><span><input type="text" class="form-control"    placeholder="OLD_ZONE ID"/></span></th>
-        <th ><span><input type="text" class="form-control"   placeholder="OLD_ENTRY_TYPE" /></span> </th>
-        <th ><span><input type="text" class="form-control"  placeholder="OLD_SANCTIONED_CITY" /></span> </th>
+          <th ><span><input type="text" class="form-control"     placeholder="OLD_ZONE ID" [(ngModel)]="d"/></span></th>
+        <th ><span><input type="text" class="form-control"    placeholder="OLD_ENTRY_TYPE" [(ngModel)]="e"/></span> </th>
+        <th ><span><input type="text" class="form-control"   placeholder="OLD_SANCTIONED_CITY" [(ngModel)]="f"/></span> </th>
    
-          <th ><span><input type="text" class="form-control"  placeholder="CHANGE_TYPE" /></span> </th>
-          <th colspan="2" style="text-align: center;">ACTION</th>
+        <th>
+          <span>
+            
+              <select name="changetype" class="form-control"  [(ngModel)]="changetype">
+                <option value="INSERT">INSERT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="UPDATE">UPDATE</option>
+              </select>
+            </span>
+           </th>
+    
         </ng-container>
        
-        <th *ngIf="ref_keys">REF KEY</th>
+        <th *ngIf="ref_keys" >REF KEY</th>
       
       </tr> 
     </thead>
     <tbody  *ngIf="showdatapart?.length;else no_data_templ">
       
-      <ng-container  *ngFor="let item of showdatapart | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
+      <ng-container  *ngFor="let item of showdatapart  |sanctionfilter:a:b:c:d:e:f:changetype | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
         <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"   (click)="onEdit(item,'Update')" [class.selected]="item === selectedsanctionRow">
-          <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"  id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}" (change)="selectID(item.REF_KEY,item.isSelected)"></td>
+          <td *ngIf="!_isaccess" style="text-align: center;">
+            <input type="checkbox"
+            [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+              value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
+
+          <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+              [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
+              value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
           <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>         
           <td *ngIf="zoneid">{{item.ZONE_ID}}</td>
           <td>{{item.ENTRY_TYPE}}</td>
@@ -107,8 +131,7 @@
             <td>{{item.OLD_ENTRY_TYPE}}</td>
             <td >{{item.OLD_SANCTIONED_CITY}}</td>
             <td >{{item.CHANGE_TYPE}}</td>
-            <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"  (click)="ChkdeleteSelected(myform,item)" [class.selected]="item === selectedsanctionRow">Approve</button></td>
-            <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)" (click)="ChkNotdeleteSelected(myform,item)" [class.selected]="item === selectedsanctionRow">Reject</button></td> 
+ 
             </ng-container>
        
         </tr>
@@ -204,13 +227,13 @@
        </div>
        <div class="col-md-4">
          <div></div>
-           <input type="text" class="form-control" name="HIST_ID" value=""  [(ngModel)]="_tableservice.selectedsanction.HIST_ID">
+         <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}" [(ngModel)]="ybunch">
      
 
            <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
        
      
-           <input type="text" class="form-control" name="CHANGE_TYPE" value=""  [(ngModel)]="_tableservice.selectedsanction.CHANGE_TYPE">
+           <input type="text" class="form-control" name="CHANGE_TYPE" [value]="changetype"  [(ngModel)]="changetype">
 
           
          

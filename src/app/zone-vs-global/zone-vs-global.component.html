@@ -53,6 +53,13 @@
           <button (click)="addform()" class="btn btn-primary btn-sm" ><i class="fa fa-plus"></i> Add Form</button>
          <button class="btn btn-primary btn-sm" (click)="deleteSelected(zvgform)"  [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
          </ng-container>
+         <ng-container *ngIf="_isaccesszvg">
+          <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',zvgform)"
+               (click)="ChkdeleteSelected(zvgform)"><i class="fa fa
+               -check-square-o"></i> Approve</button>
+           <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',zvgform)"
+               (click)="ChkdeleteSelected(zvgform)"><i class="fa fa-times"></i> Reject</button>
+         </ng-container>
      </div>
    </div>
         </div>
@@ -62,8 +69,8 @@
          
               <thead class="table_header">
                <tr class="text-center">   
-                <th class="text-center"> 
-                   <input type="checkbox"></th>         
+                <th class="text-center"  *ngIf="!_isaccesszvg"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
+                <th class="text-center" *ngIf="_isaccesszvg"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>       
                   <th  *ngIf="SERIAL">Sr.no</th>
                   <th *ngIf="ZONEID"><input type="text" class="form-control" placeholder="ZONE ID"/></th>
                   <th *ngIf="PROGRAMKEYWORD"><input type="text" class="form-control" [(ngModel)]="pkey" placeholder="PROGRAM KEYWORD"/></th>
@@ -73,14 +80,31 @@
                   <th *ngIf="_isaccesszvg"><input type="text" class="form-control" placeholder="Old ZONE ID"/></th>
                   <th  *ngIf="_isaccesszvg"><input type="text" class="form-control"  [(ngModel)]="oldpkey" placeholder="OLD PROGRAM KEYWORD"/></th>
                   <th  *ngIf="_isaccesszvg"><input type="text" class="form-control" [(ngModel)]="oldpkeyword" placeholder="OLD PROGRAM KEYWORD DESC"/></th>
-                  <th  *ngIf="_isaccesszvg" ><input type="text" class="form-control" [(ngModel)]="changetype" placeholder="CHANGE TYPE"/></th>
-                  <th  *ngIf="_isaccesszvg" colspan="2" class="text-center">ACTION</th>
+                  <th  *ngIf="_isaccesszvg" >
+                    <span>
+                          
+                      <select name="changetype" class="form-control"  [(ngModel)]="changetype">
+                        <option value="INSERT">INSERT</option>
+                        <option value="DELETE">DELETE</option>
+                        <option value="UPDATE">UPDATE</option>
+                      </select>
+                    </span>
+                  </th>
+                  <!-- <th  *ngIf="_isaccesszvg" colspan="2" class="text-center">ACTION</th> -->
                </tr>
               </thead>
               <tbody *ngIf="showzvg?.length;else no_data_templ">
                 <ng-container   *ngFor="let item of showzvg  |filter:pkey:pkeyw:oldpkey:oldpkeyword:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index "> 
                <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == updatemark)}"     (click)="onEdit(item)" [class.selected]="item === selectedZoneRow">
-                <td> <input type="checkbox" [(ngModel)]="item.isSelected"  id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}" (change)="selectID(item.REF_KEY,item.isSelected)"></td>
+                <td *ngIf="!_isaccesszvg" style="text-align: center;">
+                  <input type="checkbox"
+                  [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+                    value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
+
+                <td *ngIf="_isaccesszvg" style="text-align: center;"><input type="checkbox"
+                    [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
+                    value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
+
                  <td *ngIf="SERIAL">{{ (p - 1) * pageSize + i + 1 }}</td>
                  <td *ngIf="ZONEID">{{item.ZONE_ID}}</td>
                  <td *ngIf="PROGRAMKEYWORD">{{item.PROGRAM_KEYWORD}}</td>
@@ -95,8 +119,8 @@
                   <td>{{item.OLD_PROGRAM_KEYWORD}}</td>
                   <td>{{item.OLD_PROGRAM_KEYWORD_DESC}}</td>
                   <td>{{item.CHANGE_TYPE}}</td>
-                  <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',zvgform)"  (click)="ChkdeleteSelected(zvgform,item)" [class.selected]="item === selectedZoneRow">Approve</button></td>
-                  <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',zvgform)" (click)="ChkNotdeleteSelected(zvgform,item)" [class.selected]="item === selectedZoneRow">Reject</button></td> 
+                  <!-- <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',zvgform)"  (click)="ChkdeleteSelected(zvgform,item)" [class.selected]="item === selectedZoneRow">Approve</button></td>
+                  <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',zvgform)" (click)="ChkNotdeleteSelected(zvgform,item)" [class.selected]="item === selectedZoneRow">Reject</button></td>  -->
                   </ng-container>
                 
                </tr>
@@ -181,7 +205,10 @@
         <input type="text" class="form-control" name="ROLE" [value]="myData"  [(ngModel)]="myData">
         <input type="text" class="form-control" name="USER_NAME"  [value]="UserName"  [(ngModel)]="UserName">
         <input type="text" class="form-control" name="USER_ID"  [value]="UserId"  [(ngModel)]="UserId">
+        <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}" [(ngModel)]="ybunch">
         <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
+        <input type="text" class="form-control" name="CHANGE_TYPE" value="{{changetype}}"
+        [(ngModel)]="changetype">
           </div>
         
               </div>

@@ -54,6 +54,13 @@
 
          </ul>
        </div>
+       <ng-container *ngIf="_isaccess">
+        <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
+             (click)="ChkdeleteSelected(myform)"><i class="fa fa
+             -check-square-o"></i> Approve</button>
+         <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
+             (click)="ChkdeleteSelected(myform)"><i class="fa fa-times"></i> Reject</button>
+       </ng-container>
        <ng-container *ngIf="!_isaccess">
        <button (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
        <button  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
@@ -73,7 +80,8 @@
  <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
    <thead class="table_header">
    <tr>
-     <th class="text-center"><input type="checkbox" class="disabled" [(ngModel)]="selectedAllclone" (change)="selectAll()"/></th>
+    <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
+    <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
      <th *ngIf="nsn">Sr.no</th>
      <th *ngIf="zoneid"><span><input type="text" class="form-control"  [(ngModel)]="zonefilters"  placeholder="ZONE ID"/></span></th>
      <th *ngIf="SENSITIVEWORDS"><span><input type="text" class="form-control"  [(ngModel)]="sensitivefilters"  placeholder="SENSITIVE WORDS" /></span> </th>
@@ -81,8 +89,16 @@
      <ng-container *ngIf="_isaccess">
        <th ><span><input type="text" class="form-control"  placeholder="OLD ZONE ID" /></span> </th>
        <th ><span><input type="text" class="form-control"  placeholder="OLD SENSITIVE WORD" /></span> </th>
-       <th>CHANGE_TYPE</th>
-       <th colspan="2" style="text-align: center;">ACTION</th>
+          <th>
+          <span>
+            
+              <select name="changetype" class="form-control"  [(ngModel)]="sensitive_change_type">
+                <option value="INSERT">INSERT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="UPDATE">UPDATE</option>
+              </select>
+            </span>
+           </th>
      </ng-container>
     
      <th *ngIf="ref_keys">REF KEY</th>
@@ -91,9 +107,16 @@
  </thead>
  <tbody  *ngIf="showdatapart?.length;else no_data_templ">
    
-   <ng-container  *ngFor="let item of showdatapart |sensitivefilter:zonefilters:sensitivefilters| paginate: { itemsPerPage: pageSize, currentPage: p } let i=index" >
+   <ng-container  *ngFor="let item of showdatapart |sensitivefilter:zonefilters:sensitivefilters:sensitive_change_type| paginate: { itemsPerPage: pageSize, currentPage: p } let i=index" >
      <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"   (click)="onEdit(item,'Update')" [class.selected]="item === selectedsensitiveRow">
-       <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"  id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}" (change)="selectID(item.REF_KEY,item.isSelected)"></td>
+      <td *ngIf="!_isaccess" style="text-align: center;">
+        <input type="checkbox"
+        [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+          value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
+
+      <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+          [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
+          value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
        <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>         
        <td *ngIf="zoneid">{{item.ZONE_ID}}</td>
        <td *ngIf="SENSITIVEWORDS">{{item.SENSITIVE_WORDS}}</td>
@@ -108,8 +131,7 @@
          <td>{{item.OLD_ZONE_ID}}</td>
          <td *ngIf="SENSITIVE_WORDS">{{item.OLD_SENSITIVE_WORDS}}</td>
          <td *ngIf="zoneid" style="text-align: center;">{{item.CHANGE_TYPE}}</td>
-         <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"  (click)="ChkdeleteSelected(myform,item)" [class.selected]="item === selectedsensitiveRow">Approve</button></td>
-         <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)" (click)="ChkNotdeleteSelected(myform,item)" [class.selected]="item === selectedsensitiveRow">Reject</button></td> 
+ 
          </ng-container>
     
      </tr>
@@ -192,7 +214,8 @@
        </div>
        <div class="col-md-4">
          <div></div>
-           <input type="text" class="form-control" name="HIST_ID" value=""  [(ngModel)]="_tableservice.selectsensitive.HIST_ID">
+         <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}"
+         [(ngModel)]="ybunch">
      
 
            <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">

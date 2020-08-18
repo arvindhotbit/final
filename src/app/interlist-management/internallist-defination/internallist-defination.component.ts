@@ -55,11 +55,22 @@ export class InternallistDefinationComponent implements OnInit {
   isdelete_button:boolean = true;
   tbl_header:any = [];
   userzone :string;
+  xbunch: string;
+  ybunch: string;
+  formact: string = "Add Record";
+  masterSelected: boolean;
+  checkedList: any;
+  histmasterSelected: boolean;
+  histcheckedList: any;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
+    this.masterSelected = false;
+    this.histmasterSelected = false;
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.getCheckedItemList();
+    this.getCheckedItemhistList();
      }
 
   ngOnInit(): void {
@@ -69,6 +80,62 @@ export class InternallistDefinationComponent implements OnInit {
    
   }
 
+
+  checkUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.masterSelected;
+      console.log("master", this.masterSelected);
+    }
+    this.getCheckedItemList();
+  }
+  isAllSelected() {
+    this.masterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemList();
+  }
+
+  getCheckedItemList() {
+    this.checkedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.checkedList.push(this.showdatapart[i].REF_KEY);
+    }
+
+    this.xbunch = this.checkedList.toString();
+    this.isdelete_button = false;
+  }
+
+
+
+
+
+  histcheckUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.histmasterSelected;
+      console.log(this.histmasterSelected);
+    }
+    this.getCheckedItemhistList();
+  }
+  histisAllSelected() {
+    this.histmasterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemhistList();
+   
+  }
+
+  getCheckedItemhistList() {
+    this.histcheckedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.histcheckedList.push(this.showdatapart[i].HIST_ID);
+    }
+ 
+    this.ybunch = this.histcheckedList.toString();
+    console.log(this.ybunch);
+  
+  }
 
   backClicked() {
     this._location.back();
@@ -115,17 +182,7 @@ export class InternallistDefinationComponent implements OnInit {
     $("#addForm").toggle();
   }
 
-  
-  selectAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart.result[i].isSelected = this.selectedAllclone;
-      console.log(this.showdatapart.result[i].isSelected)
-    }
-  }
-
-
-  
-
+ 
  
   
 
@@ -151,25 +208,6 @@ export class InternallistDefinationComponent implements OnInit {
    }
   }
 
-   selectID(id, isSelected){  
-    
-    if(isSelected === true)
-  {
-    this.SelectedIDs.push(id);
-    this.isdelete_button = false;
-  }
-
-    else
-    {
-      this.SelectedIDs.pop(id);
-      this.isdelete_button = true;
-    }
-    console.log("true" + this.SelectedIDs);
-    console.log("false" + this.filteredArray);
- 
-
-  }
-  
   
  
 
@@ -215,22 +253,16 @@ onEdit(interdef: Interdefination,bt:string) {
 
 
 
-deleteSelected(form: NgForm){
-  this.delete_toggle = !this.delete_toggle;
-  var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-  
-      this.SelectedIDs.forEach( (obj) => {
-        this._tableservice.deleteinterdef(obj).subscribe((res) => {
-          this.refreshEmployeeList();
-          this.resetForm(form);
-          this.toastr.warning(res.message, 'Neutral Words');
-        });
-      });
-    }
-  
+
+
+deleteSelected(form: NgForm) {
+  this.delete_toggle = !this.delete_toggle; 
+    this._tableservice.deleteinterdef(this.xbunch).subscribe((res) => {
+      this.refreshEmployeeList();
+      this.resetForm(form);
+      this.toastr.warning(res.message, 'Internallist Defination');
+    });
+
 }
 changetext(status:string,form:NgForm)
 {
@@ -248,35 +280,14 @@ changetextr(status:string,form:NgForm)
   this.UserName = localStorage.getItem('Username');
   console.log(this.apstatus);
 }
-ChkdeleteSelected(form:NgForm,interdef:Interdefination)
-{
-
-    this._tableservice.selectedinterdef = interdef;
-    this.selectedinternalistRow = interdef;
-    console.log(form.value,interdef);
-
-      this._tableservice.interdefapproved({...form.value,...interdef}).subscribe((res) => {
-         this.refreshEmployeeList();
-        this.toastr.success(res.message, 'Approved');
-     
-      });
-  
 
 
+ChkdeleteSelected(form: NgForm) {
+
+  this._tableservice.interdefapproved(form.value).subscribe((res) => {
+    this.refreshEmployeeList();
+    this.toastr.success(res.message, 'Approved');
+
+  });
 }
-ChkNotdeleteSelected(form:NgForm,interdef:Interdefination)
-{
-
-
-  this._tableservice.selectedinterdef = interdef;
-  this.selectedinternalistRow = interdef;
-  console.log(form.value,interdef);
-    this._tableservice.interdefdisapproved({...form.value,...interdef}).subscribe((res) => {
-     this.refreshEmployeeList();
-
-      this.toastr.info(res.message, 'Disapproved');
-    });
-
-}
-
 }

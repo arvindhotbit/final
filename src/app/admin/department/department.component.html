@@ -56,8 +56,7 @@
            <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
                 <thead class="table_header">
                   <tr>
-                    <th class="text-center"><input type="checkbox" class="disabled"
-                         /></th>
+                    <th class="text-center" ><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
                     <th>Sr.no</th>
                     <th *ngIf="zoneidcol"><span><input type="text" class="form-control" 
                           placeholder="Zone Id"  [(ngModel)]="zone"  /></span></th>
@@ -81,9 +80,9 @@
                     <tr 
                       [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
                       (click)="onEdit(item,'Update')" [class.selected]="item === selectdepartmenttralRow">
-                      <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
-                          id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"
-                          (change)="selectID(item,$event)"></td>
+                      <td style="text-align: center;"><input type="checkbox"
+                        [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+                          value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
                       <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
 
                       <td *ngIf="zoneidcol">{{item.DEPARTMENT_ID}}</td>

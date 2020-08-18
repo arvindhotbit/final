@@ -5,13 +5,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class PsadkPipe implements PipeTransform {
 
-  transform(items: any[], MTXXX_TYPE: string, FIELD_LABEL: string, SCAN : string,TAG_A: string, TAG: string, OLD_MTXXX_TYPE: string, OLD_FIELD_LABEL: string, OLD_SCAN : string,OLD_TAG_A: string, OLD_TAG: string,CHANGE_TYPE:string  ){
+  transform(items: any[], MTXXX_TYPE: string, fieldlabelterm: string, SCAN : string,TAG_A: string, TAG: string, OLD_MTXXX_TYPE: string, OLD_FIELD_LABEL: string, OLD_SCAN : string,OLD_TAG_A: string, OLD_TAG: string,CHANGE_TYPE:string  ){
     if (items && items.length){
         return items.filter(item =>{
             if (MTXXX_TYPE && item.MTXXX_TYPE.toLowerCase().indexOf(MTXXX_TYPE.toLowerCase()) === -1){
                 return false;
             }
-            if (FIELD_LABEL && item.FIELD_LABEL.toLowerCase().indexOf(FIELD_LABEL.toLowerCase()) === -1){
+            if (fieldlabelterm && item.FIELD_LABEL.toLowerCase().indexOf(fieldlabelterm.toLowerCase()) === -1){
             
               return false;
           

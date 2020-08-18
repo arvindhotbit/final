@@ -102,52 +102,48 @@
 
                                 </div>
                             </div>
-                
-                            <div class="table-responsive" >
+
+                            <div class="table-responsive">
                                 <table class="table table-bordered table-condensed table-sm table-hover col-vs"
                                     id="test1table">
                                     <thead class="table_header">
                                         <tr>
                                             <th class="text-center"><input type="checkbox" class="disabled" /></th>
                                             <th>Sr.no</th>
-                                            <th><span><input type="text"  [(ngModel)]="term1" class="form-control" placeholder="Case ID"
-                                                        /></span></th>
-                                           <th><span><input type="text" [(ngModel)]="term2" class="form-control"
-                                                        placeholder="Customer Name"  /></span>
+                                            <th><span><input type="text" [(ngModel)]="term1" class="form-control"
+                                                        placeholder="Case ID" /></span></th>
+                                            <th><span><input type="text" [(ngModel)]="term2" class="form-control"
+                                                        placeholder="Customer Name" /></span>
                                             </th>
-                                            <th><span><input type="text" [(ngModel)]="term3" class="form-control" placeholder="Sender Bic"
-                                                         /></span> </th>
+                                            <th><span><input type="text" [(ngModel)]="term3" class="form-control"
+                                                        placeholder="Sender Bic" /></span> </th>
 
-                                            <th><span><input type="text" [(ngModel)]="term4" class="form-control" placeholder="Receiver Bic"
-                                                         /></span></th>
-                                            <th><span><input type="text" [(ngModel)]="term5" class="form-control" placeholder="Paysys ID"
-                                                        /></span> </th>
-                                            <th><span><input type="text" [(ngModel)]="term6" class="form-control" placeholder="Channel"
-                                                        /></span> </th>
-                                            <th><span><input type="text" [(ngModel)]="term7" class="form-control" placeholder="Amount"
-                                                         /></span> </th>
+                                            <th><span><input type="text" [(ngModel)]="term4" class="form-control"
+                                                        placeholder="Receiver Bic" /></span></th>
+                                            <th><span><input type="text" [(ngModel)]="term5" class="form-control"
+                                                        placeholder="Paysys ID" /></span> </th>
+                                            <th><span><input type="text" [(ngModel)]="term6" class="form-control"
+                                                        placeholder="Channel" /></span> </th>
+                                            <th><span><input type="text" [(ngModel)]="term7" class="form-control"
+                                                        placeholder="Amount" /></span> </th>
                                             <th><span>
-                                                        <input type="text"
-                                                        placeholder="Datepicker"
-                                                        class="form-control"
-                                                        bsDatepicker
-                                                        [bsConfig]="{ isAnimated: true }" [(ngModel)]="startDate" >
-                                                        <input type="text"
-                                                        placeholder="Datepicker"
-                                                        class="form-control"
-                                                        bsDatepicker
-                                                        [bsConfig]="{ isAnimated: true }" [(ngModel)]="endDate">
-                                                        </span>
-                                              
-                                          
-                                                    
-                                                    
-                                                        
-                                                   
-                                              
-                                                 
-                                                
-                                            </th> 
+                                                    <input type="text" placeholder="Datepicker" class="form-control"
+                                                        bsDatepicker [bsConfig]="{ isAnimated: true }"
+                                                        [(ngModel)]="startDate">
+                                                    <input type="text" placeholder="Datepicker" class="form-control"
+                                                        bsDatepicker [bsConfig]="{ isAnimated: true }"
+                                                        [(ngModel)]="endDate">
+                                                </span>
+
+
+
+
+
+
+
+
+
+                                            </th>
 
 
 
@@ -155,9 +151,9 @@
                                     </thead>
                                     <tbody *ngIf="showdatapart?.length;else no_data_templ">
 
-                                        <ng-container
-                                           >
-                                            <tr  *ngFor="let item of showdatapart | customRangeFilter:startDate:endDate| caselist:term1:term2:term3:term4:term5:term6:term7| paginate: { itemsPerPage: pageSize, currentPage: p }   let i=index">
+                                        <ng-container>
+                                            <tr
+                                                *ngFor="let item of showdatapart | customRangeFilter:startDate:endDate| caselist:term1:term2:term3:term4:term5:term6:term7| paginate: { itemsPerPage: pageSize, currentPage: p }   let i=index">
                                                 <td style="text-align: center;"><input type="checkbox"
                                                         [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}"
                                                         name="deletecheck" value="{{item.REF_KEY}}"
@@ -189,7 +185,7 @@
 
 
                             </div>
-   
+
                             <div class="row">
                                 <div class="col-12">
 
@@ -212,7 +208,7 @@
                                 </div>
 
                             </div>
-                  
+
 
 
 
@@ -251,77 +247,76 @@
                                 </div>
 
                             </form>
-                  
-              <section class="seconddiv" style="display: none;">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-condensed table-sm table-hover col-vs"
-                        id="test1table" datatable>
-                        <thead class="table_header">
-                            <tr>
-                                <th class="text-center"><input type="checkbox" class="disabled" /></th>
-                           
-                                <th><span><input type="text" class="form-control"
-                                            placeholder="Approval Status" /></span></th>
-                                <th><span><input type="text" class="form-control"
-                                            placeholder="Customer Name" /></span>
-                                </th>
-                                <th><span><input type="text" class="form-control"
-                                            placeholder="Scanned Field"  /></span> </th>
 
-                                <th><span><input type="text" class="form-control"
-                                            placeholder="Scanned Value"  /></span></th>
-                                <th><span><input type="text" class="form-control"
-                                            placeholder="Matched Value"  /></span> </th>
-                                <th><span><input type="text" class="form-control"
-                                            placeholder="UID/Serial No."  /></span> </th>
-                                <th><span><input type="text" class="form-control"
-                                            placeholder="Watchlist Name"  /></span> </th>
-                                <th><span><input type="text" class="form-control" placeholder="Score"
-                                            /></span> </th>
-                                <th><span><input type="text" class="form-control"
-                                            placeholder="Maker Comment"  /></span> </th>
+                            <section class="seconddiv" style="display: none;">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-condensed table-sm table-hover col-vs"
+                                        id="test1table" datatable>
+                                        <thead class="table_header">
+                                            <tr>
+                                                <th class="text-center"><input type="checkbox" class="disabled" /></th>
 
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="Approval Status" /></span></th>
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="Customer Name" /></span>
+                                                </th>
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="Scanned Field" /></span> </th>
 
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="Scanned Value" /></span></th>
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="Matched Value" /></span> </th>
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="UID/Serial No." /></span> </th>
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="Watchlist Name" /></span> </th>
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="Score" /></span> </th>
+                                                <th><span><input type="text" class="form-control"
+                                                            placeholder="Maker Comment" /></span> </th>
 
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let cd of casedetail">
-                                <td style="text-align: center;"><input type="checkbox"
-                                  ></td>
-                      
-                                <td>{{cd.HIT_FLAG}}</td>
-                                <td>{{cd.MODE_TYPE}}</td>
-                                <td>{{cd.SCANNED_FIELD_NAME}}</td>
-                                <td>{{cd.SCANNED_FIELD_VALUE}}</td>
-                                <td>{{cd.MATCHED_FIELD_VALUE}}</td>
-                                <td>{{cd.UID_SERIAL_NO}}</td>
-                                <td>{{cd.WATCHLIST_NAME}}</td>
-                                <td>{{cd.MATCH_SCORE}}</td>
-                              
-                            </tr>
-                        </tbody>
-                    </table>
-                 
-                </div>
 
-                <div class="row">
-                    <div class="col-3">
-                        <div class="card">
-                            <div class="card-header">
-                              <h6 class="card-title">   Message Text</h6> 
-                            </div>
-                            <div class="card-body">
-                                <div *ngFor="let msg of caseinfo">
-                                    <P>{{msg.RAW_MESSAGE}}</P>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let cd of casedetail">
+                                                <td style="text-align: center;"><input type="checkbox"></td>
+
+                                                <td>{{cd.HIT_FLAG}}</td>
+                                                <td>{{cd.MODE_TYPE}}</td>
+                                                <td>{{cd.SCANNED_FIELD_NAME}}</td>
+                                                <td>{{cd.SCANNED_FIELD_VALUE}}</td>
+                                                <td>{{cd.MATCHED_FIELD_VALUE}}</td>
+                                                <td>{{cd.UID_SERIAL_NO}}</td>
+                                                <td>{{cd.WATCHLIST_NAME}}</td>
+                                                <td>{{cd.MATCH_SCORE}}</td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-              </section>
-                           
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="card-title"> Message Text</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div *ngFor="let msg of caseinfo">
+                                                    <P>{{msg.RAW_MESSAGE}}</P>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
                         </div>
                     </div>
                 </div>

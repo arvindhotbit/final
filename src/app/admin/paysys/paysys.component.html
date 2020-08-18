@@ -56,8 +56,7 @@
            <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
                 <thead class="table_header">
                   <tr>
-                    <th class="text-center"><input type="checkbox" class="disabled"
-                         /></th>
+                    <th class="text-center" ><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
                     <th>Sr.no</th>
                     <th *ngIf="zoneidcol"><span><input type="text" class="form-control" 
                           placeholder="PAYSYS_ID"  [(ngModel)]="zone"  /></span></th>
@@ -85,9 +84,9 @@
                     <tr 
                       [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
                       (click)="onEdit(item,'Update')" [class.selected]="item === selectedpaysysRow">
-                      <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
-                          id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"
-                          (change)="selectID(item,$event)"></td>
+                      <td style="text-align: center;"><input type="checkbox"
+                        [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+                          value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
                       <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
 
                       <td *ngIf="zoneidcol">{{item.PAYSYS_ID}}</td>
@@ -139,13 +138,14 @@
                 </div>
               </div>
               <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+                {{myform.value|json}}
                 <div class="panel-body">
                   <h4>Add Record</h4>
                 </div>
                 <div class="row">
                   <div class="col-md-4">
                     <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
-                      [(ngModel)]="_tableservice.selectpaysys.REF_KEY">
+                      [(ngModel)]="paysyssendrefkey">
                     <div class="form-group">
                       <label>PaySys Id</label>
                       <input type="text" class="form-control" name="PAYSYS_ID" #PAYSYS_ID="ngModel"

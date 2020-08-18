@@ -61,11 +61,29 @@ oldzoneidms: boolean = true;
 oldmatchscorems: boolean = true;
 oldpaysysidms: boolean = true;
 changetypems: boolean = true;
+xbunch: string;
+ybunch: string;
+formact: string = "Add Record";
+masterSelected: boolean;
+checkedList: any;
+histmasterSelected: boolean;
+histcheckedList: any;
+a:string;
+b:string;
+c:string;
+d:string;
+e:string;
+f:string;
+changetype:string;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
+    this.masterSelected = false;
+    this.histmasterSelected = false;
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.getCheckedItemList();
+    this.getCheckedItemhistList();
      }
 
   ngOnInit(): void {
@@ -75,7 +93,61 @@ changetypems: boolean = true;
    
   }
 
+  checkUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.masterSelected;
+      console.log("master", this.masterSelected);
+    }
+    this.getCheckedItemList();
+  }
+  isAllSelected() {
+    this.masterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemList();
+  }
 
+  getCheckedItemList() {
+    this.checkedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.checkedList.push(this.showdatapart[i].REF_KEY);
+    }
+
+    this.xbunch = this.checkedList.toString();
+    this.isdelete_button = false;
+  }
+
+
+
+
+
+  histcheckUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.histmasterSelected;
+      console.log(this.histmasterSelected);
+    }
+    this.getCheckedItemhistList();
+  }
+  histisAllSelected() {
+    this.histmasterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemhistList();
+   
+  }
+
+  getCheckedItemhistList() {
+    this.histcheckedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.histcheckedList.push(this.showdatapart[i].HIST_ID);
+    }
+ 
+    this.ybunch = this.histcheckedList.toString();
+    console.log(this.ybunch);
+  
+  }
   backClicked() {
     this._location.back();
   }
@@ -121,16 +193,6 @@ changetypems: boolean = true;
     $("#addForm").toggle();
   }
 
-  
-  selectAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart.result[i].isSelected = this.selectedAllclone;
-      console.log(this.showdatapart.result[i].isSelected)
-    }
-  }
-
-
-  
 
  
   
@@ -155,26 +217,7 @@ changetypems: boolean = true;
    }
   }
 
-   selectID(id, isSelected){  
-    
-    if(isSelected === true)
-  {
-    this.SelectedIDs.push(id);
-    this.isdelete_button = false;
-  }
 
-    else
-    {
-      this.SelectedIDs.pop(id);
-      this.isdelete_button = true;
-    }
-    console.log("true" + this.SelectedIDs);
-    console.log("false" + this.filteredArray);
- 
-
-  }
-  
-  
  
 
 
@@ -188,7 +231,7 @@ changetypems: boolean = true;
   this._tableservice.postms(form.value).subscribe((res)=>{
     //  this.resetForm(form);
    this.refreshEmployeeList();
-    this.toastr.success(res.message, 'Neutral Words');
+    this.toastr.success(res.message, 'Match Score');
 
   });
 }
@@ -217,25 +260,17 @@ onEdit(ms: matchscore,bt:string) {
 }
 
 
+deleteSelected(form: NgForm) {
+  this.delete_toggle = !this.delete_toggle; 
+    this._tableservice.deletems(this.xbunch).subscribe((res) => {
+      this.refreshEmployeeList();
+      this.resetForm(form);
+      this.toastr.warning(res.message, 'NAME SCREEN');
+    });
 
-
-deleteSelected(form: NgForm){
-  this.delete_toggle = !this.delete_toggle;
-  var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-  
-      this.SelectedIDs.forEach( (obj) => {
-        this._tableservice.deletems(obj).subscribe((res) => {
-          this.refreshEmployeeList();
-          this.resetForm(form);
-          this.toastr.warning(res.message, 'Neutral Words');
-        });
-      });
-    }
-  
 }
+
+
 changetext(status:string,form:NgForm)
 {
   this.apstatus = status;
@@ -252,36 +287,16 @@ changetextr(status:string,form:NgForm)
   this.UserName = localStorage.getItem('Username');
   console.log(this.apstatus);
 }
-ChkdeleteSelected(form:NgForm,ms:matchscore)
-{
 
-    this._tableservice.selectmatchscore = ms;
-    this.selectedmsRow = ms;
-    console.log(form.value,ms);
+ChkdeleteSelected(form: NgForm) {
 
-      this._tableservice.msapproved({...form.value,...ms}).subscribe((res) => {
-         this.refreshEmployeeList();
-        this.toastr.success(res.message, 'Approved');
-     
-      });
-  
+  this._tableservice.msapproved(form.value).subscribe((res) => {
+    this.refreshEmployeeList();
+    this.toastr.success(res.message, 'Approved');
 
-
+  });
 }
-ChkNotdeleteSelected(form:NgForm,ms:matchscore)
-{
 
-
-  this._tableservice.selectmatchscore = ms;
-  this.selectedmsRow = ms;
-  console.log(form.value,ms);
-    this._tableservice.msdisapproved({...form.value,...ms}).subscribe((res) => {
-     this.refreshEmployeeList();
-
-      this.toastr.info(res.message, 'Disapproved');
-    });
-
-}
 
 }
 

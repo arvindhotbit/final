@@ -19,11 +19,15 @@ import { SensitiveWordComponent } from './sensitive-word/sensitive-word.componen
 import { PaymentScreeningForAdkComponent } from './payment-screening-for-adk/payment-screening-for-adk.component';
 import { PepComponent } from './pep/pep.component';
 import { CaseListingComponent } from './case-listing/case-listing.component';
-import { AddzoneComponent } from './addzone/addzone.component';
+import { AddzoneComponent } from './admin/addzone/addzone.component';
 import { DepartmentComponent } from './admin/department/department.component';
 import { PaysysComponent } from './admin/paysys/paysys.component';
+import { UsersListComponent } from './admin/users-list/users-list.component';
 import { ActivateGuard } from './activate.guard';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { RoleManageComponent } from './admin/role-manage/role-manage.component';
 const routes: Routes = [
+     
       {path: 'internamanagement', component: InterlistManagementComponent },
       {path: 'internallist', component: InternallistDefinationComponent },
       {path: 'internawatchlist', component: InternallistWatchlistComponent },
@@ -46,7 +50,9 @@ const routes: Routes = [
       {path: 'case-listing', component:CaseListingComponent},
       {path: 'department', component:DepartmentComponent},
       {path: 'paysys', component:PaysysComponent},
-  
+      {path: 'users', component:UsersListComponent},
+      {path: 'roles_manage', component:RoleManageComponent},
+      {path: '**', component: PageNotFoundComponent}
 ];
 
 @NgModule({

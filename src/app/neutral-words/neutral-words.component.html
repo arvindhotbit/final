@@ -60,14 +60,27 @@
                   </div>
                 </div>
               </div>
+
+
+              <form #zonefilter="ngForm" (ngSubmit)="sendZonelist(zonefilter)" >
+                  <select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue" (ngModelChange)="onZoneChange($event)">
+                    <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                  </select>
+                </form>
+
+
+
+
+
+
               <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
                 <thead class="table_header">
                   <tr>
                     <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
                     <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
                     <th>Sr.no</th>
-                    <th *ngIf="zoneidcol"><span><input type="text" class="form-control" placeholder="Zone Id"
-                          [(ngModel)]="zone" /></span></th>
+                    <!-- <th *ngIf="zoneidcol"><span><input type="text" class="form-control" placeholder="Zone Id"
+                          [(ngModel)]="zone" /></span></th> -->
                     <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="Noise Word"
                           [(ngModel)]="noise" /></span> </th>
                     <ng-container *ngIf="_isaccess">
@@ -109,7 +122,7 @@
 
                       <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
 
-                      <td *ngIf="zoneidcol">{{item.ZONE_ID}}</td>
+                      <!-- <td *ngIf="zoneidcol">{{item.ZONE_ID}}</td> -->
                       <td *ngIf="noisewordcol">{{item.NOISE_WORD}}</td>
 
                       <ng-container *ngIf="_isaccess">

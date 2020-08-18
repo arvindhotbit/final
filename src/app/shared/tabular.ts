@@ -263,6 +263,52 @@ export interface internalwatchlist {
 						CHANGE_TYPE : String
 					
 					};
+					export interface usersscheme {
+					
+						ROLE : String,
+					
+					
+					};
+					export interface adepartscheme {
+						ROLE : string,
+						USER_ID : string,
+						DEPARTMENT_ID : string ,
+						REF_KEY : string
+					}
 
+					export interface azonescheme {
+						ROLE : string,
+						USER_ID : string,
+						ZONE_ID : string
+					
+					}
+					export interface apayscheme {
+						ROLE : string,
+						USER_ID : string,
+						DEPARTMENT_ID : string ,
+						REF_KEY : string
+					}
+
+
+					export interface unassignitem {
+					REF_KEY : string,
+					USER_ID : string,
+					TYPE : string,
+					EX_USER_ID : string,
+					USER_NAME : string,
+					USER_ZONE : string,
+					ROLE : string
+					}
+					export interface createrole {
+						REF_KEY : string,
+						USER_ID : string,
+						TYPE : string,
+						EX_USER_ID : string,
+						USER_NAME : string,
+						USER_ZONE : string,
+						ROLE : string,
+						ROLE_NAME:string,
+						PAGES : [];
+						}
 
 	

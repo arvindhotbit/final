@@ -56,12 +56,23 @@ export class SensitiveWordComponent implements OnInit {
   isdelete_button:boolean = true;
   tbl_header:any = [];
   userzone :string;
-  xbunch:string;
+  xbunch: string;
+  ybunch: string;
+  formact: string = "Add Record";
+  masterSelected: boolean;
+  checkedList: any;
+  histmasterSelected: boolean;
+  histcheckedList: any;
+  sensitive_change_type:string;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
+    this.masterSelected = false;
+    this.histmasterSelected = false;
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.getCheckedItemList();
+    this.getCheckedItemhistList();
      }
 
   ngOnInit(): void {
@@ -71,6 +82,63 @@ export class SensitiveWordComponent implements OnInit {
    
   }
 
+
+  checkUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.masterSelected;
+      console.log("master", this.masterSelected);
+    }
+    this.getCheckedItemList();
+  }
+  isAllSelected() {
+    this.masterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemList();
+  }
+
+  getCheckedItemList() {
+    this.checkedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.checkedList.push(this.showdatapart[i].REF_KEY);
+    }
+
+    this.xbunch = this.checkedList.toString();
+    this.isdelete_button = false;
+
+  }
+
+   
+
+
+
+  histcheckUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.histmasterSelected;
+      console.log(this.histmasterSelected);
+    }
+    this.getCheckedItemhistList();
+  }
+  histisAllSelected() {
+    this.histmasterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemhistList();
+   
+  }
+
+  getCheckedItemhistList() {
+    this.histcheckedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.histcheckedList.push(this.showdatapart[i].HIST_ID);
+    }
+ 
+    this.ybunch = this.histcheckedList.toString();
+    console.log(this.ybunch);
+  
+  }
 
   backClicked() {
     this._location.back();
@@ -118,19 +186,7 @@ export class SensitiveWordComponent implements OnInit {
   }
 
   
-  selectAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart.result[i].isSelected = this.selectedAllclone;
-      console.log(this.showdatapart.result[i].isSelected)
-    }
-  }
-
-
-  
-
  
-  
-
 
  resetForm(form?: NgForm) {
    if (form)
@@ -150,29 +206,7 @@ export class SensitiveWordComponent implements OnInit {
    }
   }
 
-   selectID(id, isSelected){  
-    
-    if(isSelected === true)
-  {
-    this.SelectedIDs.push(id);
-    this.isdelete_button = false;
-    this.xbunch = this.SelectedIDs.toString();
-  }
-
-    else
-    {
-      this.SelectedIDs.pop(id);
-      this.isdelete_button = true;
-      this.xbunch = this.SelectedIDs.toString();
-    }
-    console.log("true" + this.SelectedIDs);
-    console.log("false" + this.filteredArray);
- 
-
-  }
   
-  
- 
 
 
 
@@ -217,23 +251,19 @@ onEdit(senstive: sensitivescheme,bt:string) {
 
 
 
-deleteSelected(form: NgForm){
-  this.delete_toggle = !this.delete_toggle;
-  var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-  
-      
-        this._tableservice.deletesensitive(this.xbunch).subscribe((res) => {
-          this.refreshEmployeeList();
-          this.resetForm(form);
-          this.toastr.warning(res.message, 'Neutral Words');
-        });
-     
-    }
-  
+deleteSelected(form: NgForm) {
+  this.delete_toggle = !this.delete_toggle; 
+    this._tableservice.deletesensitive(this.xbunch).subscribe((res) => {
+      this.refreshEmployeeList();
+      this.resetForm(form);
+      this.toastr.warning(res.message, 'NAME SCREEN');
+    });
+
 }
+
+
+
+
 changetext(status:string,form:NgForm)
 {
   this.apstatus = status;
@@ -250,35 +280,14 @@ changetextr(status:string,form:NgForm)
   this.UserName = localStorage.getItem('Username');
   console.log(this.apstatus);
 }
-ChkdeleteSelected(form:NgForm,senstive:sensitivescheme)
-{
 
-    this._tableservice.selectsensitive = senstive;
-    this.selectedsensitiveRow = senstive;
-    console.log(form.value,senstive);
+ChkdeleteSelected(form: NgForm) {
 
-      this._tableservice.sensapproved({...form.value,...senstive}).subscribe((res) => {
-         this.refreshEmployeeList();
-        this.toastr.success(res.message, 'Approved');
-     
-      });
-  
+  this._tableservice.sensapproved(form.value).subscribe((res) => {
+    this.refreshEmployeeList();
+    this.toastr.success(res.message, 'Approved');
 
-
-}
-ChkNotdeleteSelected(form:NgForm,senstive:sensitivescheme)
-{
-
-
-  this._tableservice.selectsensitive = senstive;
-  this.selectedsensitiveRow = senstive;
-  console.log(form.value,senstive);
-    this._tableservice.sensdisapproved({...form.value,...senstive}).subscribe((res) => {
-     this.refreshEmployeeList();
-
-      this.toastr.info(res.message, 'Disapproved');
-    });
-
+  });
 }
 
 }

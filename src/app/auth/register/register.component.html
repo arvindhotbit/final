@@ -3,35 +3,40 @@
 
       
       <div class="data-table-area mg-b-15">
-        <div class="container-fluid">
-        <div class="row">
-        <div class="offset-3 col-lg-6">
+        <div class="container">
+       
       
-        <div class="sparkline13-hd">
-        <div class="main-sparkline13-hd">
-        <h1>Add  <small>Create user</small></h1>
-        </div>
-        </div>
+          <div class="main_logo">
+            <span> <img src="../../assets/datatable/img/add.svg" height="50" width="50"/>
+             <span class=""></span>
+           </span>
+          </div>
+          <div class="divider">
+            <hr/>
+          </div>
         <div class="sparkline13-graph">
+          <br/><br/><br/>
         <div class="datatable-dashv1-list custom-datatable-overright">
       
-      
-  
-         <form #registerform="ngForm" (ngSubmit)="submitform(registerform)" id="addForm" >
-             
-       
-                    <div class="form-group">
-                      <label>User Id</label>
-                    <input type="text" class="form-control" name="userid" ngModel>
-                    </div>
-                    <div class="form-group">
-                      <label>First Name</label>
-                    <input type="text" class="form-control" name="cn" ngModel >
+          <form #registerform="ngForm" (ngSubmit)="submitform(registerform)" id="addForm" >
+              <div class="row">
+           
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>User Id</label>
+                  <input type="text" class="form-control" name="userid" ngModel>
                   </div>
                   <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" class="form-control" name="sn" ngModel >
-                  </div>
+                    <label>First Name</label>
+                  <input type="text" class="form-control" name="cn" ngModel >
+                </div>
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" class="form-control" name="sn" ngModel >
+                </div>
+                </div>
+                <div class="col-4">
+                  
                   <div class="form-group">
                     <label>Email </label>
                     <input type="text" class="form-control" name="email" ngModel >
@@ -45,6 +50,8 @@
                     <label>Emp. No.</label>
                     <input type="text" class="form-control" name="empNo" ngModel>
                   </div>
+                </div>
+                <div class="col-4">
                   <div class="form-group">
                     <label>Department</label>
                     <input type="text" class="form-control" name="department" ngModel  >
@@ -60,14 +67,24 @@
         
           
             
-              <input type="submit" class="btn btn-success">
-              
+           
+                </div>
+                <div class="col-12">
+                  <input type="submit" class="btn btn-success">
+                </div>
+            
+              </div>
             </form>
+             
+       
+                
+                 
+              
+          
         </div>
         </div>
      
-        </div>
-        </div>
+        
   
   
         </div>

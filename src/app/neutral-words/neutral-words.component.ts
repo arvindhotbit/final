@@ -71,12 +71,17 @@ export class NeutralWordsComponent implements OnInit {
   checkedList: any;
   histmasterSelected: boolean;
   histcheckedList: any;
+  Userzone:string;
+  zonearray:any;
+  zonevalue:string;
   constructor(public _tableservice: TableDataService, public _authservice: AuthserviceService, private toastr: ToastrService, private _location: Location) {
     this.masterSelected = false;
     this.histmasterSelected = false;
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.Userzone = localStorage.getItem('UserZone');
+
     this.getCheckedItemList();
     this.getCheckedItemhistList();
   }
@@ -85,7 +90,7 @@ export class NeutralWordsComponent implements OnInit {
 
     this.resetForm();
     this.refreshEmployeeList();
-
+    this.getZonelist(); 
   }
 
   checkUncheckAll() {
@@ -106,16 +111,12 @@ export class NeutralWordsComponent implements OnInit {
     this.checkedList = [];
     for (var i = 0; i < this.showdata.length; i++) {
       if (this.showdata[i].isSelected)
-        this.checkedList.push(this.showdata[i]);
+        this.checkedList.push(this.showdata[i].REF_KEY);
     }
     // this.checkedList = JSON.stringify(this.checkedList);
-    this.checkedList.forEach(element => {
-      this.SelectedIDs.push(element.REF_KEY);
-      this.xbunch = this.SelectedIDs.toString();
-      this.isdelete_button = false;
-      this.formact = "Update Record";
-      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
-    });
+ 
+    this.xbunch = this.checkedList.toString();
+    this.isdelete_button = false;
   }
 
 
@@ -140,17 +141,12 @@ export class NeutralWordsComponent implements OnInit {
     this.histcheckedList = [];
     for (var i = 0; i < this.showdata.length; i++) {
       if (this.showdata[i].isSelected)
-        this.histcheckedList.push(this.showdata[i]);
+        this.histcheckedList.push(this.showdata[i].HIST_ID);
     }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.histcheckedList.forEach(element => {
-      this.SelectedIDs.push(element.HIST_ID);
-      this.ybunch = this.SelectedIDs.toString();
-      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
-    });
+    this.ybunch = this.histcheckedList.toString();
   }
 
-
+  
 
 
   resetForm(form?: NgForm) {
@@ -207,6 +203,31 @@ export class NeutralWordsComponent implements OnInit {
     }
   }
 
+ getZonelist()
+{
+  this._tableservice.getassignzonelist().subscribe((res) => {
+   this.zonearray = res.result.rows;
+   console.log(this.zonearray);
+  })
+}
+sendZonelist(form)
+{
+ console.log(form.value);
+}
+
+
+
+onZoneChange(zonevalue:any){
+
+var obj = {  "ROLE" : this.myData,
+"USER_ZONE" : this.zonevalue};
+    this._tableservice.getchangezonelist(obj).subscribe((res)=>{
+      this.showdata = res.result;
+      this.toastr.success(res.message, 'zonelist');
+  
+    });
+
+  }
 
 
   addform = () => {
@@ -262,21 +283,16 @@ export class NeutralWordsComponent implements OnInit {
 
 
   deleteSelected(form: NgForm) {
-    this.delete_toggle = !this.delete_toggle;
-    var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if (myData === "makers") {
-
-
+    this.delete_toggle = !this.delete_toggle; 
       this._tableservice.neutraldelpage(this.xbunch).subscribe((res) => {
         this.refreshEmployeeList();
         this.resetForm(form);
         this.toastr.warning(res.message, 'Neutral Words');
       });
 
-    }
-
   }
+
+  
   changetext(status: string, form: NgForm) {
     this.apstatus = status;
     this.myData = localStorage.getItem('Role');

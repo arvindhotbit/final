@@ -3356,7 +3356,7 @@ li.multipleInput-email {
 }
 
 li.multipleInput-email a {
-	background: #none;
+	background: none;
 	color: #fff;
 	margin-left: 4px;
 	display: inline-block;
@@ -5737,11 +5737,11 @@ div#sparklinehome canvas {
 	width: 100%
 }
 
-.wizard.vertical>.steps {
+/* .wizard.vertical>.steps {
 	display: inline;
 	float: left;
 	width: 30%
-}
+} */
 
 .wizard>.steps .number {
 	font-size: 1.429em
@@ -5817,12 +5817,12 @@ div#sparklinehome canvas {
 	border-radius: 5px
 }
 
-.wizard.vertical>.content {
+/* .wizard.vertical>.content {
 	display: inline;
 	float: left;
 	margin: 0 2.5% .5em;
 	width: 65%
-}
+} */
 
 .wizard>.content>.body {
 	float: left;
@@ -5879,12 +5879,12 @@ div#sparklinehome canvas {
 	width: 100%
 }
 
-.wizard.vertical>.actions {
+/* .wizard.vertical>.actions {
 	display: inline;
 	float: right;
 	margin: 0 2.5%;
 	width: 95%
-}
+} */
 
 .wizard>.actions>ul {
 	display: inline-block;
@@ -6215,6 +6215,13 @@ div#sparklinehome canvas {
     display:none;
 }
 tr.selected {
+    background-color:#123456 !important;
+    color:#fff;
+
+  }
+
+  
+  tr.selected {
     background-color:#123456 !important;
     color:#fff;
 

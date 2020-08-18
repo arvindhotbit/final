@@ -33,47 +33,56 @@
                       </button>
                       <ul class="dropdown-menu trust-menu">
 
-<li class="dropdown-item ">
-  <label for="zoneidms"> <input type="checkbox" [checked]="zoneidms" (change)="zoneidms=!zoneidms"
-      id="zoneidms" />&nbsp;ZONEID</label>
-</li>
+                        <li class="dropdown-item ">
+                          <label for="zoneidms"> <input type="checkbox" [checked]="zoneidms"
+                              (change)="zoneidms=!zoneidms" id="zoneidms" />&nbsp;ZONEID</label>
+                        </li>
 
-<li class="dropdown-item ">
-  <label for="matchscorems"> <input type="checkbox" [checked]="matchscorems" (change)="matchscorems=!matchscorems"
-      id="matchscorems" />&nbsp;MATCHSCORE THRESHOLD</label>
-</li>
+                        <li class="dropdown-item ">
+                          <label for="matchscorems"> <input type="checkbox" [checked]="matchscorems"
+                              (change)="matchscorems=!matchscorems" id="matchscorems" />&nbsp;MATCHSCORE
+                            THRESHOLD</label>
+                        </li>
 
-<li class="dropdown-item ">
-  <label for="paysysms"> <input type="checkbox" [checked]="paysysms" (change)="paysysms=!paysysms"
-      id="paysysms" />&nbsp;PAYSYS ID</label>
-</li>
-<ng-container *ngIf="_isaccess">
-<li class="dropdown-item ">
-  <label for="oldzoneidms"> <input type="checkbox" [checked]="oldzoneidms" (change)="oldzoneidms=!oldzoneidms"
-      id="oldzoneidms" />&nbsp;OLD ZONE ID</label>
-</li>
+                        <li class="dropdown-item ">
+                          <label for="paysysms"> <input type="checkbox" [checked]="paysysms"
+                              (change)="paysysms=!paysysms" id="paysysms" />&nbsp;PAYSYS ID</label>
+                        </li>
+                        <ng-container *ngIf="_isaccess">
+                          <li class="dropdown-item ">
+                            <label for="oldzoneidms"> <input type="checkbox" [checked]="oldzoneidms"
+                                (change)="oldzoneidms=!oldzoneidms" id="oldzoneidms" />&nbsp;OLD ZONE ID</label>
+                          </li>
 
-<li class="dropdown-item ">
-  <label for="oldmatchscorems"> <input type="checkbox" [checked]="oldmatchscorems" (change)="oldmatchscorems=!oldmatchscorems"
-      id="oldmatchscorems" />&nbsp;OLD MATCHSCORE THRESHOLD</label>
-</li>
+                          <li class="dropdown-item ">
+                            <label for="oldmatchscorems"> <input type="checkbox" [checked]="oldmatchscorems"
+                                (change)="oldmatchscorems=!oldmatchscorems" id="oldmatchscorems" />&nbsp;OLD MATCHSCORE
+                              THRESHOLD</label>
+                          </li>
 
-<li class="dropdown-item ">
-  <label for="oldpaysysidms"> <input type="checkbox" [checked]="oldpaysysidms" (change)="oldpaysysidms=!oldpaysysidms"
-      id="oldpaysysidms" />&nbsp;OLD PAYSYS ID</label>
-</li>
+                          <li class="dropdown-item ">
+                            <label for="oldpaysysidms"> <input type="checkbox" [checked]="oldpaysysidms"
+                                (change)="oldpaysysidms=!oldpaysysidms" id="oldpaysysidms" />&nbsp;OLD PAYSYS ID</label>
+                          </li>
 
-<li class="dropdown-item ">
-  <label for="changetypems"> <input type="checkbox" [checked]="changetypems" (change)="changetypems=!changetypems"
-      id="changetypems" />&nbsp;CHANGE TYPE</label>
-</li>
-</ng-container>
+                          <li class="dropdown-item ">
+                            <label for="changetypems"> <input type="checkbox" [checked]="changetypems"
+                                (change)="changetypems=!changetypems" id="changetypems" />&nbsp;CHANGE TYPE</label>
+                          </li>
+                        </ng-container>
 
 
 
 
                       </ul>
                     </div>
+                    <ng-container *ngIf="_isaccess">
+                      <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
+                        (click)="ChkdeleteSelected(myform)"><i class="fa fa
+                           -check-square-o"></i> Approve</button>
+                      <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
+                        (click)="ChkdeleteSelected(myform)"><i class="fa fa-times"></i> Reject</button>
+                    </ng-container>
                     <ng-container *ngIf="!_isaccess">
                       <button (click)="addform()" class="btn btn-primary btn-sm"
                         [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i> Add
@@ -94,35 +103,57 @@
               </div>
               <div class="table-responsive">
                 <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
-<thead class="table_header">
-  <tr>
-    <th class="text-center"><input type="checkbox" class="disabled" /></th>
-    <th>Sr.no</th>
-    <th *ngIf="zoneidms"><span><input type="text" class="form-control" placeholder="ZONE_ID" /></span></th>
-    <th *ngIf="matchscorems"><span><input type="text" class="form-control" placeholder="MATCHSCORE_THRESHOLD" /></span>
-    </th>
-    <th *ngIf="paysysms"><span><input type="text" class="form-control" placeholder="PAYSYS_ID" /></span> </th>
-    <ng-container *ngIf="_isaccess">
-      <th *ngIf="oldpaysysidms"><span><input type="text" class="form-control" placeholder="OLD_ZONE_ID" /></span></th>
-      <th *ngIf="oldmatchscorems"><span><input type="text" class="form-control" placeholder="OLD_MATCHSCORE_THRESHOLD" /></span> </th>
-      <th *ngIf="oldpaysysidms"><span><input type="text" class="form-control" placeholder="OLD_PAYSYS_ID" /></span> </th>
-      <th *ngIf="changetypems"><span><input type="text" class="form-control" placeholder="CHANGE_TYPE" /></span> </th>
-      <th colspan="2" style="text-align: center;">ACTION</th>
-    </ng-container>
+                  <thead class="table_header">
+                    <tr>
+                      <th class="text-center" *ngIf="!_isaccess"><input type="checkbox" name="all"
+                          [(ngModel)]="masterSelected" (change)="checkUncheckAll()" /></th>
+                      <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all"
+                          [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()" /></th>
+                      <th>Sr.no</th>
+                      <th *ngIf="zoneidms"><span><input type="text" class="form-control" placeholder="ZONE_ID" [(ngModel)]="a" /></span>
+                      </th>
+                      <th *ngIf="matchscorems"><span><input type="text" class="form-control"
+                            placeholder="MATCHSCORE_THRESHOLD"  [(ngModel)]="b"/></span>
+                      </th>
+                      <th *ngIf="paysysms"><span><input type="text" class="form-control"
+                            placeholder="PAYSYS_ID"  [(ngModel)]="c"/></span> </th>
+                      <ng-container *ngIf="_isaccess">
+                        <th *ngIf="oldpaysysidms"><span><input type="text" class="form-control"
+                              placeholder="OLD_ZONE_ID"  [(ngModel)]="d"/></span></th>
+                        <th *ngIf="oldmatchscorems"><span><input type="text" class="form-control"
+                              placeholder="OLD_MATCHSCORE_THRESHOLD" [(ngModel)]="e"/></span> </th>
+                        <th *ngIf="oldpaysysidms"><span><input type="text" class="form-control"
+                              placeholder="OLD_PAYSYS_ID" [(ngModel)]="f"/></span> </th>
+                              <th>
+                                <span>
+                                  
+                                    <select name="changetype" class="form-control"  [(ngModel)]="changetype">
+                                      <option value="INSERT">INSERT</option>
+                                      <option value="DELETE">DELETE</option>
+                                      <option value="UPDATE">UPDATE</option>
+                                    </select>
+                                  </span>
+                                 </th>
 
-  </tr>
-</thead>
+                      </ng-container>
+
+                    </tr>
+                  </thead>
                   <tbody *ngIf="showdatapart?.length;else no_data_templ">
 
                     <ng-container
-                      *ngFor="let item of showdatapart | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
+                      *ngFor="let item of showdatapart | matchscorefilter:a:b:c:d:e:f:changetype |paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
                       <tr
                         [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
                         (click)="onEdit(item,'Update')" [class.selected]="item === selectedmsRow">
-                        <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
-                            id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"
-                            (change)="selectID(item.REF_KEY,item.isSelected)"></td>
-                        <td >{{ (p - 1) * pageSize + i + 1 }}</td>
+                        <td *ngIf="!_isaccess" style="text-align: center;">
+                          <input type="checkbox" [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+                            value="{{item.REF_KEY}}" (change)="isAllSelected()"></td>
+
+                        <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+                            [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
+                            value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
+                        <td>{{ (p - 1) * pageSize + i + 1 }}</td>
 
                         <td *ngIf="zoneidms">{{item.ZONE_ID}}</td>
                         <td *ngIf="matchscorems">{{item.MATCHSCORE_THRESHOLD}}</td>
@@ -139,12 +170,7 @@
                           <td *ngIf="oldpaysysidms">{{item.OLD_PAYSYS_ID}}</td>
 
                           <td *ngIf="changetypems">{{item.CHANGE_TYPE}}</td>
-                          <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
-                              (click)="ChkdeleteSelected(myform,item)"
-                              [class.selected]="item === selectedmsRow">Approve</button></td>
-                          <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
-                              (click)="ChkNotdeleteSelected(myform,item)"
-                              [class.selected]="item === selectedmsRow">Reject</button></td>
+
                         </ng-container>
 
                       </tr>
@@ -242,8 +268,7 @@
                     </div>
                     <div class="col-md-4">
                       <div></div>
-                      <input type="text" class="form-control" name="HIST_ID" value=""
-                        [(ngModel)]="_tableservice.selectmatchscore.HIST_ID">
+                      <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}" [(ngModel)]="ybunch">
 
 
                       <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"

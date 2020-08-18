@@ -2,9 +2,9 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { NgForm, FormBuilder, FormGroup, FormArray, FormControl,FormsModule } from '@angular/forms';
 import { map } from 'rxjs/operators';
-import {TableDataService} from '../shared/table-data.service';
-import {AuthserviceService} from '../auth/authservice.service';
-import {addzonescheme} from '../shared/tabular';
+import {TableDataService} from '../../shared/table-data.service';
+import {AuthserviceService} from '../../auth/authservice.service';
+import {addzonescheme} from '../../shared/tabular';
 import { ToastrService } from 'ngx-toastr';
 import * as $ from 'jquery';
 import { element } from 'protractor';
@@ -154,6 +154,19 @@ export class AddzoneComponent implements OnInit {
       
      
     }
+    else if(myData === "admin")
+    {
+      this._tableservice.addzonelistpage().subscribe((res)=>{
+        this.showdata = res.result;
+        this.tbl_header = res.metadata;
+        console.log(this.showdata);
+      })
+      this.valuedelete = "1";
+      this._isaccess = false;
+      this.updatemark = "1";
+      
+     
+    }
   }
   
  
@@ -179,7 +192,7 @@ export class AddzoneComponent implements OnInit {
   this._tableservice.addzonelistpost(form.value).subscribe((res)=>{
     //  this.resetForm(form);
    this.refreshEmployeeList();
-    this.toastr.success('data inserted successfully', 'Neutral Words');
+    this.toastr.success(res.message, 'Zone List Record Add');
 
   });
 }
@@ -192,7 +205,7 @@ this._tableservice.addzonelistput(form.value).subscribe((res) => {
     var showdatas = res.result;
     console.log("update" + showdatas);
     this.refreshEmployeeList();
-    this.toastr.info('data update successfully', 'Neutral Words');
+    this.toastr.info(res.message, 'Zone List Update');
 
   });
 }

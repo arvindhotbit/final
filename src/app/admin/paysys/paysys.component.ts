@@ -62,11 +62,19 @@ export class PaysysComponent implements OnInit {
   oldzoneidcol:boolean=true;
   oldnoisewordcol:boolean=true;
   changetypecol:boolean=true;
+  masterSelected: boolean;
+  checkedList: any;
+  xbunch: string;
+  ybunch: string;
+  paysyssendrefkey:string;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
  
+    this.masterSelected = false;
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.getCheckedItemList();
+
      }
 
   ngOnInit(): void {
@@ -98,45 +106,36 @@ export class PaysysComponent implements OnInit {
    }
   }
 
-  //  selectID(id, isSelected, e){  
-    
-  //   if()
-  // {
-  //   this.SelectedIDs.push(id);
-  //   this.isdelete_button = false;
-  // }
 
-  //   else
-  //   {
-  //     this.SelectedIDs.splice(id, 1);
-  //     this.isdelete_button = true;
-  //   }
-  //   console.log(this.SelectedIDs);
-
- 
-
-  // }
-
-  selectID(item,e)
-  {
-   if(e.target.checked) 
-   {
-     this.SelectedIDs.push(item.REF_KEY);
-     this.isdelete_button = false;
-     console.log("add" +  this.SelectedIDs,this.SelectedIDs.length);
-   }
-   else
-   {
-    for(var i=0 ; i < this.showdata.length; i++) {
-      if(this.showdata[i] == item.REF_KEY) {
-        this.showdata.splice(i,1);
-     }
-     this.isdelete_button = true;
-     console.log("remove" + this.SelectedIDs,this.SelectedIDs.length);
-   }
-   console.log("result" + this.SelectedIDs,this.SelectedIDs.length)
+  checkUncheckAll() {
+    for (var i = 0; i < this.showdata.length; i++) {
+      this.showdata[i].isSelected = this.masterSelected;
+      console.log("master", this.masterSelected);
+    }
+    this.getCheckedItemList();
   }
-}
+  isAllSelected() {
+    this.masterSelected = this.showdata.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemList();
+  }
+
+  getCheckedItemList() {
+    this.checkedList = [];
+    for (var i = 0; i < this.showdata.length; i++) {
+      if (this.showdata[i].isSelected)
+        this.checkedList.push(this.showdata[i]);
+    }
+    // this.checkedList = JSON.stringify(this.checkedList);
+    this.checkedList.forEach(element => {
+      this.SelectedIDs.push(element.REF_KEY);
+      this.xbunch = this.SelectedIDs.toString();
+      this.isdelete_button = false;
+      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
+    });
+  }
+
 
   backClicked() {
     this._location.back();
@@ -206,7 +205,7 @@ export class PaysysComponent implements OnInit {
   submitform(form: NgForm){
 
    
-    if (form.value.REF_KEY == "") {
+    if (form.value.REF_KEY == null) {
       this.toggle = !this.toggle;
       $("#addForm").toggle();
   this._tableservice.paysyslistpost(form.value).subscribe((res)=>{
@@ -218,7 +217,7 @@ export class PaysysComponent implements OnInit {
 }
 else
 {
-this._tableservice.neutrallistput(form.value).subscribe((res) => {
+this._tableservice.paysyslistput(form.value).subscribe((res) => {
   this.toggle = !this.toggle;
   $("#addForm").toggle();
     // this.resetForm(form);
@@ -239,27 +238,25 @@ onEdit(paysys: paysysscheme,bt:string) {
   this.btn_name = "Update";
   this._tableservice.selectpaysys = paysys;
   this.selectedpaysysRow = paysys;
+  this.selectedpaysysRow = paysys;
+  this.paysyssendrefkey = JSON.stringify(this.selectedpaysysRow.REF_KEY);
 }
 
 
 
 
-deleteSelected(form: NgForm){
-  this.delete_toggle = !this.delete_toggle;
-  var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-  
-      this.SelectedIDs.forEach( (obj) => {
-        this._tableservice.neutraldelpage(obj).subscribe((res) => {
-          this.refreshEmployeeList();
-          this.resetForm(form);
-          this.toastr.warning(res.message, 'Neutral Words');
-        });
-      });
-    }
-  
+deleteSelected(form: NgForm) {
+ 
+
+
+    this._tableservice.paysysdeletepage(this.xbunch).subscribe((res) => {
+      this.refreshEmployeeList();
+      this.resetForm(form);
+      this.toastr.warning(res.message, 'Neutral Words');
+    });
+
+ 
+
 }
 changetext(status:string,form:NgForm)
 {

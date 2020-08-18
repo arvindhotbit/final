@@ -51,11 +51,18 @@ import { NamescreenPipe } from './filter/namescreen.pipe';
  import { CaselistPipe } from './filter/caselist.pipe';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-import { AddzoneComponent } from './addzone/addzone.component';
+import { AddzoneComponent } from './admin/addzone/addzone.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { CustomRangeFilterPipe } from './custom-range-filter.pipe';
 import { DepartmentComponent } from './admin/department/department.component';
 import { PaysysComponent } from './admin/paysys/paysys.component';
+import { UsersListComponent } from './admin/users-list/users-list.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { MatchscorefilterPipe } from './filter/matchscorefilter.pipe';
+import { BicfilterPipe } from './filter/bicfilter.pipe';
+import { HrcfilterPipe } from './filter/hrcfilter.pipe';
+import { SanctionfilterPipe } from './filter/sanctionfilter.pipe';
+import { RoleManageComponent } from './admin/role-manage/role-manage.component';
 // NOT RECOMMENDED (Angular 9 doesn't support this kind of import)
 
 @NgModule({
@@ -92,7 +99,14 @@ import { PaysysComponent } from './admin/paysys/paysys.component';
      AddzoneComponent,
      CustomRangeFilterPipe,
      DepartmentComponent,
-     PaysysComponent
+     PaysysComponent,
+     UsersListComponent,
+     PageNotFoundComponent,
+     MatchscorefilterPipe,
+     BicfilterPipe,
+     HrcfilterPipe,
+     SanctionfilterPipe,
+     RoleManageComponent
 
   ],
   imports: [ 

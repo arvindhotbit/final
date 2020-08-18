@@ -44,11 +44,20 @@ valuedelete : string="" ;
 _isaccesszvg : boolean;
 toggle = true;
 delete_toggle = true;
+xbunch: string;
+ybunch: string;
+formact: string = "Add Record";
+masterSelected: boolean;
+checkedList: any;
+histmasterSelected: boolean;
+histcheckedList: any;
 constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService,  private toastr: ToastrService,private _location: Location) {
 
 this.myData = localStorage.getItem('Role');
 this.UserId = localStorage.getItem('Id');
 this.UserName = localStorage.getItem('Username');
+this.getCheckedItemList();
+this.getCheckedItemhistList();
 
 }
 
@@ -58,22 +67,60 @@ this.resetForm();
 this.refreshList();
 
 }
+checkUncheckAll() {
+    for (var i = 0; i < this.showzvg.length; i++) {
+      this.showzvg[i].isSelected = this.masterSelected;
+      console.log("master", this.masterSelected);
+    }
+    this.getCheckedItemList();
+  }
+  isAllSelected() {
+    this.masterSelected = this.showzvg.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemList();
+  }
+
+  getCheckedItemList() {
+    this.checkedList = [];
+    for (var i = 0; i < this.showzvg.length; i++) {
+      if (this.showzvg[i].isSelected)
+        this.checkedList.push(this.showzvg[i].REF_KEY);
+    }
+    // this.checkedList = JSON.stringify(this.checkedList);
+    this.xbunch = this.checkedList.toString();
+    this.isdelete_button = false;
+  }
 
 
-selectID(id, isSelected){  
 
-if(isSelected === true)
-{
-this.SelectedIDs.push(id);
-this.isdelete_button = false;
-}
 
-else
-{
-this.SelectedIDs.pop(id);
-this.isdelete_button = true;
-}
-}
+
+  histcheckUncheckAll() {
+    for (var i = 0; i < this.showzvg.length; i++) {
+      this.showzvg[i].isSelected = this.histmasterSelected;
+      console.log(this.histmasterSelected);
+    }
+    this.getCheckedItemhistList();
+  }
+  histisAllSelected() {
+    this.histmasterSelected = this.showzvg.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemhistList();
+  }
+
+  getCheckedItemhistList() {
+    this.histcheckedList = [];
+    for (var i = 0; i < this.showzvg.length; i++) {
+      if (this.showzvg[i].isSelected)
+        this.histcheckedList.push(this.showzvg[i].HIST_ID);
+    }
+    // this.checkedList = JSON.stringify(this.checkedList);
+    this.ybunch = this.histcheckedList.toString();
+    console.log(this.ybunch);
+  }
+
 
 
 addform = () =>{
@@ -100,7 +147,7 @@ ROLE : this.myData,
 USER_ID : this.UserId,
 USER_NAME : this.UserName,
 USER_ZONE : "QA",
-HIST_ID :"",
+HIST_ID :this.ybunch,
 APPROVE_STATUS : this.apstatus,
 CHANGE_TYPE : ""
 }
@@ -197,52 +244,26 @@ this.selectedZoneRow = zvg;
 
 
 }
-
-deleteSelected(formdata: NgForm) {
-this.delete_toggle = !this.delete_toggle;
-var myData = localStorage.getItem('Role');
-if(myData === "makers")
-{
-this.SelectedIDs.forEach( (obj) => {
-this._tableservice.deletezvg(obj).subscribe((res) => {
-this.refreshList();
-this.resetForm(formdata);
-this.toastr.warning('Data Delete Successfully', 'Zone Vs Global Words');
-});
-});
-}
-}
-
-ChkdeleteSelected(formdata:NgForm,zvg:Zonevsglobal)
-{
-
-this._tableservice.selectedzvg = zvg;
-this.selectedZoneRow = zvg;
-console.log(formdata.value,zvg);
-
-this._tableservice.zvgapproved({...formdata.value,...zvg}).subscribe((res) => {
-this.refreshList();
-this.toastr.success('Successfully', 'Approved');
-
-});
-
-
+deleteSelected(form: NgForm) {
+  this.delete_toggle = !this.delete_toggle; 
+    this._tableservice.deletezvg(this.xbunch).subscribe((res) => {
+      this.refreshList();
+      this.resetForm(form);
+      this.toastr.warning(res.message, 'NAME SCREEN');
+    });
 
 }
-ChkNotdeleteSelected(formdata:NgForm,neuscheme:Zonevsglobal)
-{
+ChkdeleteSelected(form: NgForm) {
 
+  this._tableservice.zvgapproved(form.value).subscribe((res) => {
+    this.refreshList();
+    this.toastr.success(res.message, 'Approved');
 
-this._tableservice.selectedzvg = neuscheme;
-this.selectedZoneRow = neuscheme;
-console.log(formdata.value,neuscheme);
-this._tableservice.zvgdisapproved({...formdata.value,...neuscheme}).subscribe((res) => {
-this.refreshList();
-
-this.toastr.info('Successfully', 'Disapproved');
-});
-
+  });
 }
+
+
+
 
 
 }

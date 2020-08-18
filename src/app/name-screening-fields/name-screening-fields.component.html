@@ -63,6 +63,13 @@
 
                       </ul>
                     </div>
+                    <ng-container *ngIf="_isaccess">
+                      <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
+                           (click)="ChkdeleteSelected(myform)"><i class="fa fa
+                           -check-square-o"></i> Approve</button>
+                       <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
+                           (click)="ChkdeleteSelected(myform)"><i class="fa fa-times"></i> Reject</button>
+                     </ng-container>
                     <ng-container *ngIf="!_isaccess">
                       <button (click)="addform()" class="btn btn-primary btn-sm"
                         [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i> Add
@@ -89,7 +96,8 @@
 
 
                     <tr>
-                      <th class="text-center"><input type="checkbox" class="disabled" /></th>
+                      <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
+                      <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
                       <th>Sr.no</th>
 
 
@@ -108,9 +116,12 @@
                               placeholder="OLD_SCAN" [(ngModel)]="oldscannm"/></span> </th>
 
 
-                        <th *ngIf="ctnm"><span><input type="text" class="form-control"
-                              placeholder="CHANGE_TYPE" [(ngModel)]="ctnmf"/></span> </th>
-                        <th colspan="2" style="text-align: center;">ACTION</th>
+                              <th ><span>  <select name="changetype" class="form-control"  [(ngModel)]="changetype">
+                                <option value="INSERT">INSERT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="UPDATE">UPDATE</option>
+                              </select></span> </th>
+                 
                       </ng-container>
 
                
@@ -119,13 +130,18 @@
                   </thead>
                   <tbody *ngIf="showdatapart?.length;else no_data_templ">
 
-                    <ng-container  *ngFor="let item of showdatapart  |namescreen:flnm:scannm:oldflnm:oldscannm:ctnmf | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
+                    <ng-container  *ngFor="let item of showdatapart  |namescreen:flnm:scannm:oldflnm:oldscannm:changetype | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
                       <tr
                         [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
                         (click)="onEdit(item,'Update')" [class.selected]="item === selectednsRow">
-                        <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
-                            id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"
-                            (change)="selectID(item.REF_KEY,item.isSelected)"></td>
+                        <td *ngIf="!_isaccess" style="text-align: center;">
+                          <input type="checkbox"
+                          [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+                            value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
+        
+                        <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+                            [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
+                            value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
                         <td>{{ (p - 1) * pageSize + i + 1 }}</td>
 
 
@@ -143,12 +159,7 @@
                           <td *ngIf="oldscannmcol">{{item.OLD_SCAN}}</td>
 
                           <td *ngIf="ctnm">{{item.CHANGE_TYPE}}</td>
-                          <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
-                              (click)="ChkdeleteSelected(myform,item)"
-                              [class.selected]="item === selectednsRow">Approve</button></td>
-                          <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
-                              (click)="ChkNotdeleteSelected(myform,item)"
-                              [class.selected]="item === selectednsRow">Reject</button></td>
+                      
                         </ng-container>
 
                       </tr>
@@ -247,8 +258,8 @@
                     </div>
                     <div class="col-md-4">
                       <div></div>
-                      <input type="text" class="form-control" name="HIST_ID" value=""
-                        [(ngModel)]="_tableservice.selectns.HIST_ID">
+                      <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}"
+                        [(ngModel)]="ybunch">
 
 
                       <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"

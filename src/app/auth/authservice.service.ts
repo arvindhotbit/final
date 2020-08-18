@@ -4,6 +4,7 @@ import { catchError } from 'rxjs/operators';
 import { Subject, Observable  } from 'rxjs';
 import { CanActivate, Router } from '@angular/router';
 import {Auth} from './auth';
+import {environment} from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +17,7 @@ export class AuthserviceService {
   constructor(private http : HttpClient,private router: Router) {
     this.userLoggedIn.next(false);
    }
-  readonly _base_url:string = "http://localhost:3000/api";
+  // readonly _base_url:string = "http://192.168.1.208:8900/api";
 
 
   setUserLoggedIn(userLoggedIn: boolean) {
@@ -28,12 +29,12 @@ export class AuthserviceService {
   }
 createuser(auth:Auth)
 { 
-  return this.http.post<any>(this._base_url + '/addUsers',auth)
+  return this.http.post<any>(`${environment.apiUrl}/addUsers`,auth)
 
 };
 loginuser(auth:Auth)
 { 
-  return this.http.post<any>(this._base_url + '/login',auth)
+  return this.http.post<any>(`${environment.apiUrl}/login`,auth)
 
 };
 loggenIn(){

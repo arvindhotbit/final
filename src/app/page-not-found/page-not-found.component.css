@@ -1,0 +1,9 @@
+.notfound
+{
+    background-image: url(../../assets/images/pagenotfound.svg);
+    height: 100vh;
+    width: 100%;
+    background-size: 54%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}

@@ -54,11 +54,31 @@ export class HighRiskCountriesComponent implements OnInit {
   isdelete_button:boolean = true;
   tbl_header:any = [];
   userzone :string;
+  xbunch: string;
+  ybunch: string;
+  formact: string = "Add Record";
+  masterSelected: boolean;
+  checkedList: any;
+  histmasterSelected: boolean;
+  histcheckedList: any;
+  a:string;
+b:string;
+c:string;
+d:string;
+e:string;
+f:string;
+g:string;
+h:string;
+changetype:string;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
+    this.masterSelected = false;
+    this.histmasterSelected = false;
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.getCheckedItemList();
+    this.getCheckedItemhistList();
      }
 
   ngOnInit(): void {
@@ -66,6 +86,68 @@ export class HighRiskCountriesComponent implements OnInit {
     this.resetForm();
     this.refreshEmployeeList();
    
+  }
+
+  checkUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.masterSelected;
+      console.log("master", this.masterSelected);
+    }
+    this.getCheckedItemList();
+  }
+  isAllSelected() {
+    this.masterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemList();
+  }
+
+  getCheckedItemList() {
+    this.checkedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.checkedList.push(this.showdatapart[i]);
+    }
+    // this.checkedList = JSON.stringify(this.checkedList);
+    this.checkedList.forEach(element => {
+      this.SelectedIDs.push(element.REF_KEY);
+      this.xbunch = this.SelectedIDs.toString();
+      this.isdelete_button = false;
+      this.formact = "Update Record";
+      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
+    });
+  }
+
+
+
+
+
+  histcheckUncheckAll() {
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      this.showdatapart[i].isSelected = this.histmasterSelected;
+      console.log(this.histmasterSelected);
+    }
+    this.getCheckedItemhistList();
+  }
+  histisAllSelected() {
+    this.histmasterSelected = this.showdatapart.every(function (item: any) {
+      return item.isSelected == true;
+    })
+    this.getCheckedItemhistList();
+  }
+
+  getCheckedItemhistList() {
+    this.histcheckedList = [];
+    for (var i = 0; i < this.showdatapart.length; i++) {
+      if (this.showdatapart[i].isSelected)
+        this.histcheckedList.push(this.showdatapart[i]);
+    }
+    // this.checkedList = JSON.stringify(this.checkedList);
+    this.histcheckedList.forEach(element => {
+      this.SelectedIDs.push(element.HIST_ID);
+      this.ybunch = this.SelectedIDs.toString();
+      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
+    });
   }
 
 
@@ -215,25 +297,17 @@ onEdit(hrc: Highriskcountry,bt:string) {
 }
 
 
+deleteSelected(form: NgForm) {
+  this.delete_toggle = !this.delete_toggle; 
+    this._tableservice.deletehrc(this.xbunch).subscribe((res) => {
+      this.refreshEmployeeList();
+      this.resetForm(form);
+      this.toastr.warning(res.message, 'High Risk Country');
+    });
 
-
-deleteSelected(form: NgForm){
-  this.delete_toggle = !this.delete_toggle;
-  var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-  
-      this.SelectedIDs.forEach( (obj) => {
-        this._tableservice.deletehrc(obj).subscribe((res) => {
-          this.refreshEmployeeList();
-          this.resetForm(form);
-          this.toastr.warning(res.message, 'Neutral Words');
-        });
-      });
-    }
-  
 }
+
+
 changetext(status:string,form:NgForm)
 {
   this.apstatus = status;
@@ -250,35 +324,15 @@ changetextr(status:string,form:NgForm)
   this.UserName = localStorage.getItem('Username');
   console.log(this.apstatus);
 }
-ChkdeleteSelected(form:NgForm,hrc:Highriskcountry)
+ChkdeleteSelected(form:NgForm)
 {
-
-    this._tableservice.selectedhrc = hrc;
-    this.selectedhrcRow = hrc;
-    console.log(form.value,hrc);
-
-      this._tableservice.hrcapproved({...form.value,...hrc}).subscribe((res) => {
+      this._tableservice.hrcapproved(form.value).subscribe((res) => {
          this.refreshEmployeeList();
         this.toastr.success(res.message, 'Approved');
      
       });
-  
-
-
+ 
 }
-ChkNotdeleteSelected(form:NgForm,hrc:Highriskcountry)
-{
 
-
-  this._tableservice.selectedhrc = hrc;
-  this.selectedhrcRow = hrc;
-  console.log(form.value,hrc);
-    this._tableservice.hrcdisapproved({...form.value,...hrc}).subscribe((res) => {
-     this.refreshEmployeeList();
-
-      this.toastr.info(res.message, 'Disapproved');
-    });
-
-}
 
 }

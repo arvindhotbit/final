@@ -1,297 +1,315 @@
 
-    
-    
- <app-header></app-header>
- 
-      
- <div class="data-table-area mg-b-15">
+
+
+<app-header></app-header>
+
+
+<div class="data-table-area mg-b-15">
  <div class="container-fluid">
- <div class="row">
- <div class="col-12">
- <div class="sparkline13-list">
+   <div class="row">
+     <div class="col-12">
+       <div class="sparkline13-list">
 
- <div class="sparkline13-graph">
- <div class="datatable-dashv1-list custom-datatable-overright">
+         <div class="sparkline13-graph">
+           <div class="datatable-dashv1-list custom-datatable-overright">
 
-<div class="">
+            <div class="">
 
-   <div class="main-sparkline13-hd">
-     <div class="part" >
-       <h1>Payment Screen ADK <small>(Select Row To Update)</small></h1>
-     
-     </div>
+             <div class="main-sparkline13-hd">
+               <div class="part" >
+                 <h1>Payment Screen ADK <small>(Select Row To Update)</small></h1>
 
-     
-    
-       <div class="btn-group btn-group-sm">
-         <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</button>
-         
-     
-         
-   
-       <div class="dropdown btn-group ">
-         <button class=" dropdown-toggle btn btn-primary btn-sm"  type="button" data-toggle="dropdown"><i class="fa fa-toggle-down"></i> Column
-         </button>
-         <ul class="dropdown-menu trust-menu">
+               </div>
 
 
-          <li class="dropdown-item ">
-          <label for="mtxxxtypecol"> <input type="checkbox" [checked]="mtxxxtypecol" (change)="mtxxxtypecol=!mtxxxtypecol" id="mtxxxtypecol"/>&nbsp;MTXXX TYPE</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="fieldlabelcol"> <input type="checkbox" [checked]="fieldlabelcol" (change)="fieldlabelcol=!fieldlabelcol" id="fieldlabelcol"/>&nbsp;FIELD LABEL</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="scancol"> <input type="checkbox" [checked]="scancol" (change)="scancol=!scancol" id="scancol"/>&nbsp;SCAN</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="tagacol"> <input type="checkbox" [checked]="tagacol" (change)="tagacol=!tagacol" id="tagacol"/>&nbsp;TAG A</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="tagcol"> <input type="checkbox" [checked]="tagcol" (change)="tagcol=!tagcol" id="tagcol"/>&nbsp;TAG</label> 
-          </li> 
-          <ng-container *ngIf="_isaccess">
-          <li class="dropdown-item ">
-          <label for="oldmtxxxtypecol"> <input type="checkbox" [checked]="oldmtxxxtypecol" (change)="oldmtxxxtypecol=!oldmtxxxtypecol" id="oldmtxxxtypecol"/>&nbsp;OLD MTXXX TYPE</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="oldfieldlabelcol"> <input type="checkbox" [checked]="oldfieldlabelcol" (change)="oldfieldlabelcol=!oldfieldlabelcol" id="oldfieldlabelcol"/>&nbsp;OLD FIELD LABEL</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="oldscancol"> <input type="checkbox" [checked]="oldscancol" (change)="oldscancol=!oldscancol" id="oldscancol"/>&nbsp;OLD SCAN</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="oldtagacol"> <input type="checkbox" [checked]="oldtagacol" (change)="oldtagacol=!oldtagacol" id="oldtagacol"/>&nbsp;OLD TAG A</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="oldtagcol"> <input type="checkbox" [checked]="oldtagcol" (change)="oldtagcol=!oldtagcol" id="oldtagcol"/>&nbsp;OLD TAG</label> 
-          </li> 
-          <li class="dropdown-item ">
-          <label for="changetypecol"> <input type="checkbox" [checked]="changetypecol" (change)="changetypecol=!changetypecol" id="changetypecol"/>&nbsp;CHANGE TYPE</label> 
-          </li> 
-           </ng-container>
-        
+
+               <div class="btn-group btn-group-sm">
+                 <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</button>
+
+
+
+
+                 <div class="dropdown btn-group ">
+                   <button class=" dropdown-toggle btn btn-primary btn-sm"  type="button" data-toggle="dropdown"><i class="fa fa-toggle-down"></i> Column
+                   </button>
+                   <ul class="dropdown-menu trust-menu">
+
+
+                    <li class="dropdown-item ">
+                      <label for="mtxxxtypecol"> <input type="checkbox" [checked]="mtxxxtypecol" (change)="mtxxxtypecol=!mtxxxtypecol" id="mtxxxtypecol"/>&nbsp;MTXXX TYPE</label> 
+                    </li> 
+                    <li class="dropdown-item ">
+                      <label for="fieldlabelcol"> <input type="checkbox" [checked]="fieldlabelcol" (change)="fieldlabelcol=!fieldlabelcol" id="fieldlabelcol"/>&nbsp;FIELD LABEL</label> 
+                    </li> 
+                    <li class="dropdown-item ">
+                      <label for="scancol"> <input type="checkbox" [checked]="scancol" (change)="scancol=!scancol" id="scancol"/>&nbsp;SCAN</label> 
+                    </li> 
+                    <li class="dropdown-item ">
+                      <label for="tagacol"> <input type="checkbox" [checked]="tagacol" (change)="tagacol=!tagacol" id="tagacol"/>&nbsp;TAG A</label> 
+                    </li> 
+                    <li class="dropdown-item ">
+                      <label for="tagcol"> <input type="checkbox" [checked]="tagcol" (change)="tagcol=!tagcol" id="tagcol"/>&nbsp;TAG</label> 
+                    </li> 
+                    <ng-container *ngIf="_isaccess">
+                      <li class="dropdown-item ">
+                        <label for="oldmtxxxtypecol"> <input type="checkbox" [checked]="oldmtxxxtypecol" (change)="oldmtxxxtypecol=!oldmtxxxtypecol" id="oldmtxxxtypecol"/>&nbsp;OLD MTXXX TYPE</label> 
+                      </li> 
+                      <li class="dropdown-item ">
+                        <label for="oldfieldlabelcol"> <input type="checkbox" [checked]="oldfieldlabelcol" (change)="oldfieldlabelcol=!oldfieldlabelcol" id="oldfieldlabelcol"/>&nbsp;OLD FIELD LABEL</label> 
+                      </li> 
+                      <li class="dropdown-item ">
+                        <label for="oldscancol"> <input type="checkbox" [checked]="oldscancol" (change)="oldscancol=!oldscancol" id="oldscancol"/>&nbsp;OLD SCAN</label> 
+                      </li> 
+                      <li class="dropdown-item ">
+                        <label for="oldtagacol"> <input type="checkbox" [checked]="oldtagacol" (change)="oldtagacol=!oldtagacol" id="oldtagacol"/>&nbsp;OLD TAG A</label> 
+                      </li> 
+                      <li class="dropdown-item ">
+                        <label for="oldtagcol"> <input type="checkbox" [checked]="oldtagcol" (change)="oldtagcol=!oldtagcol" id="oldtagcol"/>&nbsp;OLD TAG</label> 
+                      </li> 
+                      <li class="dropdown-item ">
+                        <label for="changetypecol"> <input type="checkbox" [checked]="changetypecol" (change)="changetypecol=!changetypecol" id="changetypecol"/>&nbsp;CHANGE TYPE</label> 
+                      </li> 
+                    </ng-container>
+
+
+
+
+                  </ul>
+                </div>
+                <ng-container *ngIf="_isaccess">
+                  <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
+                       (click)="ChkdeleteSelected(myform)"><i class="fa fa
+                       -check-square-o"></i> Approve</button>
+                   <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
+                       (click)="ChkdeleteSelected(myform)"><i class="fa fa-times"></i> Reject</button>
+                 </ng-container>
+                <ng-container *ngIf="!_isaccess">
+                 <button (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
+                 <button  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
+               </ng-container>
+             </div>
+
+
+
+
+
+
+
+
+           </div>
+         </div>
+         <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
+            <thead class="table_header">
+
+
+
+
+             <tr>
+              <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
+              <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
+              <th>Sr.no</th>
+              <th *ngIf="mtxxxtypecol"><span><input type="text" class="form-control"   placeholder="MTXXX_TYPE"  [(ngModel)]="mtx" /></span></th>
+              <th *ngIf="fieldlabelcol"><span><input type="text" class="form-control"  placeholder="FIELD_LABEL" [(ngModel)]="fieldlabelterm"/></span> </th>
+              <th *ngIf="scancol"><span><input type="text" class="form-control"  placeholder="SCAN" [(ngModel)]="scan"/></span> </th>
+              <th *ngIf="tagacol"><span><input type="text" class="form-control"  placeholder="TAG_A" [(ngModel)]="taga"/></span> </th>
+              <th *ngIf="tagcol"><span><input type="text" class="form-control"  placeholder="TAG" [(ngModel)]="tag"/></span> </th>
+
+              <ng-container *ngIf="_isaccess">
+
+                <th *ngIf="oldmtxxxtypecol"><span><input type="text" class="form-control"  placeholder="OLD_MTXXX_TYPE" [(ngModel)]="oldmtx"/></span></th>
+                <th *ngIf="oldfieldlabelcol"><span><input type="text" class="form-control"  placeholder="OLD_FIELD_LABEL" [(ngModel)]="oldfldl"/></span> </th>
+                <th *ngIf="oldscancol"><span><input type="text" class="form-control"  placeholder="OLD_SCAN" [(ngModel)]="scanold"/></span> </th>
+                <th *ngIf="oldtagacol"><span><input type="text" class="form-control"  placeholder="OLD_TAG_A" [(ngModel)]="tagaold"/></span> </th>
+                <th *ngIf="oldtagcol"><span><input type="text" class="form-control"  placeholder="OLD_TAG" [(ngModel)]="tagold"/></span> </th>
+
+                <th ><span>  <select name="changetype" class="form-control"  [(ngModel)]="changetype">
+                  <option value="INSERT">INSERT</option>
+                  <option value="DELETE">DELETE</option>
+                  <option value="UPDATE">UPDATE</option>
+                </select></span> </th>
             
-         
+              </ng-container>
 
-         </ul>
-       </div>
-       <ng-container *ngIf="!_isaccess">
-       <button (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
-       <button  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
-       </ng-container>
-     </div>
-    
+              <!-- <th *ngIf="ref_keys">REF KEY</th> -->
 
-     
-   
-   
- 
+            </tr> 
+          </thead>
+          <tbody  *ngIf="showdatapart?.length;else no_data_templ">
+
+            <ng-container  *ngFor="let item of showdatapart |psadk:mtx:fieldlabelterm:scan:tag:taga:oldmtx:oldfldl:scanold:tagold:tagaold:changetype| paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
+              <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"   (click)="onEdit(item,'Update')" [class.selected]="item === selectedpsadkRow">
+                <td *ngIf="!_isaccess" style="text-align: center;">
+                  <input type="checkbox"
+                  [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
+                    value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
+
+                <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+                    [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
+                    value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
+                <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>    
+
+                <td *ngIf="mtxxxtypecol">{{item.MTXXX_TYPE}}</td>
+                <td *ngIf="fieldlabelcol">{{item.FIELD_LABEL}}</td>
+                <td *ngIf="scancol">{{item.SCAN}}</td>
+                <td *ngIf="tagacol">{{item.TAG_A}}</td>
+                <td *ngIf="tagcol">{{item.TAG}}</td>
 
 
-</div>
-</div>
-   <div class="table-responsive">
-    <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
-      <thead class="table_header">
-   
-     
-   
-   
-   <tr>
-        <th class="text-center"><input type="checkbox" class="disabled"/></th>
-        <th>Sr.no</th>
-        <th *ngIf="mtxxxtypecol"><span><input type="text" class="form-control"   placeholder="MTXXX_TYPE"  [(ngModel)]="mtx" /></span></th>
-        <th *ngIf="fieldlabelcol"><span><input type="text" class="form-control"  placeholder="FIELD_LABEL" [(ngModel)]="fieldlabel"/></span> </th>
-        <th *ngIf="scancol"><span><input type="text" class="form-control"  placeholder="SCAN" [(ngModel)]="scan"/></span> </th>
-        <th *ngIf="tagacol"><span><input type="text" class="form-control"  placeholder="TAG_A" [(ngModel)]="taga"/></span> </th>
-        <th *ngIf="tagcol"><span><input type="text" class="form-control"  placeholder="TAG" [(ngModel)]="tag"/></span> </th>
 
-        <ng-container *ngIf="_isaccess">
-         
-            <th *ngIf="oldmtxxxtypecol"><span><input type="text" class="form-control"  placeholder="OLD_MTXXX_TYPE" [(ngModel)]="oldmtx"/></span></th>
-            <th *ngIf="oldfieldlabelcol"><span><input type="text" class="form-control"  placeholder="OLD_FIELD_LABEL" [(ngModel)]="oldfldl"/></span> </th>
-            <th *ngIf="oldscancol"><span><input type="text" class="form-control"  placeholder="OLD_SCAN" [(ngModel)]="scanold"/></span> </th>
-            <th *ngIf="oldtagacol"><span><input type="text" class="form-control"  placeholder="OLD_TAG_A" [(ngModel)]="tagaold"/></span> </th>
-            <th *ngIf="oldtagcol"><span><input type="text" class="form-control"  placeholder="OLD_TAG" [(ngModel)]="tagold"/></span> </th>
-   
-          <th ><span><input type="text" class="form-control"  placeholder="CHANGE_TYPE" [(ngModel)]="ct"/></span> </th>
-          <th colspan="2" style="text-align: center;">ACTION</th>
-        </ng-container>
-       
-        <!-- <th *ngIf="ref_keys">REF KEY</th> -->
-      
-      </tr> 
-    </thead>
-    <tbody  *ngIf="showdatapart?.length;else no_data_templ">
-      
-      <ng-container  *ngFor="let item of showdatapart |psadk:mtx:fieldlabel:scan:tag:taga:oldmtx:oldfldl:scanold:tagold:tagaold:ct| paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
-        <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"   (click)="onEdit(item,'Update')" [class.selected]="item === selectedpsadkRow">
-          <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"  id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}" (change)="selectID(item.REF_KEY,item.isSelected)"></td>
-          <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>    
-          
-          <td *ngIf="mtxxxtypecol">{{item.MTXXX_TYPE}}</td>
-          <td *ngIf="fieldlabelcol">{{item.FIELD_LABEL}}</td>
-          <td *ngIf="scancol">{{item.SCAN}}</td>
-          <td *ngIf="tagacol">{{item.TAG_A}}</td>
-          <td *ngIf="tagcol">{{item.TAG}}</td>
-        
-        
-    
-      
-          <ng-container *ngIf="_isaccess">
-            
-            <td *ngIf="oldmtxxxtypecol">{{item.OLD_MTXXX_TYPE}}</td>
-            <td *ngIf="oldfieldlabelcol">{{item.OLD_FIELD_LABEL}}</td>
-            <td *ngIf="oldscancol">{{item.OLD_SCAN}}</td>
-            <td *ngIf="oldtagacol">{{item.OLD_TAG_A}}</td>
-            <td *ngIf="oldtagcol">{{item.OLD_TAG}}</td>
-            <td *ngIf="changetypecol">{{item.CHANGE_TYPE}}</td>
-            <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"  (click)="ChkdeleteSelected(myform,item)" [class.selected]="item === selectedpsadkRow">Approve</button></td>
-            <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)" (click)="ChkNotdeleteSelected(myform,item)" [class.selected]="item === selectedpsadkRow">Reject</button></td> 
+
+                <ng-container *ngIf="_isaccess">
+
+                  <td *ngIf="oldmtxxxtypecol">{{item.OLD_MTXXX_TYPE}}</td>
+                  <td *ngIf="oldfieldlabelcol">{{item.OLD_FIELD_LABEL}}</td>
+                  <td *ngIf="oldscancol">{{item.OLD_SCAN}}</td>
+                  <td *ngIf="oldtagacol">{{item.OLD_TAG_A}}</td>
+                  <td *ngIf="oldtagcol">{{item.OLD_TAG}}</td>
+                  <td *ngIf="changetypecol">{{item.CHANGE_TYPE}}</td>
+
+                </ng-container>
+
+              </tr>
             </ng-container>
-       
-        </tr>
-      </ng-container>
-     
-    </tbody>
-    <ng-template #no_data_templ>
-      <tbody>
-        <tr >
-     <td style="text-align: center;" colspan="100%"> No data found...</td>
-    </tr>
-    </tbody>
-   </ng-template>
-    
-    </table>
+
+          </tbody>
+          <ng-template #no_data_templ>
+            <tbody>
+              <tr >
+               <td style="text-align: center;" colspan="100%"> No data found...</td>
+             </tr>
+           </tbody>
+         </ng-template>
+
+       </table>
+     </div>
+
+     <div class="row">
+       <div class="col-12">
+
+
+        <div class="align-items-md-start d-flex justify-content-lg-end">
+          <select id="PerPage"  [(ngModel)]="pageSize"  *ngIf="showdatapart?.length">
+           <option [ngValue]="5">5</option>
+           <option [ngValue]="10">10</option>
+           <option [ngValue]="25">25</option>
+           <option [ngValue]="50">50</option>
+         </select> <pagination-controls  (pageChange)="p = $event"></pagination-controls>
+       </div>
+
+
+
+
+
+
+     </div>
+
    </div>
 
- <div class="row">
-   <div class="col-12">
-   
-    
-<div class="align-items-md-start d-flex justify-content-lg-end">
-<select id="PerPage"  [(ngModel)]="pageSize"  *ngIf="showdatapart?.length">
- <option [ngValue]="5">5</option>
- <option [ngValue]="10">10</option>
- <option [ngValue]="25">25</option>
- <option [ngValue]="50">50</option>
-</select> <pagination-controls  (pageChange)="p = $event"></pagination-controls>
-</div>
-      
 
-
-    
-   
-   
-   </div>
- 
- </div>
-
-
- <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
-   <div class="panel-body">
-     <h4>Add Record</h4>
-   </div>
+   <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+     <div class="panel-body">
+       <h4>Add Record</h4>
+     </div>
 
      {{myform.value|json}}
- <div class="row">
+     <div class="row">
        <div class="col-md-4">
          <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="_tableservice.selectpsadk.REF_KEY">
          <div class="form-group">
            <label>Zone Id</label>
-         <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel" [(ngModel)]="_tableservice.selectpsadk.ZONE_ID" required>
+           <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel" [(ngModel)]="_tableservice.selectpsadk.ZONE_ID" required>
          </div>
          <div class="form-group">
            <label>MTXXX_TYPE</label>
            <input type="text" class="form-control" name="MTXXX_TYPE" #MTXXX_TYPE="ngModel" [(ngModel)]="_tableservice.selectpsadk.MTXXX_TYPE" required>
+         </div>
+         <div class="form-group">
+          <label>FIELD_LABEL</label>
+          <input type="text" class="form-control" name="FIELD_LABEL" #FIELD_LABEL="ngModel" [(ngModel)]="_tableservice.selectpsadk.FIELD_LABEL" required>
+        </div>
+        <div class="form-group">
+          <label>SCAN</label>
+          <select class="form-control" name="SCAN" #SCAN="ngModel" [(ngModel)]="_tableservice.selectpsadk.SCAN">
+           <option value="Y">Yes</option>
+           <option value="N">No</option>
+         </select>
        </div>
        <div class="form-group">
-        <label>FIELD_LABEL</label>
-      <input type="text" class="form-control" name="FIELD_LABEL" #FIELD_LABEL="ngModel" [(ngModel)]="_tableservice.selectpsadk.FIELD_LABEL" required>
-    </div>
-    <div class="form-group">
-        <label>SCAN</label>
-     <select class="form-control" name="SCAN" #SCAN="ngModel" [(ngModel)]="_tableservice.selectpsadk.SCAN">
-         <option value="Y">Yes</option>
-         <option value="N">No</option>
-     </select>
-    </div>
-    <div class="form-group">
         <label>TAG_A</label>
-      <input type="text" class="form-control" name="TAG_A" #TAG_A="ngModel" [(ngModel)]="_tableservice.selectpsadk.TAG_A" required>
-    </div>
-    <div class="form-group">
+        <input type="text" class="form-control" name="TAG_A" #TAG_A="ngModel" [(ngModel)]="_tableservice.selectpsadk.TAG_A" required>
+      </div>
+      <div class="form-group">
         <label>FIELD_LABEL</label>
-      <input type="text" class="form-control" name="TAG" #TAG="ngModel" [(ngModel)]="_tableservice.selectpsadk.TAG" required>
+        <input type="text" class="form-control" name="TAG" #TAG="ngModel" [(ngModel)]="_tableservice.selectpsadk.TAG" required>
+      </div>
+
     </div>
 
+    <div style="display: none;">
+     <div class="col-md-4">
+       <div class="form-group">
+         <label>User Id</label>
+         <input type="text" class="form-control" name="USER_ID"  [value]="UserId"  [(ngModel)]="UserId">
        </div>
-       
-       <div style="display: none;">
-       <div class="col-md-4">
-         <div class="form-group">
-           <label>User Id</label>
-           <input type="text" class="form-control" name="USER_ID"  [value]="UserId"  [(ngModel)]="UserId">
-         </div>
-         <div class="form-group">
-           <label>User Name</label>
-           <input type="text" class="form-control" name="USER_NAME"  [value]="UserName"  [(ngModel)]="UserName">
-         </div>
-         
+       <div class="form-group">
+         <label>User Name</label>
+         <input type="text" class="form-control" name="USER_NAME"  [value]="UserName"  [(ngModel)]="UserName">
        </div>
-       <div class="col-md-4">
-        <div class="form-group">
-            <label>User Zone</label>
-            <input type="text" class="form-control" name="USER_ZONE" [value]="userzone"   [(ngModel)]="userzone">
-          </div>
-         <div class="form-group">
-           <label>Role</label>
-           <input type="text" class="form-control" name="ROLE" [value]="myData"  [(ngModel)]="myData">
-         </div>
-       </div>
-       <div class="col-md-4">
-         <div></div>
-           <input type="text" class="form-control" name="HIST_ID" value=""  [(ngModel)]="_tableservice.selectpsadk.HIST_ID">
-     
-
-           <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
-       
-     
-           <input type="text" class="form-control" name="CHANGE_TYPE" value=""  [(ngModel)]="_tableservice.selectpsadk.CHANGE_TYPE">
-
-          
-         
-       </div>
-     </div>
 
      </div>
+     <div class="col-md-4">
+      <div class="form-group">
+        <label>User Zone</label>
+        <input type="text" class="form-control" name="USER_ZONE" [value]="userzone"   [(ngModel)]="userzone">
+      </div>
+      <div class="form-group">
+       <label>Role</label>
+       <input type="text" class="form-control" name="ROLE" [value]="myData"  [(ngModel)]="myData">
+     </div>
+   </div>
+   <div class="col-md-4">
+     <div></div>
+     <input type="text" class="form-control" name="HIST_ID" [value]="ybunch"  [(ngModel)]="ybunch">
+     
+
+     <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
+
+     
+     <input type="text" class="form-control" name="CHANGE_TYPE" value=""  [(ngModel)]="_tableservice.selectpsadk.CHANGE_TYPE">
 
 
- 
-   <input type="submit" class="btn btn-success"  value="{{btn_name}}">
-   
- </form>
+
+   </div>
+ </div>
+
+</div>
+
+
+
+<input type="submit" class="btn btn-success"  value="{{btn_name}}">
+
+</form>
 
 
 
 
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- 
- <div class="footer-copyright-area">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="footer-copyright-area">
  <div class="container-fluid">
- <div class="row">
- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
- <div class="footer-copy-right">
- <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
+   <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+       <div class="footer-copy-right">
+         <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
+       </div>
+     </div>
+   </div>
  </div>
- </div>
- </div>
- </div>
- </div>
+</div>
