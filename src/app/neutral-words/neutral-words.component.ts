@@ -10,15 +10,16 @@ import { element } from 'protractor';
 import { data, parseJSON } from 'jquery';
 import { Observable } from 'rxjs';
 import { Location } from '@angular/common';
+
 @Component({
   selector: 'app-neutral-words',
   templateUrl: './neutral-words.component.html',
   styleUrls: ['./neutral-words.component.css'],
-  providers: [TableDataService]
 })
 
 
 export class NeutralWordsComponent implements OnInit {
+  msgInput: string = 'QA';
   public pageSize: number = 10;
   public myData: string;
   public UserId: string;
@@ -44,6 +45,9 @@ export class NeutralWordsComponent implements OnInit {
   isButtonClass: boolean;
   valuedelete: string = "";
   _isaccess: boolean;
+  _InsertButtonAccess: boolean;
+  _DeleteButtonAccess: boolean;
+  _updateButtonAccess: boolean;
   updatemark: string;
   status_alph: string = "";
   flag: string = "";
@@ -71,9 +75,12 @@ export class NeutralWordsComponent implements OnInit {
   checkedList: any;
   histmasterSelected: boolean;
   histcheckedList: any;
-  Userzone:string;
-  zonearray:any;
-  zonevalue:string;
+  Userzone: string;
+  zonearray: any;
+  zonevalue: string;
+  _page_authority: any;
+  orig_value: any;
+ 
   constructor(public _tableservice: TableDataService, public _authservice: AuthserviceService, private toastr: ToastrService, private _location: Location) {
     this.masterSelected = false;
     this.histmasterSelected = false;
@@ -81,16 +88,49 @@ export class NeutralWordsComponent implements OnInit {
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
     this.Userzone = localStorage.getItem('UserZone');
-
     this.getCheckedItemList();
     this.getCheckedItemhistList();
+    this.sendButtonClick();
   }
 
   ngOnInit(): void {
 
     this.resetForm();
     this.refreshEmployeeList();
-    this.getZonelist(); 
+    this.getZonelist();
+    this.unseen();
+    this.sendButtonClick();
+    this.viewmessage();
+  }
+
+  sendButtonClick() {
+    this._tableservice.sendMessage(this.msgInput)
+  }
+ 
+  viewmessage()
+  {
+    
+    this._tableservice.onNewMessage().subscribe(msg => {
+      console.log('got a msg: ' , msg.result);
+    });
+  }
+
+  resetForm(form?: NgForm) {
+    if (form)
+      form.reset();
+    this._tableservice.selectedneu = {
+      REF_KEY: "",
+      ROLE: this.myData,
+      USER_ID: this.UserId,
+      USER_NAME: this.UserName,
+      USER_ZONE: "QA",
+      NOISE_WORD: "",
+      ZONE_ID: "",
+      HIST_ID: this.ybunch,
+      APPROVE_STATUS: this.apstatus,
+      CHANGE_TYPE: ""
+
+    }
   }
 
   checkUncheckAll() {
@@ -113,14 +153,11 @@ export class NeutralWordsComponent implements OnInit {
       if (this.showdata[i].isSelected)
         this.checkedList.push(this.showdata[i].REF_KEY);
     }
-    // this.checkedList = JSON.stringify(this.checkedList);
- 
+
+
     this.xbunch = this.checkedList.toString();
     this.isdelete_button = false;
   }
-
-
-
 
 
   histcheckUncheckAll() {
@@ -146,85 +183,96 @@ export class NeutralWordsComponent implements OnInit {
     this.ybunch = this.histcheckedList.toString();
   }
 
-  
-
-
-  resetForm(form?: NgForm) {
-    if (form)
-      form.reset();
-    this._tableservice.selectedneu = {
-      REF_KEY: "",
-      ROLE: this.myData,
-      USER_ID: this.UserId,
-      USER_NAME: this.UserName,
-      USER_ZONE: "QA",
-      NOISE_WORD: "",
-      ZONE_ID: "",
-      HIST_ID: this.ybunch,
-      APPROVE_STATUS: this.apstatus,
-      CHANGE_TYPE: ""
-
-    }
-  }
-
-
-  backClicked() {
-    this._location.back();
-  }
 
   refreshEmployeeList() {
-    var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if (myData === "makers") {
-      this._tableservice.neutrallistpage().subscribe((res) => {
-        this.showdata = res.result;
-        this.tbl_header = res.metadata;
-        console.log(this.tbl_header);
-      })
+    this._tableservice.getassignaccesslist().subscribe((res) => {
+      this.orig_value = res.result;
+      this._page_authority = parseJSON(this.orig_value);
+
+      if (this._page_authority.neutral_words.approval == false) {
+        this.valuedelete = "1";
+        this._isaccess = false;
+        this.updatemark = "1";
+      }
+      if (this._page_authority.neutral_words.approval == true) {
+        this.valuedelete = "y";
+        this._isaccess = true;
+        this.updatemark = "y";
+      }
+      if (this._page_authority.neutral_words.add == false) {
+        this._InsertButtonAccess = false;
+      }
+      if (this._page_authority.neutral_words.add == true) {
+        this._InsertButtonAccess = true;
+      }
+      if (this._page_authority.neutral_words.delete == false) {
+        this._DeleteButtonAccess = false;
+      }
+      if (this._page_authority.neutral_words.delete == true) {
+        this._DeleteButtonAccess = true;
+      }
+      if (this._page_authority.neutral_words.update == false) {
+        this._updateButtonAccess = false;
+      }
+      if (this._page_authority.neutral_words.update == true) {
+        this._updateButtonAccess = true;
+      }
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
 
 
-
-      this.valuedelete = "1";
-      this._isaccess = false;
-      this.updatemark = "1";
-
-    }
-    else if (myData === "checkers") {
-      this._tableservice.neutrallistpage().subscribe((res) => {
-        this.showdata = res.result;
-        this.tbl_header = res.metadata;
-        console.log(this.showdata);
-      })
-      this.valuedelete = "y";
-      this._isaccess = true;
-      this.updatemark = "y";
+      //throw error;   //You can also throw the error to a global error handler
+    });
+  }
+  postChangetype(change_type) {
+    this._tableservice.neutrallistpagetype(change_type).subscribe((res) => {
+      this.showdata = res.result;
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
 
 
-    }
+      //throw error;   //You can also throw the error to a global error handler
+    });
+  }
+ 
+
+
+  getZonelist() {
+    this._tableservice.getassignzonelist().subscribe((res) => {
+      this.zonearray = res.result.rows;
+      console.log(this.zonearray);
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
   }
 
- getZonelist()
-{
-  this._tableservice.getassignzonelist().subscribe((res) => {
-   this.zonearray = res.result.rows;
-   console.log(this.zonearray);
-  })
-}
-sendZonelist(form)
-{
- console.log(form.value);
-}
 
+  onZoneChange(zonevalue: any) {
 
+    var obj = {
+      "ROLE": this.myData,
+      "USER_ZONE": this.zonevalue,
+      "USER_ID": this.UserId,
+      "CHANGE_TYPE": this.changetype
+    };
 
-onZoneChange(zonevalue:any){
-
-var obj = {  "ROLE" : this.myData,
-"USER_ZONE" : this.zonevalue};
-    this._tableservice.getchangezonelist(obj).subscribe((res)=>{
+    this._tableservice.getchangezonelist(obj).subscribe((res) => {
       this.showdata = res.result;
       this.toastr.success(res.message, 'zonelist');
-  
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
     });
 
   }
@@ -234,47 +282,64 @@ var obj = {  "ROLE" : this.myData,
     this.toggle = !this.toggle;
     $("#addForm").toggle();
   }
-
-
-
-
-
-
-
-
-  submitform(form: NgForm) {
-
-
-    if (form.value.REF_KEY == "") {
-      this.toggle = !this.toggle;
-      $("#addForm").toggle();
-      this._tableservice.neutrallistpost(form.value).subscribe((res) => {
-        //  this.resetForm(form);
-        this.refreshEmployeeList();
-        this.toastr.success('data inserted successfully', 'Neutral Words');
-
-      });
-    }
-    else {
-      this._tableservice.neutrallistput(form.value).subscribe((res) => {
-        this.toggle = !this.toggle;
-        $("#addForm").toggle();
-        // this.resetForm(form);
-        var showdatas = res.result;
-        console.log("update" + showdatas);
-        this.refreshEmployeeList();
-        this.toastr.info('data update successfully', 'Neutral Words');
-
-      });
-    }
+  updateform = () => {
+    this.toggle = !this.toggle;
+    $("#updateForm").toggle();
   }
 
 
 
 
+  unseen() {
+    this._tableservice.neutrallistpage().subscribe((res) => {
+      this.showdata = res.result;
+      this.toastr.success(res.message, 'Neutral - Words');
+    }, (error) => {
+      this.toastr.error(error, 'Neutral - Words');
 
-  onEdit(neuscheme: Neutralscheme, bt: string) {
-    this.btn_name = "Update";
+    });
+  }
+
+
+  submitform(form: NgForm) {
+    $("#addForm").toggle();
+    this._tableservice.neutrallistpost(form.value).subscribe((res) => {
+      this.resetForm(form);
+      this.refreshEmployeeList();
+      this.unseen();
+      this.toastr.success(res.message, 'Neutral Words');
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+  }
+
+  UpdateSubmitForm(form: NgForm) {
+
+    this._tableservice.neutrallistput(form.value).subscribe((res) => {
+      var showdatas = res.result;
+      console.log("update" + showdatas);
+      this.unseen();
+      this.toastr.info(res.message, 'Neutral Words');
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+
+  }
+
+
+
+
+  onEdit(neuscheme: Neutralscheme) {
     this._tableservice.selectedneu = neuscheme;
     this.selectedNeutralRow = neuscheme;
   }
@@ -283,36 +348,36 @@ var obj = {  "ROLE" : this.myData,
 
 
   deleteSelected(form: NgForm) {
-    this.delete_toggle = !this.delete_toggle; 
-      this._tableservice.neutraldelpage(this.xbunch).subscribe((res) => {
-        this.refreshEmployeeList();
-        this.resetForm(form);
-        this.toastr.warning(res.message, 'Neutral Words');
-      });
-
-  }
-
-  
-  changetext(status: string, form: NgForm) {
-    this.apstatus = status;
-    this.myData = localStorage.getItem('Role');
-    this.UserId = localStorage.getItem('Id');
-    this.UserName = localStorage.getItem('Username');
-    console.log(this.apstatus);
-  }
-  changetextr(status: string, form: NgForm) {
-    this.apstatus = status;
-    this.myData = localStorage.getItem('Role');
-    this.UserId = localStorage.getItem('Id');
-    this.UserName = localStorage.getItem('Username');
-    console.log(this.apstatus);
-  }
-  ChkdeleteSelected(form: NgForm) {
-
-    this._tableservice.neudelapproved(form.value).subscribe((res) => {
+    this.delete_toggle = !this.delete_toggle;
+    this._tableservice.neutraldelpage(this.xbunch).subscribe((res) => {
       this.refreshEmployeeList();
-      this.toastr.success(res.message, 'Approved');
+      this.resetForm(form);
+      this.unseen();
+      this.toastr.warning(res.message, 'Neutral Words');
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
 
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+
+  }
+
+
+  ChkdeleteSelected(status, form: NgForm) {
+    var value1 = { "APPROVE_STATUS": status }
+    this._tableservice.neudelapproved({ ...form.value, ...value1 }).subscribe((res) => {
+      this.refreshEmployeeList();
+      this.unseen();
+      this.toastr.success(res.message, status);
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error.statusTexterror.status, 'Neutral - Words')
+
+
+      //throw error;   //You can also throw the error to a global error handler
     });
   }
 

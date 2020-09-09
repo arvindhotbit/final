@@ -136,9 +136,7 @@ export class DepartmentComponent implements OnInit {
 
 
 
-  backClicked() {
-    this._location.back();
-  }
+
  
   refreshEmployeeList()
   {
@@ -288,19 +286,6 @@ ChkdeleteSelected(form:NgForm,depart:departscheme)
 
 
 }
-ChkNotdeleteSelected(form:NgForm,depart:departscheme)
-{
 
-
-  this._tableservice.selectdepartment = depart;
-  this.selectdepartmenttralRow = depart;
-  console.log(form.value,depart);
-    this._tableservice.neudeldisapproved({...form.value,...depart}).subscribe((res) => {
-     this.refreshEmployeeList();
-
-      this.toastr.info('Data Restored Successfully', 'Disapproved');
-    });
-
-}
 }
 

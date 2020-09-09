@@ -26,11 +26,17 @@ import { UsersListComponent } from './admin/users-list/users-list.component';
 import { ActivateGuard } from './activate.guard';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RoleManageComponent } from './admin/role-manage/role-manage.component';
+import { HomeComponent } from './admin/home/home.component';
+import { CaseDetailComponent } from './case-detail/case-detail.component';
+import { HomepageComponent } from './reports/homepage/homepage.component';
+import { AdminReportComponent } from './reports/admin-report/admin-report.component';
+import { OperationReportComponent } from './reports/operation-report/operation-report.component';
+import { ComplianceReportComponent } from './reports/compliance-report/compliance-report.component';
 const routes: Routes = [
      
       {path: 'internamanagement', component: InterlistManagementComponent },
-      {path: 'internallist', component: InternallistDefinationComponent },
-      {path: 'internawatchlist', component: InternallistWatchlistComponent },
+      {path: 'internaldeflist', component: InternallistDefinationComponent },
+      {path: 'internalwatchlist', component: InternallistWatchlistComponent },
       {path: 'blacklistedbic', component: BlacklistBicComponent },
       {path: 'highriskcountries', component: HighRiskCountriesComponent },
       {path: 'neutralwords', component: NeutralWordsComponent },
@@ -38,7 +44,7 @@ const routes: Routes = [
       {path: 'zonevsglobal', component: ZoneVsGlobalComponent },
       {path: 'register', component: RegisterComponent },
       {path: 'login', component: LoginComponent},
-      {path: '', component: LoginComponent},
+      { path: '',   redirectTo: '/login', pathMatch: 'full' },
       {path: 'home', component: DashboardComponent,canActivate : [ActivateGuard] },
       {path: 'delete_good_guy', component:DeleteGoodGuyComponent},
       {path: 'match-score-threshold', component:MatchScoreComponent},
@@ -52,6 +58,28 @@ const routes: Routes = [
       {path: 'paysys', component:PaysysComponent},
       {path: 'users', component:UsersListComponent},
       {path: 'roles_manage', component:RoleManageComponent},
+      {path: 'superAdmin', component:HomeComponent},
+      {path: 'customer-basic-number', component:CaseDetailComponent},
+
+      {
+        path: 'report',            //<---- parent component declared here
+        component: HomepageComponent,
+        children: [                          //<---- child components declared here
+            {
+                path:'admin-report',
+                component: AdminReportComponent
+            },
+            {
+                path:'operation-report',
+                component: OperationReportComponent
+            },
+            {
+                path:'compliance-report',
+                component: ComplianceReportComponent
+            },
+          
+        ]
+    },
       {path: '**', component: PageNotFoundComponent}
 ];
 

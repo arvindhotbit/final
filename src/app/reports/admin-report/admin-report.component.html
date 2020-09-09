@@ -1,0 +1,264 @@
+<style>
+  .table-sm td,
+  .table-sm th {
+    padding: 5px;
+    text-align: center;
+    margin: 0px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+</style>
+
+<div class="data-table-area mg-b-15">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="sparkline13-list">
+          <div class="sparkline13-graph">
+            <div class="datatable-dashv1-list custom-datatable-overright">
+              <div class="">
+                <div class="main-sparkline13-hd">
+                  <div class="part">
+                    <h1>Admin Report <small>(Select Row To Update)</small></h1>
+                  </div>
+                  <div class="btn-group btn-group-sm">
+                    <select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
+                      (ngModelChange)="onZoneChange($event)">
+                      <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                    </select>
+                    <select name="TABLE_NAME" [(ngModel)]="pageshistory" (ngModelChange)="onpageChange($event)">
+
+                      <option value="NEUTRAL_WORDS_HIST">NEUTRAL_WORDS_HIST</option>
+                      <option value="NS_FIELDS_HIST">NS_FIELDS_HIST</option>
+                      <option value="PS_FIELDS_ADK_HIST">PS_FIELDS_ADK_HIST</option>
+                      <option value="MATCH_SCORE_THRESHOLD_HIST">MATCH_SCORE_THRESHOLD_HIST</option>
+                      <option value="INTERNAL_LIST_DEF_HIST">INTERNAL_LIST_DEF_HIST</option>
+                      <option value="CUST_BASIC_NUMBER_POS_HIST">CUST_BASIC_NUMBER_POS_HIST</option>
+                      <option value="PS_FIELDS_EPH_HIST">PS_FIELDS_EPH_HIST</option>
+                      <option value="SCREEN_PEP_HIST">SCREEN_PEP_HIST</option>
+                      <option value="SENSITIVE_WORDS_HIST">SENSITIVE_WORDS_HIST</option>
+                      <option value="ZONE_X_GLOBAL_WL_KEYWORDS_HIST">ZONE_X_GLOBAL_WL_KEYWORDS_HIST</option>
+                      <option value="BLACKLISTED_BIC_HIST">BLACKLISTED_BIC_HIST</option>
+                      <option value="INTERNAL_WATCH_LIST_HIST">INTERNAL_WATCH_LIST_HIST</option>
+                      <option value="HIGH_RISK_COUNTRIES_HIST">HIGH_RISK_COUNTRIES_HIST</option>
+                      <option value="SANCTIONED_CITIES_HIST">SANCTIONED_CITIES_HIST</option>
+                    </select>
+                    <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
+                      Back</button>
+                    <div class="dropdown btn-group ">
+                      <button class=" dropdown-toggle btn btn-primary btn-sm" type="button" data-toggle="dropdown"><i
+                          class="fa fa-toggle-down"></i> Column
+                      </button>
+                      <button style="cursor: pointer" class="btn-primary btn-sm" (click)="exportAsXLSX()">
+                        Excel
+                      </button>
+                      <ul class="dropdown-menu trust-menu">
+                        <li class="dropdown-item" *ngFor="let head of showdata[0] | keys">
+                          <label for="noisewordcol">
+                             <input type="checkbox" name="col"   (change)="colshowhide(head,$event)" 
+                              [value]="head"  />&nbsp;{{head}}</label>
+                        </li>
+
+                      </ul>
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="table-responsive">
+                <div class="card-body">
+                  <ul class="list-inline" style="column-count: 5;">
+                    <li  *ngFor="let head of showdata[0] | keys">
+                      <label for="noisewordcol">
+                         <input type="checkbox" name="col"   (change)="colshowhide(head,$event)" 
+                          [value]="head"  />&nbsp;{{head}}</label>
+                    </li>
+
+                  </ul>
+                </div>
+                <table class="table table-bordered table-condensed table-sm table-hover col-vs table-striped"
+                  id="excel-table">
+                  <thead class="table_header">
+                    <tr >
+                     <ng-container  *ngFor="let head of showdata[0] | keys" >
+                      <th *ngIf="filterCol(head)" class="p-2">{{head}}</th>
+                     </ng-container>
+                    
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="showdata?.length;else no_data_templ">
+                    <tr
+                      *ngFor="let item of showdata | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index">
+                     <ng-container  *ngFor="let list of item | keys">
+                      <td  *ngIf="filterCol(list)">{{item[list]}}</td>
+                     </ng-container>
+                     
+                    </tr>
+                  </tbody>
+                  <ng-template #no_data_templ>
+                    <tbody>
+                      <tr>
+                        <td style="text-align: center;" colspan="8"> No data found...</td>
+                      </tr>
+                    </tbody>
+                  </ng-template>
+                </table>
+              </div>
+
+
+
+
+
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="align-items-md-start d-flex justify-content-lg-end">
+                    <select id="PerPage" [(ngModel)]="pageSize" *ngIf="showdata?.length">
+                      <option [ngValue]="5">5</option>
+                      <option [ngValue]="10">10</option>
+                      <option [ngValue]="25">25</option>
+                      <option [ngValue]="50">50</option>
+                    </select>
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-6">
+                  <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+                    <div class="panel-body">
+                      <h4>Add Form</h4>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+                          <label>Zone Id</label>
+                          <select name="ZONE_ID" class="form-control" [(ngModel)]="_tableservice.selectedneu.ZONE_ID">
+                            <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                          </select>
+                        </div>
+
+
+                        <div class="form-group">
+                          <label>Noise Word</label>
+                          <input type="text" class="form-control" name="NOISE_WORD" #NOISE_WORD="ngModel"
+                            [(ngModel)]="_tableservice.selectedneu.NOISE_WORD" required>
+                        </div>
+                      </div>
+                      <div style="display: none;">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>User Id</label>
+                            <input type="text" class="form-control" name="USER_ID" [value]="UserId"
+                              [(ngModel)]="UserId">
+                          </div>
+                          <div class="form-group">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" name="USER_NAME" [value]="UserName"
+                              [(ngModel)]="UserName">
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>User Zone</label>
+                            <input type="text" class="form-control" name="USER_ZONE" value="QA"
+                              [(ngModel)]="_tableservice.selectedneu.USER_ZONE">
+                          </div>
+                          <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div></div>
+                          <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}"
+                            [(ngModel)]="ybunch">
+                          <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"
+                            [(ngModel)]="apstatus">
+                          <input type="text" class="form-control" name="CHANGE_TYPE" value="{{changetype}}"
+                            [(ngModel)]="changetype">
+                        </div>
+                      </div>
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Add Item">
+                  </form>
+                </div>
+                <div class="col-6">
+                  <form #myUform="ngForm" (ngSubmit)="UpdateSubmitForm(myUform)" id="updateForm" style="display: none;">
+
+                    <div class="panel-body">
+                      <h4>Update form</h4>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
+                          [(ngModel)]="_tableservice.selectedneu.REF_KEY">
+                        <div class="form-group">
+                          <label>Zone Id</label>
+                          <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel"
+                            [(ngModel)]="_tableservice.selectedneu.ZONE_ID" required>
+                        </div>
+                        <div class="form-group">
+                          <label>Noise Word</label>
+                          <input type="text" class="form-control" name="NOISE_WORD" #NOISE_WORD="ngModel"
+                            [(ngModel)]="_tableservice.selectedneu.NOISE_WORD" required>
+                        </div>
+                      </div>
+                      <div style="display: none;">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>User Id</label>
+                            <input type="text" class="form-control" name="USER_ID" [value]="UserId"
+                              [(ngModel)]="UserId">
+                          </div>
+                          <div class="form-group">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" name="USER_NAME" [value]="UserName"
+                              [(ngModel)]="UserName">
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>User Zone</label>
+                            <input type="text" class="form-control" name="USER_ZONE" value="QA"
+                              [(ngModel)]="_tableservice.selectedneu.USER_ZONE">
+                          </div>
+                          <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div></div>
+                          <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}"
+                            [(ngModel)]="ybunch">
+                          <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"
+                            [(ngModel)]="apstatus">
+                          <input type="text" class="form-control" name="CHANGE_TYPE" value="{{changetype}}"
+                            [(ngModel)]="changetype">
+                        </div>
+                      </div>
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Update Item">
+                  </form>
+                </div>
+              </div>
+
+
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

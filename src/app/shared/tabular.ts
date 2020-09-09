@@ -229,10 +229,18 @@ export interface internalwatchlist {
 
 					export interface casedetail
 					{
-					 ROLE : string,
-					 ECM_CASE_ID : string,
-					 MESSAGE_ID : string,
-                     CREATION_DTTM:Date
+						REF_KEY : string,
+						USER_ID : string,
+						TYPE : string,
+						EX_USER_ID : string,
+						USER_NAME : string,
+						USER_ZONE : string,
+						ROLE : string,
+						ECM_CASE_ID : string,
+						MESSAGE_ID : string,
+						CREATION_DTTM:string,
+						COMMENTS:string,
+						PAGES : []
 					} 
 					export interface departscheme {
 						REF_KEY : string,

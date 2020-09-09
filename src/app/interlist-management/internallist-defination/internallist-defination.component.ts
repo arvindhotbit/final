@@ -29,6 +29,9 @@ export class InternallistDefinationComponent implements OnInit {
   nsn = true;
   zoneid = true;
   zonefilters:string ="";
+  _InsertButtonAccess:boolean;
+  _DeleteButtonAccess:boolean;
+  _updateButtonAccess:boolean;
   IS_DELETE= false;
   IS_UPDATE= false;
   ref_keys= false;
@@ -62,6 +65,12 @@ export class InternallistDefinationComponent implements OnInit {
   checkedList: any;
   histmasterSelected: boolean;
   histcheckedList: any;
+  changetype:string;
+Userzone:string;
+zonearray:any;
+zonevalue:string;
+_page_authority:any;
+orig_value:any;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
     this.masterSelected = false;
@@ -77,7 +86,8 @@ export class InternallistDefinationComponent implements OnInit {
     
     this.resetForm();
     this.refreshEmployeeList();
-   
+    this.getZonelist();
+    this.unseen();
   }
 
 
@@ -137,45 +147,68 @@ export class InternallistDefinationComponent implements OnInit {
   
   }
 
-  backClicked() {
-    this._location.back();
+
+  unseen() {
+    this._tableservice.getinterdef().subscribe((res) => {
+      this.showdatapart = res.result;
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
   }
- 
-  refreshEmployeeList()
-  {
-    var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-      this._tableservice.getinterdef().subscribe((res)=>{
-        this.showdatapart = res.result;
-        // this.tbl_header = res.metadata.name;
-        console.log("data" , this.showdatapart);
-      })
- 
-    
-    
+  
+  refreshEmployeeList() {
+    this._tableservice.getassignaccesslist().subscribe((res) => {
+      this.orig_value = res.result;
+      this._page_authority = parseJSON(this.orig_value);
+      console.log("arvind",this._page_authority);
+      if(this._page_authority.internallistdef.approval == false)
+      {
       this.valuedelete = "1";
       this._isaccess = false;
       this.updatemark = "1";
-  
-    }
-    else if(myData === "checkers")
-    {
-      this._tableservice.getinterdef().subscribe((res)=>{
-        this.showdatapart = res.result;
-        this.tbl_header = res.metadata;
-        console.log(this.showdatapart);
-      })
-      this.valuedelete = "y";
-      this._isaccess = true;
-      this.updatemark = "y";
-      
+      }
+      if(this._page_authority.internallistdef.approval == true)
+      {
+        this.valuedelete = "y";
+        this._isaccess = true;
+        this.updatemark = "y";
+      }
+      if(this._page_authority.internallistdef.add == false)
+      {
+        this._InsertButtonAccess = false;
+      }
+      if(this._page_authority.internallistdef.add == true)
+      {
+        this._InsertButtonAccess = true;
+      }
+      if(this._page_authority.internallistdef.delete == false)
+      {
+        this._DeleteButtonAccess = false;
+      }
+      if(this._page_authority.internallistdef.delete == true)
+      {
+        this._DeleteButtonAccess = true;
+      }
+      if(this._page_authority.internallistdef.update == false)
+      {
+        this._updateButtonAccess = false;
+      }
+      if(this._page_authority.internallistdef.update == true)
+      {
+        this._updateButtonAccess = true;
+      }
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
      
-    }
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
   }
-  
- 
 
   addform = () =>{
     this.toggle = !this.toggle;
@@ -209,7 +242,38 @@ export class InternallistDefinationComponent implements OnInit {
   }
 
   
- 
+  getZonelist()
+  {
+    this._tableservice.getassignzonelist().subscribe((res) => {
+     this.zonearray = res.result.rows;
+     console.log(this.zonearray);
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    })
+  }
+
+  onZoneChange(zonevalue:any){
+
+    var obj = {  "ROLE" : this.myData,
+    "USER_ZONE" : this.zonevalue,"USER_ID" : this.UserId,"CHANGE_TYPE":this.changetype};
+    
+        this._tableservice.get_ild_changezonelist(obj).subscribe((res)=>{
+          this.showdatapart = res.result;
+          this.toastr.success(res.message, 'zonelist');
+      
+        },(error) => {                              //Error callback
+          console.error('error caught in component')
+          this.toastr.error(error, 'Neutral - Words');
+         
+    
+          //throw error;   //You can also throw the error to a global error handler
+        });
+    
+      }
 
 
 
@@ -222,8 +286,15 @@ export class InternallistDefinationComponent implements OnInit {
   this._tableservice.postinterdef(form.value).subscribe((res)=>{
     //  this.resetForm(form);
    this.refreshEmployeeList();
+   this.unseen();
     this.toastr.success(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 else
@@ -234,8 +305,15 @@ this._tableservice.putinterdef(form.value).subscribe((res) => {
   $("#addForm").toggle();
     // this.resetForm(form);
     this.refreshEmployeeList();
+    this.unseen();
     this.toastr.info(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 }
@@ -259,35 +337,33 @@ deleteSelected(form: NgForm) {
   this.delete_toggle = !this.delete_toggle; 
     this._tableservice.deleteinterdef(this.xbunch).subscribe((res) => {
       this.refreshEmployeeList();
+      this.unseen();
       this.resetForm(form);
       this.toastr.warning(res.message, 'Internallist Defination');
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
     });
 
 }
-changetext(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-changetextr(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
 
-
-ChkdeleteSelected(form: NgForm) {
-
-  this._tableservice.interdefapproved(form.value).subscribe((res) => {
+ChkdeleteSelected(status, form: NgForm) {
+  var value1 = {"APPROVE_STATUS":status}
+  this._tableservice.interdefapproved({...form.value,...value1}).subscribe((res) => {
     this.refreshEmployeeList();
-    this.toastr.success(res.message, 'Approved');
+    this.unseen();
+    this.toastr.success(res.message, status);
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
+
 }

@@ -14,7 +14,7 @@
                     <h1>Add Zone <small>(Select Row To Update)</small></h1>
                   </div>
                   <div class="btn-group btn-group-sm">
-                    <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
+                    <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
                       Back</button>
                     <div class="dropdown btn-group ">
                       <button class=" dropdown-toggle btn btn-primary btn-sm" type="button" data-toggle="dropdown"><i
@@ -83,24 +83,13 @@
                       (click)="onEdit(item,'Update')" [class.selected]="item === selectedNeutralRow">
                       <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
                           id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"
-                          (change)="selectID(item,$event)"></td>
+                          ></td>
                       <td *ngIf="nsn">{{i+1}}</td>
 
                       <td *ngIf="zoneidcol">{{item.ZONE_ID}}</td>
                       <td *ngIf="noisewordcol">{{item.COUNTRY_NAME}}</td>
                       
-                      <ng-container *ngIf="_isaccess">
-                        
-                        <td *ngIf="oldzoneidcol">{{item.OLD_ZONE_ID}}</td>
-                        <td *ngIf="oldnoisewordcol">{{item.OLD_COUNTRY_NAME}}</td>
-                        <td *ngIf="changetypecol" style="text-align: center;">{{item.CHANGE_TYPE}}</td>
-                        <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
-                            (click)="ChkdeleteSelected(myform,item)"
-                            [class.selected]="item === selectedNeutralRow">Approve</button></td>
-                        <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
-                            (click)="ChkNotdeleteSelected(myform,item)"
-                            [class.selected]="item === selectedNeutralRow">Reject</button></td>
-                      </ng-container>
+                     
                     </tr>
                   </ng-container>
                 </tbody>
@@ -195,14 +184,3 @@
   </div>
 </div>
 
-<div class="footer-copyright-area">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div class="footer-copy-right">
-          <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

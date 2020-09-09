@@ -11,7 +11,8 @@
     
   </div>
  <div class="float-right">
-  <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</button>
+  <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
+    Back</button>
 
  </div>
  
@@ -22,7 +23,7 @@
    <div class="row" >
      <div class="col-md-3 mb-4" *ngFor="let feature of features">
        <a class="dropdown-link" role="presentation" [routerLinkActive]="['active']"  routerLink="/{{feature.pagelink}}">
-       <div class="card card-default">
+       <div class="card card-default" *ngIf="feature.visible">
          <div class="card-header">
     
              <div class="feature_icon" >

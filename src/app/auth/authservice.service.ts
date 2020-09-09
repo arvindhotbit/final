@@ -45,7 +45,9 @@ loggedOut()
   localStorage.removeItem("token");
   localStorage.removeItem("Role");
   localStorage.removeItem("id");
-  this.router.navigate(['/login']);
+  localStorage.removeItem("authority");
+  localStorage.removeItem('UserZone');
+  this.router.navigate(['']);
 
 }
 }

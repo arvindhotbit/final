@@ -26,6 +26,9 @@ export class NameScreeningFieldsComponent implements OnInit {
   public UserName:string;
   selectedAllclone: any;
   public showdatapart:any = [];
+  _InsertButtonAccess:boolean;
+  _DeleteButtonAccess:boolean;
+  _updateButtonAccess:boolean;
   p:number =1;
   nsn = true;
   zoneid = true;
@@ -70,6 +73,8 @@ export class NameScreeningFieldsComponent implements OnInit {
   checkedList: any;
   histmasterSelected: boolean;
   histcheckedList: any;
+  _page_authority: any;
+  orig_value: any;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
     this.masterSelected = false;
@@ -85,7 +90,7 @@ export class NameScreeningFieldsComponent implements OnInit {
     
     this.resetForm();
     this.refreshEmployeeList();
-   
+    this.unseen();
   }
 
 
@@ -145,45 +150,69 @@ export class NameScreeningFieldsComponent implements OnInit {
     console.log(this.ybunch);
   
   }
-  backClicked() {
-    this._location.back();
-  }
  
-  refreshEmployeeList()
-  {
-    var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-      this._tableservice.fetchns().subscribe((res)=>{
-        this.showdatapart = res.result;
-        // this.tbl_header = res.metadata.name;
-        console.log("data" , this.showdatapart);
-      })
  
-    
-    
-      this.valuedelete = "1";
-      this._isaccess = false;
-      this.updatemark = "1";
-  
-    }
-    else if(myData === "checkers")
-    {
-      this._tableservice.fetchns().subscribe((res)=>{
-        this.showdatapart = res.result;
-        this.tbl_header = res.metadata;
-        console.log(this.showdatapart);
-      })
-      this.valuedelete = "y";
-      this._isaccess = true;
-      this.updatemark = "y";
-      
+  refreshEmployeeList() {
+    this._tableservice.getassignaccesslist().subscribe((res) => {
+      this.orig_value = res.result;
+      this._page_authority = parseJSON(this.orig_value);
+      console.log("arvind", this._page_authority);
+      if (this._page_authority.namescreening.approval == false) {
+        this.valuedelete = "1";
+        this._isaccess = false;
+        this.updatemark = "1";
+      }
+      if (this._page_authority.namescreening.approval == true) {
+        this.valuedelete = "y";
+        this._isaccess = true;
+        this.updatemark = "y";
+      }
+      if(this._page_authority.namescreening.add == false)
+      {
+        this._InsertButtonAccess = false;
+      }
+      if(this._page_authority.namescreening.add == true)
+      {
+        this._InsertButtonAccess = true;
+      }
+      if(this._page_authority.namescreening.delete == false)
+      {
+        this._DeleteButtonAccess = false;
+      }
+      if(this._page_authority.namescreening.delete == true)
+      {
+        this._DeleteButtonAccess = true;
+      }
+      if(this._page_authority.namescreening.update == false)
+      {
+        this._updateButtonAccess = false;
+      }
+      if(this._page_authority.namescreening.update == true)
+      {
+        this._updateButtonAccess = true;
+      }
+
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
      
-    }
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
   }
   
- 
+  unseen() {
+    this._tableservice.fetchns().subscribe((res) => {
+      this.showdatapart = res.result;
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+  }
+
 
   addform = () =>{
     this.toggle = !this.toggle;
@@ -192,7 +221,18 @@ export class NameScreeningFieldsComponent implements OnInit {
 
   
 
-  
+  postChangetype(change_type) {
+    this._tableservice.Ns_Change_Type(change_type).subscribe((res) => {
+      this.showdatapart = res.result;
+      // this.unseen();
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    })
+  }
 
  
   
@@ -233,8 +273,15 @@ export class NameScreeningFieldsComponent implements OnInit {
   this._tableservice.postns(form.value).subscribe((res)=>{
     //  this.resetForm(form);
    this.refreshEmployeeList();
+   this.unseen();
     this.toastr.success(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 else
@@ -245,8 +292,15 @@ this._tableservice.putns(form.value).subscribe((res) => {
   $("#addForm").toggle();
     // this.resetForm(form);
     this.refreshEmployeeList();
+    this.unseen();
     this.toastr.info(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 }
@@ -266,38 +320,37 @@ deleteSelected(form: NgForm) {
     this._tableservice.deletens(this.xbunch).subscribe((res) => {
       this.refreshEmployeeList();
       this.resetForm(form);
+      this.unseen();
       this.toastr.warning(res.message, 'NAME SCREEN');
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
     });
 
 }
 
 
 
-changetext(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-changetextr(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-
-ChkdeleteSelected(form: NgForm) {
-
-  this._tableservice.nsapproved(form.value).subscribe((res) => {
+ChkdeleteSelected(status, form: NgForm) {
+  var value1 = {"APPROVE_STATUS":status}
+  this._tableservice.nsapproved({...form.value,...value1}).subscribe((res) => {
     this.refreshEmployeeList();
-    this.toastr.success(res.message, 'Approved');
+    this.unseen();
+    this.toastr.success(res.message, status);
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
+
+
 
 }
 

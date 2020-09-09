@@ -24,8 +24,8 @@
      
     
        <div class="btn-group btn-group-sm">
-         <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Back</button>
-         
+        <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
+          Back</button>
      
          
    
@@ -55,15 +55,13 @@
          </ul>
        </div>
        <ng-container *ngIf="_isaccess">
-        <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
-             (click)="ChkdeleteSelected(myform)"><i class="fa fa
-             -check-square-o"></i> Approve</button>
-         <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
-             (click)="ChkdeleteSelected(myform)"><i class="fa fa-times"></i> Reject</button>
+        <button class="btn btn-primary btn-sm" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa
+          -check-square-o"></i> Approve</button>
+      <button class="btn btn-primary btn-sm" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
        </ng-container>
        <ng-container *ngIf="!_isaccess">
-       <button (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
-       <button  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
+       <button *ngIf="_InsertButtonAccess"  (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
+       <button  *ngIf="_DeleteButtonAccess"  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
        </ng-container>
      </div>
     
@@ -83,7 +81,10 @@
     <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
     <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
      <th *ngIf="nsn">Sr.no</th>
-     <th *ngIf="zoneid"><span><input type="text" class="form-control"  [(ngModel)]="zonefilters"  placeholder="ZONE ID"/></span></th>
+     <th *ngIf="zoneid"><span><select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
+      (ngModelChange)="onZoneChange($event)">
+      <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+    </select></span></th>
      <th *ngIf="SENSITIVEWORDS"><span><input type="text" class="form-control"  [(ngModel)]="sensitivefilters"  placeholder="SENSITIVE WORDS" /></span> </th>
      
      <ng-container *ngIf="_isaccess">
@@ -92,11 +93,11 @@
           <th>
           <span>
             
-              <select name="changetype" class="form-control"  [(ngModel)]="sensitive_change_type">
-                <option value="INSERT">INSERT</option>
-                <option value="DELETE">DELETE</option>
-                <option value="UPDATE">UPDATE</option>
-              </select>
+            <select name="changetype" class="form-control" [(ngModel)]="changetype" (ngModelChange)="postChangetype($event)">
+              <option value="INSERT">INSERT</option>
+              <option value="DELETE">DELETE</option>
+              <option value="UPDATE">UPDATE</option>
+            </select>
             </span>
            </th>
      </ng-container>
@@ -181,7 +182,10 @@
          <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="_tableservice.selectsensitive.REF_KEY">
          <div class="form-group">
            <label>Zone Id</label>
-         <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel" [(ngModel)]="_tableservice.selectsensitive.ZONE_ID" required>
+           <select name="ZONE_ID" [value]="zonevalue" [(ngModel)]="zonevalue"
+          >
+           <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+         </select>
          </div>
          <div class="form-group">
            <label>Sensitive Word</label>
@@ -221,7 +225,7 @@
            <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
        
      
-           <input type="text" class="form-control" name="CHANGE_TYPE" value=""  [(ngModel)]="_tableservice.selectsensitive.CHANGE_TYPE">
+           <input type="text" class="form-control" name="CHANGE_TYPE" [value]="changetype"  [(ngModel)]="changetype">
 
           
          
@@ -247,14 +251,4 @@
  </div>
  </div>
  
- <div class="footer-copyright-area">
- <div class="container-fluid">
- <div class="row">
- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
- <div class="footer-copy-right">
- <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
- </div>
- </div>
- </div>
- </div>
- </div>
+

@@ -63,6 +63,19 @@ import { BicfilterPipe } from './filter/bicfilter.pipe';
 import { HrcfilterPipe } from './filter/hrcfilter.pipe';
 import { SanctionfilterPipe } from './filter/sanctionfilter.pipe';
 import { RoleManageComponent } from './admin/role-manage/role-manage.component';
+import { HomeComponent } from './admin/home/home.component';
+import { BackbuttonDirective } from './directive/backbutton.directive';
+import { ApproveTextDirective } from './directive/approve-text.directive';
+import { RejectedTextDirective } from './directive/rejected-text.directive';
+import { UsergroupComponent } from './admin/usergroup/usergroup.component';
+import { KeysPipe } from './filter/keys.pipe';
+import { HomepageComponent } from './reports/homepage/homepage.component';
+import { AdminReportComponent } from './reports/admin-report/admin-report.component';
+import { OperationReportComponent } from './reports/operation-report/operation-report.component';
+import { ComplianceReportComponent } from './reports/compliance-report/compliance-report.component';
+
+
+
 // NOT RECOMMENDED (Angular 9 doesn't support this kind of import)
 
 @NgModule({
@@ -106,7 +119,20 @@ import { RoleManageComponent } from './admin/role-manage/role-manage.component';
      BicfilterPipe,
      HrcfilterPipe,
      SanctionfilterPipe,
-     RoleManageComponent
+     RoleManageComponent,
+     HomeComponent,
+     BackbuttonDirective,
+     ApproveTextDirective,
+     RejectedTextDirective,
+     UsergroupComponent,
+     KeysPipe,
+     HomepageComponent,
+     AdminReportComponent,
+     OperationReportComponent,
+     ComplianceReportComponent,
+   
+ 
+
 
   ],
   imports: [ 

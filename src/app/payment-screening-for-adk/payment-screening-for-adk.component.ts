@@ -24,6 +24,9 @@ export class PaymentScreeningForAdkComponent implements OnInit {
   public UserName:string;
   selectedAllclone: any;
   public showdatapart:any = [];
+  _InsertButtonAccess:boolean;
+  _DeleteButtonAccess:boolean;
+  _updateButtonAccess:boolean;
   p:number =1;
   nsn = true;
   zoneid = true;
@@ -68,6 +71,8 @@ export class PaymentScreeningForAdkComponent implements OnInit {
   checkedList: any;
   histmasterSelected: boolean;
   histcheckedList: any;
+  _page_authority: any;
+  orig_value: any;
   mtx:string;fieldlabelterm:string;scan:string;tag:string;taga:string;oldmtx:string;oldfldl:string;scanold:string;tagold:string;tagaold:string;changetype:string;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
@@ -84,7 +89,7 @@ export class PaymentScreeningForAdkComponent implements OnInit {
     
     this.resetForm();
     this.refreshEmployeeList();
-   
+    this.unseen();
   }
 
 
@@ -167,48 +172,56 @@ export class PaymentScreeningForAdkComponent implements OnInit {
   }
 
 
-
-
-
-  backClicked() {
-    this._location.back();
-  }
- 
-  refreshEmployeeList()
-  {
-    var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-      this._tableservice.fetchpsadk().subscribe((res)=>{
-        this.showdatapart = res.result;
-        // this.tbl_header = res.metadata.name;
-        console.log("data" , this.showdatapart);
-      })
- 
-    
-    
-      this.valuedelete = "1";
-      this._isaccess = false;
-      this.updatemark = "1";
   
-    }
-    else if(myData === "checkers")
-    {
-      this._tableservice.fetchpsadk().subscribe((res)=>{
-        this.showdatapart = res.result;
-        this.tbl_header = res.metadata;
-        console.log(this.showdatapart);
-      })
-      this.valuedelete = "y";
-      this._isaccess = true;
-      this.updatemark = "y";
-      
+  refreshEmployeeList() {
+    this._tableservice.getassignaccesslist().subscribe((res) => {
+      this.orig_value = res.result;
+      this._page_authority = parseJSON(this.orig_value);
+      console.log("arvind", this._page_authority);
+      if (this._page_authority.paymentscreenadk.approval == false) {
+        this.valuedelete = "1";
+        this._isaccess = false;
+        this.updatemark = "1";
+      }
+      if (this._page_authority.paymentscreenadk.approval == true) {
+        this.valuedelete = "y";
+        this._isaccess = true;
+        this.updatemark = "y";
+      }
+      if(this._page_authority.paymentscreenadk.add == false)
+      {
+        this._InsertButtonAccess = false;
+      }
+      if(this._page_authority.paymentscreenadk.add == true)
+      {
+        this._InsertButtonAccess = true;
+      }
+      if(this._page_authority.paymentscreenadk.delete == false)
+      {
+        this._DeleteButtonAccess = false;
+      }
+      if(this._page_authority.paymentscreenadk.delete == true)
+      {
+        this._DeleteButtonAccess = true;
+      }
+      if(this._page_authority.paymentscreenadk.update == false)
+      {
+        this._updateButtonAccess = false;
+      }
+      if(this._page_authority.paymentscreenadk.update == true)
+      {
+        this._updateButtonAccess = true;
+      }
+
+
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
      
-    }
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
   }
-  
- 
 
   addform = () =>{
     this.toggle = !this.toggle;
@@ -216,7 +229,20 @@ export class PaymentScreeningForAdkComponent implements OnInit {
   }
 
   
+ unseen()
+ {
+        this._tableservice.fetchpsadk().subscribe((res)=>{
+        this.showdatapart = res.result;
 
+        console.log("data" , this.showdatapart);
+      },(error) => {                              //Error callback
+        console.error('error caught in component')
+        this.toastr.error(error, 'Neutral - Words');
+       
+  
+        //throw error;   //You can also throw the error to a global error handler
+      })
+ }
 
   submitform(form: NgForm){
 
@@ -229,6 +255,12 @@ export class PaymentScreeningForAdkComponent implements OnInit {
    this.refreshEmployeeList();
     this.toastr.success(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 else
@@ -241,11 +273,28 @@ this._tableservice.putpsadk(form.value).subscribe((res) => {
     this.refreshEmployeeList();
     this.toastr.info(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 }
 
+postChangetype(change_type) {
+  this._tableservice.psadk_Change_Type(change_type).subscribe((res) => {
+    this.showdatapart = res.result;
+    // this.unseen();
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
 
+    //throw error;   //You can also throw the error to a global error handler
+  })
+}
 
 
 
@@ -262,36 +311,32 @@ deleteSelected(form: NgForm) {
       this.refreshEmployeeList();
       this.resetForm(form);
       this.toastr.warning(res.message, 'Payment Screen ADK');
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
     });
 
 }
 
-
-changetext(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-changetextr(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-
-ChkdeleteSelected(form: NgForm) {
-
-  this._tableservice.psadkapproved(form.value).subscribe((res) => {
+ChkdeleteSelected(status, form: NgForm) {
+  var value1 = {"APPROVE_STATUS":status}
+  this._tableservice.psadkapproved({...form.value,...value1}).subscribe((res) => {
     this.refreshEmployeeList();
-    this.toastr.success(res.message, 'Approved');
+    this.unseen();
+    this.toastr.success(res.message, status);
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
+
 
 }
 

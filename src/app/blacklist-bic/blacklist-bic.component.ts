@@ -33,6 +33,9 @@ export class BlacklistBicComponent implements OnInit {
   IS_UPDATE= false;
   ref_keys= false;
   DELETE_FLG= false;
+  _InsertButtonAccess:boolean;
+  _DeleteButtonAccess:boolean;
+  _updateButtonAccess:boolean;
   selectedbicRow : Bicscheme;
   public selectedAll = "";
   public SelectedIDs:any = [];
@@ -70,6 +73,10 @@ e:string;
 f:string;
 g:string;
 changetype:string;
+zonevalue:string;
+zonearray:any;
+_page_authority:any;
+orig_value:any;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
     this.masterSelected = false;
@@ -85,8 +92,40 @@ changetype:string;
     
     this.resetForm();
     this.refreshEmployeeList();
+    this.getZonelist(); 
+    this.unseen();
    
   }
+ 
+ 
+  
+
+
+ resetForm(form?: NgForm) {
+   if (form)
+  form.reset();
+     this._tableservice.selectedbic = {
+        REF_KEY : "",
+        USER_ID : "",
+        USER_NAME : "",
+        USER_ZONE : "",
+        ROLE : "",
+        ZONE_ID : "",
+        BIC : "",
+        INSTITUTION_NAME : "",
+        CITY : "",
+        COUNTRY : "",
+        BIC8 : "",
+        WATCHLIST_NAME: "",
+        WATCHLIST_TYPE: "",
+        HIST_ID : "",
+        APPROVE_STATUS : "",
+        CHANGE_TYPE : ""
+ 
+   }
+  }
+
+
   checkUncheckAll() {
     for (var i = 0; i < this.showdatapart.length; i++) {
       this.showdatapart[i].isSelected = this.masterSelected;
@@ -141,7 +180,7 @@ changetype:string;
       if (this.showdatapart[i].isSelected)
         this.histcheckedList.push(this.showdatapart[i]);
     }
-    // this.checkedList = JSON.stringify(this.checkedList);
+ 
     this.histcheckedList.forEach(element => {
       this.SelectedIDs.push(element.HIST_ID);
       this.ybunch = this.SelectedIDs.toString();
@@ -150,45 +189,105 @@ changetype:string;
   }
 
 
-  backClicked() {
-    this._location.back();
-  }
- 
-  refreshEmployeeList()
-  {
-    var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-      this._tableservice.getbic().subscribe((res)=>{
-        this.showdatapart = res.result;
-        // this.tbl_header = res.metadata.name;
-        console.log("data" , this.showdatapart);
-      })
- 
-    
-    
+
+  refreshEmployeeList() {
+
+    this._tableservice.getassignaccesslist().subscribe((res) => {
+      this.orig_value = res.result;
+      this._page_authority = parseJSON(this.orig_value);
+      console.log("arvind",this._page_authority);
+      if(this._page_authority.blacklisted.approval == false)
+      {
       this.valuedelete = "1";
       this._isaccess = false;
       this.updatemark = "1";
-  
-    }
-    else if(myData === "checkers")
-    {
-      this._tableservice.getbic().subscribe((res)=>{
-        this.showdatapart = res.result;
-        this.tbl_header = res.metadata;
-        console.log(this.showdatapart);
-      })
-      this.valuedelete = "y";
-      this._isaccess = true;
-      this.updatemark = "y";
-      
+      }
+      if(this._page_authority.blacklisted.approval == true)
+      {
+        this.valuedelete = "y";
+        this._isaccess = true;
+        this.updatemark = "y";
+      }
+      if(this._page_authority.blacklisted.add == false)
+      {
+        this._InsertButtonAccess = false;
+      }
+      if(this._page_authority.blacklisted.add == true)
+      {
+        this._InsertButtonAccess = true;
+      }
+      if(this._page_authority.blacklisted.delete == false)
+      {
+        this._DeleteButtonAccess = false;
+      }
+      if(this._page_authority.blacklisted.delete == true)
+      {
+        this._DeleteButtonAccess = true;
+      }
+      if(this._page_authority.blacklisted.update == false)
+      {
+        this._updateButtonAccess = false;
+      }
+      if(this._page_authority.blacklisted.update == true)
+      {
+        this._updateButtonAccess = true;
+      }
+
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
      
-    }
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+}
+
+postChangetype(change_type) {
+  this._tableservice.biclistpagetype(change_type).subscribe((res) => {
+    this.showdatapart = res.result;
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
+  })
+}
+
+
+  getZonelist()
+  {
+    this._tableservice.getassignzonelist().subscribe((res) => {
+     this.zonearray = res.result.rows;
+     console.log(this.zonearray);
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    })
   }
-  
  
+  onZoneChange(zonevalue:any){
+
+    var obj = {  "ROLE" : this.myData,
+    "USER_ZONE" : this.zonevalue,"USER_ID" : this.UserId,"CHANGE_TYPE":this.changetype};
+    
+        this._tableservice.getchangezonelistblacklist(obj).subscribe((res)=>{
+          this.showdatapart = res.result;
+          this.toastr.success(res.message, 'zonelist');
+      
+        },(error) => {                              //Error callback
+          console.error('error caught in component')
+          this.toastr.error(error, 'Neutral - Words');
+         
+    
+          //throw error;   //You can also throw the error to a global error handler
+        });
+    
+      }
+
 
   addform = () =>{
     this.toggle = !this.toggle;
@@ -196,67 +295,18 @@ changetype:string;
   }
 
   
-  selectAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart.result[i].isSelected = this.selectedAllclone;
-      console.log(this.showdatapart.result[i].isSelected)
-    }
+
+  unseen() {
+    this._tableservice.getbic().subscribe((res) => {
+      this.showdatapart = res.result;
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
   }
-
-
-  
-
- 
-  
-
-
- resetForm(form?: NgForm) {
-   if (form)
-  form.reset();
-     this._tableservice.selectedbic = {
-        REF_KEY : "",
-        USER_ID : "",
-        USER_NAME : "",
-        USER_ZONE : "",
-        ROLE : "",
-        ZONE_ID : "",
-        BIC : "",
-        INSTITUTION_NAME : "",
-        CITY : "",
-        COUNTRY : "",
-        BIC8 : "",
-        WATCHLIST_NAME: "",
-        WATCHLIST_TYPE: "",
-        HIST_ID : "",
-        APPROVE_STATUS : "",
-        CHANGE_TYPE : ""
- 
-   }
-  }
-
-   selectID(id, isSelected){  
-    
-    if(isSelected === true)
-  {
-    this.SelectedIDs.push(id);
-    this.isdelete_button = false;
-  }
-
-    else
-    {
-      this.SelectedIDs.pop(id);
-      this.isdelete_button = true;
-    }
-    console.log("true" + this.SelectedIDs);
-    console.log("false" + this.filteredArray);
- 
-
-  }
-  
-  
- 
-
-
 
   submitform(form: NgForm){
 
@@ -269,6 +319,12 @@ changetype:string;
    this.refreshEmployeeList();
     this.toastr.success(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 else
@@ -281,6 +337,12 @@ this._tableservice.putbic(form.value).subscribe((res) => {
     this.refreshEmployeeList();
     this.toastr.info(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 }
@@ -306,41 +368,30 @@ deleteSelected(form: NgForm) {
       this.refreshEmployeeList();
       this.resetForm(form);
       this.toastr.warning(res.message, 'Neutral Words');
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
     });
 }
 
 
+ChkdeleteSelected(status, form: NgForm) {
+  var value1 = {"APPROVE_STATUS":status}
+  this._tableservice.bicapproved({...form.value,...value1}).subscribe((res) => {
+    this.refreshEmployeeList();
+    this.unseen();
+    this.toastr.success(res.message, status);
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
 
-
-changetext(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
+    //throw error;   //You can also throw the error to a global error handler
+  });
 }
-changetextr(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-ChkdeleteSelected(form:NgForm)
-{
-
-      this._tableservice.bicapproved(form.value).subscribe((res) => {
-         this.refreshEmployeeList();
-        this.toastr.success(res.message, 'Approved');
-     
-      });
-  
-
-
-}
-
 
 }

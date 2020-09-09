@@ -16,8 +16,9 @@
       <ng-container>
         <div class="row" >
           <div class="col-md-3 mb-4" *ngFor="let feature of features">
+            <ng-container >
             <a class="dropdown-link" role="presentation" [routerLinkActive]="['active']"  routerLink="/{{feature.pagelink}}">
-            <div class="card card-default hv">
+            <div class="card card-default hv" *ngIf="feature.visible">
               <div class="card-header">
                   <div class="feature_icon" >
                     <i class="fa {{feature.icon}}"></i>
@@ -29,7 +30,7 @@
              
        
               </div>
-              <ng-container *ngIf="_access">
+              <ng-container *ngIf="feature.count_access">
                 <div class="card-footer d-flex justify-content-between">
                   <button class="btn btn-success btn-sm"><i class="fa fa-plus"></i>&nbsp;<span class="badge badge-light">{{feature.insert}}</span></button>
 
@@ -39,6 +40,7 @@
                </ng-container>
             </div>
           </a>
+          </ng-container>
           </div>
       </div>
       </ng-container>

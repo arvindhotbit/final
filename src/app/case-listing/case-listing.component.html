@@ -23,7 +23,7 @@
 
 
                                     <div class="btn-group btn-group-sm">
-                                        <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i
+                                        <button appBackbutton class=" btn btn-primary btn-sm"><i
                                                 class="fa fa-arrow-left"></i>
                                             Back</button>
 
@@ -104,11 +104,11 @@
                             </div>
 
                             <div class="table-responsive">
-                                <table class="table table-bordered table-condensed table-sm table-hover col-vs"
+                                <table class="table table-bordered table-condensed table-sm table-hover text-center col-vs"
                                     id="test1table">
-                                    <thead class="table_header">
+                                    <thead class="table_header text-center">
                                         <tr>
-                                            <th class="text-center"><input type="checkbox" class="disabled" /></th>
+                                            <!-- <th class="text-center"><input type="checkbox" class="disabled" /></th> -->
                                             <th>Sr.no</th>
                                             <th><span><input type="text" [(ngModel)]="term1" class="form-control"
                                                         placeholder="Case ID" /></span></th>
@@ -126,11 +126,11 @@
                                                         placeholder="Channel" /></span> </th>
                                             <th><span><input type="text" [(ngModel)]="term7" class="form-control"
                                                         placeholder="Amount" /></span> </th>
-                                            <th><span>
-                                                    <input type="text" placeholder="Datepicker" class="form-control"
+                                            <th><span class="d-flex">
+                                                    <input type="text" placeholder="To" class="form-control"
                                                         bsDatepicker [bsConfig]="{ isAnimated: true }"
                                                         [(ngModel)]="startDate">
-                                                    <input type="text" placeholder="Datepicker" class="form-control"
+                                                    <input type="text" placeholder="From" class="form-control"
                                                         bsDatepicker [bsConfig]="{ isAnimated: true }"
                                                         [(ngModel)]="endDate">
                                                 </span>
@@ -151,15 +151,20 @@
                                     </thead>
                                     <tbody *ngIf="showdatapart?.length;else no_data_templ">
 
-                                        <ng-container>
+                                        <ng-container
+                                            *ngFor="let item of showdatapart | customRangeFilter:startDate:endDate| caselist:term1:term2:term3:term4:term5:term6:term7| paginate: { itemsPerPage: pageSize, currentPage: p }   let i=index">
+
+
+
+
                                             <tr
-                                                *ngFor="let item of showdatapart | customRangeFilter:startDate:endDate| caselist:term1:term2:term3:term4:term5:term6:term7| paginate: { itemsPerPage: pageSize, currentPage: p }   let i=index">
-                                                <td style="text-align: center;"><input type="checkbox"
-                                                        [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}"
-                                                        name="deletecheck" value="{{item.REF_KEY}}"
-                                                        (change)="selectID(item.REF_KEY,item.isSelected)"></td>
+                                                [ngClass]="{'hiddenRow': (item.CASE_DECISION == '1'),'yellowRow': (item.CASE_DECISION == '2'),'greenRow': (item.CASE_DECISION == '3'),'disabled': (item.ROUTED_USER != [UserId] && item.CASE_DECISION == '3')}">
+                                                <!-- <td style="text-align: center;">
+                                                    <input type="checkbox" [(ngModel)]="item.isSelected"
+                                                        id="{{item.REF_KEY}}" name="deletecheck"
+                                                        value="{{item.REF_KEY}}"></td> -->
                                                 <td>{{ (p - 1) * pageSize + i + 1 }}</td>
-                                                <td (click)="getId(item,myform.value)">{{item.ECM_CASE_ID}}</td>
+                                                <td (click)="getId(item,myform.value)"><a  class="clickable">{{item.ECM_CASE_ID}}</a></td>
                                                 <td>{{item.ORDERING_CUSTOMER_NAME}}</td>
                                                 <td>{{item.SNDR_INST_BIC}}</td>
                                                 <td *ngIf="oldzoneidms">{{item.RECVR_INST_BIC}}</td>
@@ -249,63 +254,299 @@
                             </form>
 
                             <section class="seconddiv" style="display: none;">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-condensed table-sm table-hover col-vs"
-                                        id="test1table" datatable>
-                                        <thead class="table_header">
-                                            <tr>
-                                                <th class="text-center"><input type="checkbox" class="disabled" /></th>
 
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="Approval Status" /></span></th>
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="Customer Name" /></span>
-                                                </th>
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="Scanned Field" /></span> </th>
-
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="Scanned Value" /></span></th>
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="Matched Value" /></span> </th>
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="UID/Serial No." /></span> </th>
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="Watchlist Name" /></span> </th>
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="Score" /></span> </th>
-                                                <th><span><input type="text" class="form-control"
-                                                            placeholder="Maker Comment" /></span> </th>
-
-
-
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let cd of casedetail">
-                                                <td style="text-align: center;"><input type="checkbox"></td>
-
-                                                <td>{{cd.HIT_FLAG}}</td>
-                                                <td>{{cd.MODE_TYPE}}</td>
-                                                <td>{{cd.SCANNED_FIELD_NAME}}</td>
-                                                <td>{{cd.SCANNED_FIELD_VALUE}}</td>
-                                                <td>{{cd.MATCHED_FIELD_VALUE}}</td>
-                                                <td>{{cd.UID_SERIAL_NO}}</td>
-                                                <td>{{cd.WATCHLIST_NAME}}</td>
-                                                <td>{{cd.MATCH_SCORE}}</td>
-
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Add Comments</h4>
                                 </div>
+                                <div class="card-body">
+                                    <div class="row">
+
+
+                                        <div class="col-6" *ngFor="let msg of caseinfo">
+                                            <form #commentform="ngForm" (ngSubmit)="commentsend(commentform.value,msg)">
+                                            
+                                                <table style="width:100%;">
+                                                    <tr *ngFor="let msg of caseinfo">
+                                                        <th>Case Id</th>
+                                                        <td>{{msg.ECM_CASE_ID}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Transaction Reference Number</th>
+                                                        <td>awx154543cc</td>
+                                                    </tr>
+                                                    <tr *ngFor="let msg of caseinfo">
+                                                        <th>Case Create Date</th>
+                                                        <td>{{msg.ECM_CASE_CREATION_DATE}}</td>
+                                                    </tr>
+                                                    <div *ngIf="_actionaccess;else other_content">
+                                       
+                                                                <b>Maker Action</b><br/>
+                                                                <div class="form-check-inline">
+                                                                    <label class="form-check-label">
+                                                                      <input type="radio" class="form-check-input" name="CASE_DECISION"
+                                                                      [(ngModel)]="makeraction"
+                                                                      value="Released">Released
+                                                                    </label>
+                                                                  </div>
+                                                                  <div class="form-check-inline">
+                                                                    <label class="form-check-label">
+                                                                      <input type="radio" class="form-check-input" name="CASE_DECISION"
+                                                                      [(ngModel)]="makeraction"
+                                                                      value="Rejected">Rejected
+                                                                    </label>
+                                                                  </div>
+
+                                                                   
+                                                          
+                                                           
+                                                                <div class="form-group">
+                                                                    <b>Maker Comment</b>
+                                                                    <textarea name="COMMENTS" style="height:150px" placeholder="write a Comments"
+                                                                    [(ngModel)]="_tableservice.selectedcasedetail.COMMENTS"
+                                                                    class="form-control" cols="20" rows="20"></textarea>
+                                                                </div>
+                                                               
+                                                                <input type="submit" class="btn btn-success btn-sm" value="submit" />
+                                                         
+                                                    </div>
+                                                    <ng-template #other_content>
+    
+                                                        <tr>
+                                                            <th>Maker Action</th>
+                                                            <td>{{commentboxtext}}</td>
+    
+                                                        </tr>
+                                                        <tr>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Maker Comment</th>
+    
+                                                            <td>{{commentbox}}</td>
+    
+                                                        </tr>
+                                                    </ng-template>
+                                                </table>
+                                            </form>
+                                        </div>
+                                        <div class="col-6" *ngFor="let msg of caseinfo">
+                                            <table>
+                                                <tr>
+                                                    <th>Transaction Time</th>
+                                                    <td>12:30pm</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Transaction Duration</th>
+                                                    <td>2hr 33min 25sec.</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Transaction Amount</th>
+                                                    <td>$3500</td>
+                                                </tr>
+                                                <form #routeform="ngForm" (ngSubmit)="routes(routeform.value,msg)">
+                                                <tr *ngIf="_isaccess">
+                                                    
+                                                    <td>
+                                                      
+                                                            <div class="form-group">
+                                                                <textarea name="COMMENTS" style="height:150px" placeholder="write a Comments"
+                                                                [(ngModel)]="_tableservice.selectedcasedetail.COMMENTS"
+                                                                class="form-control" cols="20" rows="20"></textarea>
+                                                            </div>
+                                                       
+                                                         
+                                                    </td>
+    
+    
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input type="submit" class="btn btn-success btn-sm" value="submit" />
+                                                   
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                           
+                            <br/>
+                               
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4 class="card-title">Comments:-</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-condensed table-sm table-hover col-vs">
+                                                        <thead class="table_header text-center">
+                                                        <tr>
+                                                            <th>Sr.no</th>
+                                                            <th><span><input type="text" class="form-control"
+                                                                placeholder="SERIAL_NO" /></span> </th>
+                                                            
+                                                            <th><span><input type="text"  class="form-control"
+                                                                placeholder="COMMENT_DT" /></span> </th>
+                                                        <th><span><input type="text"  class="form-control"
+                                                                placeholder="CASE_ID" /></span> </th>
+                                                            <th><span><input type="text" class="form-control"
+                                                                placeholder="COMMENTS" /></span> </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody *ngIf="cmmnt?.length;else no_data_templss">
+                                                        <tr *ngFor="let a of cmmnt | paginate: { itemsPerPage: pageSizecp, currentPage: cm }  let i=index" >
+                                                            <td>{{ (p - 1) * pageSizecp + i + 1 }}</td>
+                                                            <td>{{a.SERIAL_NO}}</td>
+                                                            <td>{{a.COMMENT_DT}}</td>
+                                                            <td>{{a.CASE_ID}}</td>
+                                                            <td>{{a.COMMENTS}}</td>
+                                                        </tr>
+                                                        </tbody>
+                                                        <ng-template #no_data_templss>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="text-align: center;" colspan="100%"> No data found...</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </ng-template>
+                                                    </table>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-12">
+                    
+                    
+                                                        <div class="align-items-md-start d-flex justify-content-lg-end">
+                                                            <select id="PerPage" [(ngModel)]="pageSizecp" *ngIf="cmmnt?.length">
+                                                                <option [ngValue]="5">5</option>
+                                                                <option [ngValue]="10">10</option>
+                                                                <option [ngValue]="25">25</option>
+                                                                <option [ngValue]="50">50</option>
+                                                            </select>
+                                                            <pagination-controls (pageChange)="cm = $event"></pagination-controls>
+                                                        </div>
+                    
+                    
+                    
+                    
+                    
+                    
+                                                    </div>
+                    
+                                                </div>
+                                              
+                                            </div>
+                                        </div>
+                                     
+                                        
+                                    
+ 
+                                        <br/>
+
+                              <div class="card">
+                                  <div class="card-header">
+                                    <h4 class="card-title">Watchlist Matched Details</h4>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-condensed table-sm table-hover col-vs"
+                                            id="test1table">
+                                            <thead class="table_header">
+                                                <tr>
+                                                    <th class="text-center">Sr.No</th>
+    
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="Approval Status" /></span></th>
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="Customer Name" /></span>
+                                                    </th>
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="Scanned Field" /></span> </th>
+    
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="Scanned Value" /></span></th>
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="Matched Value" /></span> </th>
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="UID/Serial No." /></span> </th>
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="Watchlist Name" /></span> </th>
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="Score" /></span> </th>
+                                                    <th><span><input type="text" class="form-control"
+                                                                placeholder="Maker Comment" /></span> </th>
+    
+    
+    
+    
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="casedetail?.length;else no_data_templs">
+                                                <tr *ngFor="let cd of casedetail | paginate: { itemsPerPage: pageSizepb, currentPage: pb }; let i=index" (click)="onEdit(cd,myform.value)"
+                                                    [class.selected]="cd === selectedNeutralRow ">
+                                                    <td>{{ (p - 1) * pageSizepb + i + 1 }}</td>
+    
+                                                    <td>{{cd.HIT_FLAG}}</td>
+                                                    <td>{{cd.MODE_TYPE}}</td>
+                                                    <td>{{cd.SCANNED_FIELD_NAME}}</td>
+                                                    <td>{{cd.SCANNED_FIELD_VALUE}}</td>
+                                                    <td>{{cd.MATCHED_FIELD_VALUE}}</td>
+                                                    <td>{{cd.UID_SERIAL_NO}}</td>
+                                                    <td>{{cd.WATCHLIST_NAME}}</td>
+                                                    <td>{{cd.MATCH_SCORE}}</td>
+    
+                                                </tr>
+                                            </tbody>
+                                            <ng-template #no_data_templs>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="text-align: center;" colspan="100%"> No data found...</td>
+                                                    </tr>
+                                                </tbody>
+                                            </ng-template>
+                                        </table>
+    
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+        
+        
+                                            <div class="align-items-md-start d-flex justify-content-lg-end">
+                                                <select id="PerPage" [(ngModel)]="pageSizepb" *ngIf="casedetail?.length">
+                                                    <option [ngValue]="5">5</option>
+                                                    <option [ngValue]="10">10</option>
+                                                    <option [ngValue]="25">25</option>
+                                                    <option [ngValue]="50">50</option>
+                                                </select>
+                                                <pagination-controls (pageChange)="pb = $event"></pagination-controls>
+                                            </div>
+        
+        
+        
+        
+        
+        
+                                        </div>
+        
+                                    </div>
+                                  </div>
+                              </div>
+
+                              <br/>
+                              <div class="card">
+                                
+                                <div class="card-body">
 
                                 <div class="row">
                                     <div class="col-3">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h6 class="card-title"> Message Text</h6>
+                                                <h6 class="card-title">Message Text</h6>
                                             </div>
                                             <div class="card-body">
                                                 <div *ngFor="let msg of caseinfo">
@@ -314,23 +555,70 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-9">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="card-title"> Matched Value</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover table-sm">
+                                                        <tr>
+                                                            <th>Attribute</th>
+                                                            <th>Value</th>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>Country code</th>
+                                                            <td>{{match.COUNTRY_CODE}}</td>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>Country Name</th>
+                                                            <td>{{match.COUNTRY_NAME}}</td>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>INITIAL_LOAD_FLAG</th>
+                                                            <td>{{match.INITIAL_LOAD_FLAG}}</td>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>RISK_LEVEL</th>
+                                                            <td>{{match.RISK_LEVEL}}</td>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>SANCTIONED_FLAG</th>
+                                                            <td>{{match.SANCTIONED_FLAG}}</td>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>UID_NO</th>
+                                                            <td>{{match.UID_NO}}</td>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>WATCHLIST_NAME</th>
+                                                            <td>{{match.WATCHLIST_NAME}}</td>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>WATCHLIST_TYPE</th>
+                                                            <td>{{match.WATCHLIST_TYPE}}</td>
+                                                        </tr>
+                                                        <tr *ngFor="let match of matchedvalue">
+                                                            <th>ZONE_ID</th>
+                                                            <td>{{match.ZONE_ID}}</td>
+
+
+                                                        </tr>
+                                                    </table>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
                             </section>
 
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="footer-copyright-area">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="footer-copy-right">
-                    <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
                 </div>
             </div>
         </div>

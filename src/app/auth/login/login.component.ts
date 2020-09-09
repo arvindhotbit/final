@@ -50,30 +50,43 @@ submitform(formdata: NgForm){
   this.loading = true;
 this._authservice.loginuser(formdata.value).subscribe(
 (res) =>{
+  console.log("access",res);
 localStorage.setItem('token',res.token);
 localStorage.setItem('Id',res.id);
 localStorage.setItem('Role',res.role);
 localStorage.setItem('UserZone',res.user_zone);
+localStorage.setItem('department',res.result[0].departmentNumber);
+
+// localStorage.setItem('authority',res.user_authority);
+
 this.message = res.message,
 this.Username = res.result[0].cn +" "+ res.result[0].sn,
 localStorage.setItem('Username',this.Username);
 this._authservice.setUserLoggedIn(true);
-if(res.role === "makers")
-{
-this.router.navigate(['/home'])
-}
-else if(res.role === "checkers")
-{
- this.router.navigate(['/home'])
- }
+// if(res.role === "makers")
+// {
+// this.router.navigate(['/home'])
+// }
+// else if(res.role === "checkers")
+// {
+//  this.router.navigate(['/home'])
+//  }
 
-else if(res.role === "admin")
+// else if(res.role === "admin")
+// {
+//   this.router.navigate(['/superAdmin'])
+// }
+// else
+// {
+// this.router.navigate(['/login'])
+// }
+if(res.role === "admin")
 {
-  this.router.navigate(['/home'])
+  this.router.navigate(['/superAdmin'])
 }
 else
 {
-this.router.navigate(['/login'])
+  this.router.navigate(['/home']);
 }
 },
 (error)=>{

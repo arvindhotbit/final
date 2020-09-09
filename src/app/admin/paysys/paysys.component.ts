@@ -137,9 +137,7 @@ export class PaysysComponent implements OnInit {
   }
 
 
-  backClicked() {
-    this._location.back();
-  }
+ 
  
   refreshEmployeeList()
   {
@@ -274,35 +272,7 @@ changetextr(status:string,form:NgForm)
   this.UserName = localStorage.getItem('Username');
   console.log(this.apstatus);
 }
-ChkdeleteSelected(form:NgForm,paysys:paysysscheme)
-{
-
-    this._tableservice.selectpaysys = paysys;
-    this.selectedpaysysRow = paysys;
-    console.log(form.value,paysys);
-
-      this._tableservice.neudelapproved({...form.value,...paysys}).subscribe((res) => {
-         this.refreshEmployeeList();
-        this.toastr.success('Data Delete Successfully', 'Approved');
-     
-      });
-  
 
 
-}
-ChkNotdeleteSelected(form:NgForm,paysys:paysysscheme)
-{
-
-
-  this._tableservice.selectpaysys = paysys;
-  this.selectedpaysysRow = paysys;
-  console.log(form.value,paysys);
-    this._tableservice.neudeldisapproved({...form.value,...paysys}).subscribe((res) => {
-     this.refreshEmployeeList();
-
-      this.toastr.info('Data Restored Successfully', 'Disapproved');
-    });
-
-}
 }
 

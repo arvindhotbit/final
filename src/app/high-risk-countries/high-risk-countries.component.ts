@@ -33,6 +33,9 @@ export class HighRiskCountriesComponent implements OnInit {
   ref_keys= false;
   DELETE_FLG= false;
   selectedhrcRow : Highriskcountry;
+  _InsertButtonAccess:boolean;
+  _DeleteButtonAccess:boolean;
+  _updateButtonAccess:boolean;
   public selectedAll = "";
   public SelectedIDs:any = [];
   checkbox: boolean;
@@ -70,6 +73,11 @@ f:string;
 g:string;
 h:string;
 changetype:string;
+Userzone:string;
+zonearray:any;
+zonevalue:string;
+_page_authority:any;
+orig_value:any;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
     this.userzone = "QA";
     this.masterSelected = false;
@@ -85,7 +93,8 @@ changetype:string;
     
     this.resetForm();
     this.refreshEmployeeList();
-   
+    this.getZonelist(); 
+    this.unseen();
   }
 
   checkUncheckAll() {
@@ -119,9 +128,6 @@ changetype:string;
   }
 
 
-
-
-
   histcheckUncheckAll() {
     for (var i = 0; i < this.showdatapart.length; i++) {
       this.showdatapart[i].isSelected = this.histmasterSelected;
@@ -151,45 +157,128 @@ changetype:string;
   }
 
 
-  backClicked() {
-    this._location.back();
-  }
- 
-  refreshEmployeeList()
+
+
+  getZonelist()
   {
-    var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-      this._tableservice.fetchhrc().subscribe((res)=>{
-        this.showdatapart = res.result;
-        // this.tbl_header = res.metadata.name;
-        console.log("data" , this.showdatapart);
-      })
- 
+    this._tableservice.getassignzonelist().subscribe((res) => {
+     this.zonearray = res.result.rows;
+     console.log(this.zonearray);
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    })
+  }
+
+  onZoneChange(zonevalue:any){
+
+    var obj = {  "ROLE" : this.myData,
+    "USER_ZONE" : this.zonevalue,"USER_ID" : this.UserId,"CHANGE_TYPE":this.changetype};
     
+        this._tableservice.get_hrc_changezonelist(obj).subscribe((res)=>{
+          this.showdatapart = res.result;
+          this.toastr.success(res.message, 'zonelist');
+      
+        },(error) => {                              //Error callback
+          console.error('error caught in component')
+          this.toastr.error(error, 'Neutral - Words');
+         
     
+          //throw error;   //You can also throw the error to a global error handler
+        });
+    
+      }
+      resetForm(form?: NgForm) {
+        if (form)
+       form.reset();
+          this._tableservice.selectedhrc = {
+                   REF_KEY : "",
+                   USER_ID : "",
+                   USER_NAME : "",
+                   USER_ZONE : "",
+                   ROLE : "",
+                   ZONE_ID : "",
+                   COUNTRY_CODE : "",
+                   COUNTRY_NAME : "",
+                   RISK_LEVEL : "",
+                   SANCTIONED_FLAG : "",
+                   INITIAL_LOAD_FLAG : "",
+                   WATCHLIST_NAME : "",
+                   WATCHLIST_TYPE : "",
+                   HIST_ID : "",
+                   APPROVE_STATUS : "",
+                   CHANGE_TYPE : ""
+      
+        }
+       }
+  
+  refreshEmployeeList() {
+    this._tableservice.getassignaccesslist().subscribe((res) => {
+      this.orig_value = res.result;
+      this._page_authority = parseJSON(this.orig_value);
+      console.log("arvind",this._page_authority);
+      if(this._page_authority.highriskcountry.approval == false)
+      {
       this.valuedelete = "1";
       this._isaccess = false;
       this.updatemark = "1";
-  
-    }
-    else if(myData === "checkers")
-    {
-      this._tableservice.fetchhrc().subscribe((res)=>{
-        this.showdatapart = res.result;
-        this.tbl_header = res.metadata;
-        console.log(this.showdatapart);
-      })
-      this.valuedelete = "y";
-      this._isaccess = true;
-      this.updatemark = "y";
-      
+      }
+      if(this._page_authority.highriskcountry.approval == true)
+      {
+        this.valuedelete = "y";
+        this._isaccess = true;
+        this.updatemark = "y";
+      }
+      if(this._page_authority.highriskcountry.add == false)
+      {
+        this._InsertButtonAccess = false;
+      }
+      if(this._page_authority.highriskcountry.add == true)
+      {
+        this._InsertButtonAccess = true;
+      }
+      if(this._page_authority.highriskcountry.delete == false)
+      {
+        this._DeleteButtonAccess = false;
+      }
+      if(this._page_authority.highriskcountry.delete == true)
+      {
+        this._DeleteButtonAccess = true;
+      }
+      if(this._page_authority.highriskcountry.update == false)
+      {
+        this._updateButtonAccess = false;
+      }
+      if(this._page_authority.highriskcountry.update == true)
+      {
+        this._updateButtonAccess = true;
+      }
+
+
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
      
-    }
-  }
-  
- 
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+}
+
+unseen()
+{
+  this._tableservice.fetchhrc().subscribe((res)=>{
+          this.showdatapart = res.result;
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
+  });
+}
 
   addform = () =>{
     this.toggle = !this.toggle;
@@ -197,63 +286,24 @@ changetype:string;
   }
 
   
-  selectAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart.result[i].isSelected = this.selectedAllclone;
-      console.log(this.showdatapart.result[i].isSelected)
-    }
+  postChangetype(change_type) {
+    this._tableservice.hrclistpagetype(change_type).subscribe((res) => {
+      this.showdatapart = res.result;
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    })
   }
-
-
-  
-
  
   
 
 
- resetForm(form?: NgForm) {
-   if (form)
-  form.reset();
-     this._tableservice.selectedhrc = {
-              REF_KEY : "",
-              USER_ID : "",
-              USER_NAME : "",
-              USER_ZONE : "",
-              ROLE : "",
-              ZONE_ID : "",
-              COUNTRY_CODE : "",
-              COUNTRY_NAME : "",
-              RISK_LEVEL : "",
-              SANCTIONED_FLAG : "",
-              INITIAL_LOAD_FLAG : "",
-              WATCHLIST_NAME : "",
-              WATCHLIST_TYPE : "",
-              HIST_ID : "",
-              APPROVE_STATUS : "",
-              CHANGE_TYPE : ""
+
+
  
-   }
-  }
-
-   selectID(id, isSelected){  
-    
-    if(isSelected === true)
-  {
-    this.SelectedIDs.push(id);
-    this.isdelete_button = false;
-  }
-
-    else
-    {
-      this.SelectedIDs.pop(id);
-      this.isdelete_button = true;
-    }
-    console.log("true" + this.SelectedIDs);
-    console.log("false" + this.filteredArray);
- 
-
-  }
-  
   
  
 
@@ -268,8 +318,15 @@ changetype:string;
   this._tableservice.posthrc(form.value).subscribe((res)=>{
     //  this.resetForm(form);
    this.refreshEmployeeList();
+   this.unseen();
     this.toastr.success(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 else
@@ -280,8 +337,15 @@ this._tableservice.puthrc(form.value).subscribe((res) => {
   $("#addForm").toggle();
     // this.resetForm(form);
     this.refreshEmployeeList();
+    this.unseen();
     this.toastr.info(res.message, 'Neutral Words');
 
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
   });
 }
 }
@@ -301,38 +365,35 @@ deleteSelected(form: NgForm) {
   this.delete_toggle = !this.delete_toggle; 
     this._tableservice.deletehrc(this.xbunch).subscribe((res) => {
       this.refreshEmployeeList();
+      this.unseen();
       this.resetForm(form);
       this.toastr.warning(res.message, 'High Risk Country');
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
     });
 
 }
 
 
-changetext(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-changetextr(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-ChkdeleteSelected(form:NgForm)
-{
-      this._tableservice.hrcapproved(form.value).subscribe((res) => {
-         this.refreshEmployeeList();
-        this.toastr.success(res.message, 'Approved');
-     
-      });
- 
-}
 
+ChkdeleteSelected(status, form: NgForm) {
+  var value1 = {"APPROVE_STATUS":status}
+  this._tableservice.hrcapproved({...form.value,...value1}).subscribe((res) => {
+    this.refreshEmployeeList();
+    this.unseen();
+    this.toastr.success(res.message, status);
+
+  },(error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Neutral - Words');
+   
+
+    //throw error;   //You can also throw the error to a global error handler
+  });
+}
 
 }

@@ -3,3 +3,8 @@ tr.selected {
     color:#fff;
 
   }
+
+  .card-title {
+    margin-bottom: 0px;
+    font-size: 14px;
+}

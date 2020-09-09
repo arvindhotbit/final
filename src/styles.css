@@ -5,7 +5,7 @@ body
 .app-container
 {
 height: 100vh;
-width: 100vw;
+width: 100%;
 justify-content: center;
     align-items: center;
     align-content: center;
@@ -32,11 +32,13 @@ justify-content: center;
     padding: 8px;
 }
 .footer-copyright-area {
-   background-color: transparent;
+    background-color: #fff;
     padding: 10px 0;
     text-align: center;
     font-size: 10px;
     bottom: 0;
+    position: fixed;
+    width: 100%;
 }
 .footer-copy-right p {
     margin: 0;
@@ -50,7 +52,11 @@ justify-content: center;
 }
 .custom-datatable-overright table tbody tr td
 {
-    font-size: 12px;
+    font-size: 11px;
+}
+.table-sm td, .table-sm th
+{
+    padding: 0.2rem;
 }
 .table_header th
 {
@@ -134,6 +140,18 @@ justify-content: center;
       
      
       }
+      .hiddenRow
+      {
+        display: none;
+      }
+      .yellowRow
+      {
+        background: yellow;
+      }
+      .greenRow
+      {
+        background: green;
+      }
       .hv:hover
       {
         
@@ -184,11 +202,12 @@ justify-content: center;
     }
     h4.feature_title {
         color: #000;
-        font-size: 1.2em;
+        font-size: 1em;
         text-transform: capitalize;
         display: flex;
         justify-content: center;
         text-align: center;
+        margin:0px;
     }
     .feature_icon {
         color: #26397d;
@@ -199,7 +218,7 @@ justify-content: center;
     .card-header {
         padding: .75rem 1.25rem;
         margin-bottom: 0;
-        background-color: #fff;
+        background-color: rgb(238 238 238 / 95%);
         border-bottom: none;
     }
     .part > h1 {
@@ -241,3 +260,28 @@ justify-content: center;
     {
         text-decoration: none;
     }
+    .clickable {
+        text-decoration: underline!important;
+        color: #26397d!important;
+        cursor: pointer;
+    }
+
+   
+
+ .is-invalid + .help-block
+ {
+     color:#dc3545;
+ }
+
+ .is-valid + .help-block
+ {
+     color:green;
+ }
+ .is-invalid .form-control{
+   
+    border-color: #dc3545 !important;
+ }
+ .is-valid .form-control{
+  
+    border-color: #28a745 !important;
+ }

@@ -14,7 +14,7 @@
                     <h1>PaySys Id<small>(Select Row To Update)</small></h1>
                   </div>
                   <div class="btn-group btn-group-sm">
-                    <button (click)="backClicked()" class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
+                    <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
                       Back</button>
                     <div class="dropdown btn-group ">
                       <button class=" dropdown-toggle btn btn-primary btn-sm" type="button" data-toggle="dropdown"><i
@@ -93,19 +93,7 @@
                       <td *ngIf="noisewordcol">{{item.CASE_TYPE_NS}}</td>
                       <td *ngIf="noisewordcol">{{item.CASE_TYPE_PS}}</td>
                       
-                      <ng-container *ngIf="_isaccess">
-                        
-                        <td *ngIf="oldzoneidcol">{{item.OLD_PAYSYS_ID}}</td>
-                        <td *ngIf="oldnoisewordcol">{{item.OLD_CASE_TYPE_NS}}</td>
-                        <td *ngIf="oldnoisewordcol">{{item.OLD_CASE_TYPE_PS}}</td>
-                        <td *ngIf="changetypecol" style="text-align: center;">{{item.CHANGE_TYPE}}</td>
-                        <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
-                            (click)="ChkdeleteSelected(myform,item)"
-                            [class.selected]="item === selectedpaysysRow">Approve</button></td>
-                        <td> <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
-                            (click)="ChkNotdeleteSelected(myform,item)"
-                            [class.selected]="item === selectedpaysysRow">Reject</button></td>
-                      </ng-container>
+                   
                     </tr>
                   </ng-container>
                 </tbody>
@@ -214,14 +202,3 @@
   </div>
 </div>
 
-<div class="footer-copyright-area">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div class="footer-copy-right">
-          <p>Copyright © 2020 <a href="#">Trustling</a> All rights reserved.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

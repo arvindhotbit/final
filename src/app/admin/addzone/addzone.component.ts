@@ -97,30 +97,7 @@ export class AddzoneComponent implements OnInit {
 
 
 
-  selectID(item,e)
-  {
-   if(e.target.checked) 
-   {
-     this.SelectedIDs.push(item.REF_KEY);
-     this.isdelete_button = false;
-     console.log("add" +  this.SelectedIDs,this.SelectedIDs.length);
-   }
-   else
-   {
-    for(var i=0 ; i < this.showdata.length; i++) {
-      if(this.showdata[i] == item.REF_KEY) {
-        this.showdata.splice(i,1);
-     }
-     this.isdelete_button = true;
-     console.log("remove" + this.SelectedIDs,this.SelectedIDs.length);
-   }
-   console.log("result" + this.SelectedIDs,this.SelectedIDs.length)
-  }
-}
-
-  backClicked() {
-    this._location.back();
-  }
+  
  
   refreshEmployeeList()
   {
@@ -273,18 +250,5 @@ ChkdeleteSelected(form:NgForm,addzone:addzonescheme)
 
 
 }
-ChkNotdeleteSelected(form:NgForm,addzone:addzonescheme)
-{
 
-
-  this._tableservice.selectzone = addzone;
-  this.selectedNeutralRow = addzone;
-  console.log(form.value,addzone);
-    this._tableservice.addzonedeldisapproved({...form.value,...addzone}).subscribe((res) => {
-     this.refreshEmployeeList();
-
-      this.toastr.info('Data Restored Successfully', 'Disapproved');
-    });
-
-}
 }

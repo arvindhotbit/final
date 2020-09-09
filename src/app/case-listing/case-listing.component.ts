@@ -1,18 +1,19 @@
 
 
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { NgForm, FormBuilder, FormGroup, FormArray, FormControl,FormsModule } from '@angular/forms';
+import { NgForm, FormBuilder, FormGroup, FormArray, FormControl, FormsModule } from '@angular/forms';
 import { map } from 'rxjs/operators';
-import {TableDataService} from '../shared/table-data.service';
-import {AuthserviceService} from '../auth/authservice.service';
-import {casedetail} from '../shared/tabular';
+import { TableDataService } from '../shared/table-data.service';
+import { AuthserviceService } from '../auth/authservice.service';
+import { casedetail } from '../shared/tabular';
 import { ToastrService } from 'ngx-toastr';
 import { element } from 'protractor';
 import { data, parseJSON } from 'jquery';
 import { Observable } from 'rxjs';
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 import * as $ from 'jquery';
 import { DateArray } from 'ngx-bootstrap/chronos/types';
+import { AnyTxtRecord } from 'dns';
 
 
 @Component({
@@ -22,68 +23,84 @@ import { DateArray } from 'ngx-bootstrap/chronos/types';
 })
 export class CaseListingComponent implements OnInit {
   public pageSize: number = 10;
-  public myData:string;
-  public UserId:string;
-  public UserName:string;
+  public pageSizepb: number = 10;
+  public pageSizecp: number = 10;
+  public myData: string;
+  public UserId: string;
+  public UserName: string;
+  department: string;
   selectedAllclone: any;
-  public showdatapart:any = [];
-  p:number =1;
-  r:number =1;
+  public showdatapart: any = [];
+  p: number = 1;
+  pb:number = 1;
+  cm:number = 1;
+  r: number = 1;
   nsn = true;
   zoneid = true;
-  zonefilters:string ="";
-  IS_DELETE= false;
-  IS_UPDATE= false;
-  ref_keys= false;
-  DELETE_FLG= false;
+  zonefilters: string = "";
+  selectedNeutralRow: casedetail;
+  IS_DELETE = false;
+  IS_UPDATE = false;
+  ref_keys = false;
+  DELETE_FLG = false;
   public selectedAll = "";
-  public SelectedIDs:any = [];
+  public SelectedIDs: any = [];
   checkbox: boolean;
-  filteredArray : any = [];
-  is_edit : boolean = true;
-  isButtonClass : boolean;
-  valuedelete : string="" ;
-  _isaccess : boolean;
-  updatemark : string;
-  status_alph : string = "";
-  flag : string= "";
+  filteredArray: any = [];
+  is_edit: boolean = true;
+  isButtonClass: boolean;
+  valuedelete: string = "";
+  _isaccess: boolean;
+  updatemark: string;
+  status_alph: string = "";
+  flag: string = "";
   toggle = true;
   delete_toggle = true;
-  clone : any;
+  clone: any;
   zone: string = "";
   noise: string = "";
-  apstatus:string = "";
-  btn_name :string = "Submit";
-  isdelete_button:boolean = true;
-  tbl_header:any = [];
-userzone :string;
-zoneidms: boolean = true;
-matchscorems: boolean = true;
-paysysms: boolean = true;
-oldzoneidms: boolean = true;
-oldmatchscorems: boolean = true;
-oldpaysysidms: boolean = true;
-changetypems: boolean = true;
-casedata:any = [];
-casedetail:any = [];
-caseinfo:any =[];
-
-term1:string;
- term2:string; 
- term3:any;
-  term4:string; 
-  term5:string; 
-  term6:string; 
-  term7:string; 
-  startDate:any;
-  endDate:any;
-  filterdata:any;
-
-  constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
+  apstatus: string = "";
+  btn_name: string = "Submit";
+  isdelete_button: boolean = true;
+  tbl_header: any = [];
+  userzone: string;
+  zoneidms: boolean = true;
+  matchscorems: boolean = true;
+  paysysms: boolean = true;
+  oldzoneidms: boolean = true;
+  oldmatchscorems: boolean = true;
+  oldpaysysidms: boolean = true;
+  changetypems: boolean = true;
+  casedata: any = [];
+  casedetail: any = [];
+  caseinfo: any = [];
+  matchedvalue: any = [];
+  term1: string;
+  term2: string;
+  term3: any;
+  term4: string;
+  term5: string;
+  term6: string;
+  term7: string;
+  startDate: any;
+  endDate: any;
+  filterdata: any;
+  _DetailData: any;
+  deparmentlist: any;
+  makeraction: string;
+  _actionaccess: boolean = true;
+  _actionaccessvalue: boolean = true;
+  commentbox: any = [];
+  commentboxtext: any = [];
+  cmmnt: any = [];
+  _page_authority: any;
+  orig_value: any;
+  constructor(public _tableservice: TableDataService, public _authservice: AuthserviceService, private toastr: ToastrService, private _location: Location) {
     this.userzone = "QA";
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
+    this.department = localStorage.getItem('department');
     var retrievedObject = localStorage.getItem('testObject');
     var filterperseved = JSON.parse(retrievedObject);
     var retrievedObject1 = localStorage.getItem('fromto');
@@ -98,121 +115,180 @@ term1:string;
     this.startDate = datefilterperseved.option1;
     this.endDate = datefilterperseved.option2;
 
-   
+
   }
 
   ngOnInit(): void {
-    
+
 
     this.refreshEmployeeList();
- 
-
-   
-    
+    this.resetForm();
+    this.unseen();
   }
 
 
 
+  resetForm(form?: NgForm) {
+    if (form)
+      form.reset();
+    this._tableservice.selectedcasedetail = {
+      REF_KEY: "",
+      USER_ID: "",
+      TYPE: "",
+      EX_USER_ID: "",
+      USER_NAME: "",
+      USER_ZONE: "",
+      ROLE: "",
+      ECM_CASE_ID: "",
+      MESSAGE_ID: "",
+      COMMENTS: "",
+      CREATION_DTTM: "",
+      PAGES: []
 
-
-  backClicked() {
-    this._location.back();
-  }
-
-
-
-  refreshEmployeeList()
-  {
-    var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-      this._tableservice.fetchcase().subscribe((res)=>{
-        this.showdatapart = res.result;
-        // this.tbl_header = res.metadata.name;
-        console.log("data" , this.showdatapart);
-      })
- 
-    
-    
-      this.valuedelete = "1";
-      this._isaccess = false;
-      this.updatemark = "1";
-  
     }
-    else if(myData === "checkers")
-    {
-      this._tableservice.fetchcase().subscribe((res)=>{
-        this.showdatapart = res.result;
-        this.tbl_header = res.metadata;
-        console.log(this.showdatapart);
-      })
-      this.valuedelete = "y";
-      this._isaccess = true;
-      this.updatemark = "y";
-      
+  }
+
+  commentsend(form: casedetail, msg: any) {
+
+    var caseid = msg.ECM_CASE_ID;
+    var obj = { "ROLE": this.myData, "USER_ID": this.UserId, "CASE_ID": caseid, "ROLE_PRIORITY": "admin", "USER_DEPARTMENT": this.department }
+    console.log({ ...obj, ...form });
+    this._tableservice.sendcomment({ ...obj, ...form }).subscribe((res) => {
+      this._actionaccess = false;
+      this.commentbox = res.CASE_DECISION;
+      this.commentboxtext = res.COMMENTS;
+      this.unseen();
+      console.log("comment", this.commentbox);
+
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    })
+  }
+  routes(form: casedetail, msg: any) {
+
+    var caseid = msg.ECM_CASE_ID;
+    var obj = { "ROLE": this.myData, "USER_ID": this.UserId, "CASE_ID": caseid, "ROUTE_DEPT_ID": "compliance", "USER_ZONE": this.userzone }
+    console.log({ ...obj, ...form });
+    this._tableservice.routecomment({ ...obj, ...form }).subscribe((res) => {
+      this._actionaccess = false;
+      this.commentbox = res.CASE_DECISION;
+      this.commentboxtext = res.COMMENTS;
+      console.log("comment", this.commentbox);
+      this.unseen();
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    })
+  }
+
+
+
+
+  refreshEmployeeList() {
+    this._tableservice.getassigndepartment().subscribe((res) => {
+      this.deparmentlist = res.result;
+      console.log("department", this.deparmentlist);
+      this.unseen();
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+    this._tableservice.getassignaccesslist().subscribe((res) => {
+      this.orig_value = res.result;
+      this._page_authority = parseJSON(this.orig_value);
+      console.log("arvind", this._page_authority);
+      if (this._page_authority.zonevsglobal.approval == false) {
+        this.valuedelete = "1";
+        this._isaccess = false;
+        this.updatemark = "1";
+      }
+      if (this._page_authority.zonevsglobal.approval == true) {
+        this.valuedelete = "y";
+        this._isaccess = true;
+        this.updatemark = "y";
+      }
      
-    }
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'page - Authority');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
   }
-  
-  getId = (form:casedetail,item:any,)=>{
+
+
+
+
+  unseen() {
+
+
+    var obj = { "ROLE": this.myData, "USER_ID": this.UserId, "USER_ZONE": this.userzone, "USER_DEPARTMENT": this.department };
+    this._tableservice.fetchcase(obj).subscribe((res) => {
+      this.showdatapart = res.result;
+      console.log("data", this.showdatapart);
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+  }
+
+  getId = (form: casedetail, item: casedetail) => {
     $(".seconddiv").show();
     $('html,body').animate({
-      scrollTop: $(".seconddiv").offset().top},
+      scrollTop: $(".seconddiv").offset().top
+    },
       'slow');
-  
-   
- console.log(item,form);
-this._tableservice.postcaseids({...item,...form}).subscribe((res) => {
-  this.casedetail = res.result[0].alert_info;
-  this.caseinfo = res.result[1].case_info;
-
-});
-
-  }
-
-  
-
- 
-  
+    this._tableservice.selectedcasedetail = form;
+    this.selectedNeutralRow = form;
+    var data = { "MESSAGE_ID": form.MESSAGE_ID, "CASE_ID": form.ECM_CASE_ID };
 
 
+    this._tableservice.postcaseids({ ...item, ...data }).subscribe((res) => {
+      this.casedetail = res.result[1].alert_info;
+      this.caseinfo = res.result[2].case_info;
+      this.cmmnt = res.result[3].case_comments;
 
-   selectID(id, isSelected){  
-    
-    if(isSelected === true)
-  {
-    this.SelectedIDs.push(id);
-    this.isdelete_button = false;
-  }
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
 
-    else
-    {
-      this.SelectedIDs.pop(id);
-      this.isdelete_button = true;
-    }
-    console.log("true" + this.SelectedIDs);
-    console.log("false" + this.filteredArray);
- 
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
 
   }
-  
-  
- 
 
 
+  onEdit(form: casedetail, item: any) {
+
+    this._tableservice.matchitems({ ...item, ...form }).subscribe((res) => {
+      this.matchedvalue = res.result;
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
 
 
-
-
-
-
-
-
-
-
-
-
+      //throw error;   //You can also throw the error to a global error handler
+    });
+  }
 
 
 }

@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { NgForm, FormBuilder, FormGroup, FormArray, FormControl,FormsModule } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import {TableDataService} from '../../shared/table-data.service';
@@ -89,6 +89,11 @@ export class UsersListComponent implements OnInit {
  departsendrefkey:string;
  paysystype:string="paysys";
  asuserid:any;
+ rlist:any;
+ primary_flag:string;
+ btnhidden:boolean = false;
+ 
+
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
  
     this.myData = localStorage.getItem('Role');
@@ -102,8 +107,10 @@ export class UsersListComponent implements OnInit {
     this.departselection();
     this.zoneselection();
     this.paysysselection();
+   this.roleslist();
 
   }
+
   departselection = ()=>{
     this._tableservice.departlistpage().subscribe((res)=>{
       this.departselect = res.result;
@@ -123,7 +130,14 @@ export class UsersListComponent implements OnInit {
     })
   }
  
+  roleslist()
+{
+  this._tableservice.rolelistviewpage().subscribe((res)=>{
+    this.rlist = res.result;
+    console.log(this.showdata);
 
+  })
+}
 
   onroleChange(user:usersscheme){
     this.user = "makers";
@@ -152,6 +166,28 @@ export class UsersListComponent implements OnInit {
  
   }
 
+ 
+  AllItemList(item)
+  {
+    var role  = {"ROLE":this.myData}
+    console.log("new",role,item)
+    this._tableservice.postuserids({...item,...role}).subscribe((res) => {
+     
+      this.department = res.dept_list,
+   this.zoneslist = res.zone_list,
+     this.paysyslist = res.paysys_list,
+     console.log("new",this.department,this.zoneslist,this.paysyslist);
+    });
+  }
+
+  onflagChange(item,e){
+    var role  = {"ROLE":this.myData};
+    var flag = { "PRIMARY_FLAG":e};
+    console.log(flag);
+    this._tableservice.flagupdate({...role,...item,...flag}).subscribe((res)=>{
+      this.AllItemList(this.asuserid);
+    })
+  }
 
 
   refreshdata = (id)=>{
@@ -173,26 +209,28 @@ export class UsersListComponent implements OnInit {
   //  var obj = this.department.rows[0].USER_ID;
   //  var userid = {"USER_ID":obj};
    this._tableservice.assigndepartservice({...this.asuserid,...form.value}).subscribe((res) => {
-  
+    this.AllItemList(this.asuserid);
     
   });
   }
 
   assignzone =  (form:NgForm)=>{
 
-    var obj = this.department.rows[0].USER_ID;
-    var userid = {"USER_ID":obj};
-    this._tableservice.assignzoneservice({...userid,...form.value}).subscribe((res) => {
-
+    // var obj = this.department.rows[0].USER_ID;
+    // var userid = {"USER_ID":obj};
+    this._tableservice.assignzoneservice({...this.asuserid,...form.value}).subscribe((res) => {
+      this.AllItemList(this.asuserid);
 
    });
    
    }
+
+
    assignpaysys = (form:NgForm)=>{
     var obj = this.department.rows[0].USER_ID;
     var userid = {"USER_ID":obj};
     this._tableservice.assignpayservice({...userid,...form.value}).subscribe((res) => {
-   
+      this.AllItemList(this.asuserid);
      
    });
    }
@@ -220,10 +258,7 @@ export class UsersListComponent implements OnInit {
 
  
 
-  backClicked() {
-    this._location.back();
-  }
- 
+
 
   
  
@@ -260,7 +295,7 @@ export class UsersListComponent implements OnInit {
 unassigndepartment = (form:NgForm)=>{
   this._tableservice.unassignitemservice(form.value).subscribe((res)=>{
     //  this.resetForm(form);
-    this.showdata = res.result;
+    this.AllItemList(this.asuserid);
     this.toastr.success(res.message, 'remove department');
 
   });
@@ -268,7 +303,7 @@ unassigndepartment = (form:NgForm)=>{
 unassignzone = (form:NgForm)=>{
   this._tableservice.unassignitemservice(form.value).subscribe((res)=>{
     //  this.resetForm(form);
-    this.showdata = res.result;
+    this.AllItemList(this.asuserid);
     this.toastr.success(res.message, 'remove department');
 
   });
@@ -276,7 +311,7 @@ unassignzone = (form:NgForm)=>{
 unassignpay = (form:NgForm)=>{
   this._tableservice.unassignitemservice(form.value).subscribe((res)=>{
     //  this.resetForm(form);
-    this.showdata = res.result;
+    this.AllItemList(this.asuserid);
     this.toastr.success(res.message, 'remove department');
 
   });
@@ -284,11 +319,12 @@ unassignpay = (form:NgForm)=>{
 
 
 onEdit(unassign: unassignitem,bt:string) {
+
   this.btn_name = "Update";
   this._tableservice.selectunassignitem = unassign;
   this.selecteddepartRow = unassign;
   this.departsendrefkey = JSON.stringify(this.selecteddepartRow.REF_KEY);
-  
+
 }
 
 
@@ -360,18 +396,5 @@ ChkdeleteSelected(form:NgForm,paysys:usersscheme)
 
 
 }
-ChkNotdeleteSelected(form:NgForm,paysys:usersscheme)
-{
 
-
-  this._tableservice.selectusers = paysys;
-  this.selectedpaysysRow = paysys;
-  console.log(form.value,paysys);
-    this._tableservice.neudeldisapproved({...form.value,...paysys}).subscribe((res) => {
-    //  this.refreshEmployeeList();
-
-      this.toastr.info('Data Restored Successfully', 'Disapproved');
-    });
-
-}
 }
