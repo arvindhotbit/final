@@ -109,6 +109,11 @@ export interface sanctioned {
 
 
 export interface internalwatchlist {
+	REF_KEY:string,
+	USER_ID : string,
+	USER_NAME : string,
+	USER_ZONE : string,
+	ROLE : string,
 	UID_SERIAL_NO: string,
 	ZONE_ID : string,
 	WATCHLIST_ID : string,
@@ -142,6 +147,9 @@ export interface internalwatchlist {
 	OTHERS_REMARKS : string,
 	OTHERS_DATA_SOURCES : string,
 	OTHERS_RELATED_TO : string,
+	HIST_ID : string,
+	APPROVE_STATUS : string,
+	CHANGE_TYPE : string
 	};
 
 
@@ -240,6 +248,7 @@ export interface internalwatchlist {
 						MESSAGE_ID : string,
 						CREATION_DTTM:string,
 						COMMENTS:string,
+						LOCKED_VIEW:number|string,
 						PAGES : []
 					} 
 					export interface departscheme {
@@ -307,6 +316,20 @@ export interface internalwatchlist {
 					USER_ZONE : string,
 					ROLE : string
 					}
+					export interface cbn {
+						REF_KEY : string,
+						USER_ID : string,
+						FIELD : string,
+						LENGTH:string,
+						START_POS:string,
+						END_POS:string,
+						USER_NAME : string,
+						USER_ZONE : string,
+						ROLE : string,
+						ZONE_ID:string,
+						APPROVE_STATUS :string,
+						CHANGE_TYPE : string,
+						}
 					export interface createrole {
 						REF_KEY : string,
 						USER_ID : string,

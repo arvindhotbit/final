@@ -28,7 +28,7 @@
         <div class="row">
 
           <div class="col-4">
-            <div class="form-group">
+            <div class="form-group"> 
               <label>User Id</label>
               <input type="text" class="form-control" [class.is-invalid]="userid.invalid && userid.touched"
                 [class.is-valid]="userid.valid" name="userid" [(ngModel)]="this._authservice.authscheme.userid"
@@ -36,7 +36,7 @@
               <span class="help-block" *ngIf="userid.errors?.required && userid.touched">
                 User ID is required
               </span>
-            </div>
+            </div> 
             <div class="form-group">
               <label>First Name</label>
               <input type="text" class="form-control" [class.is-invalid]="cn.invalid && cn.touched"

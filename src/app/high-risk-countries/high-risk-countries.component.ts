@@ -25,8 +25,15 @@ export class HighRiskCountriesComponent implements OnInit {
   selectedAllclone: any;
   public showdatapart:any = [];
   p:number =1;
-  nsn = true;
-  zoneid = true;
+  nsncol:boolean=true;
+  zoneidcol:boolean=true;
+  riskcol:boolean=true;
+  sanctionflagcol:boolean=true;
+  Countrycodecol:boolean=true;
+  countrynamecol:boolean=true;
+  watchlistnamecol:boolean=true;
+  watchlisttypecol:boolean=true;
+  initialloadflagcol:boolean=true;
   zonefilters:string ="";
   IS_DELETE= false;
   IS_UPDATE= false;
@@ -60,9 +67,9 @@ export class HighRiskCountriesComponent implements OnInit {
   xbunch: string;
   ybunch: string;
   formact: string = "Add Record";
-  masterSelected: boolean;
+  masterSelected: string[];
   checkedList: any;
-  histmasterSelected: boolean;
+  histmasterSelected: string[];
   histcheckedList: any;
   a:string;
 b:string;
@@ -79,14 +86,13 @@ zonevalue:string;
 _page_authority:any;
 orig_value:any;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
-    this.userzone = "QA";
-    this.masterSelected = false;
-    this.histmasterSelected = false;
+    this.masterSelected = [];
+    this.histmasterSelected = [];
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
-    this.getCheckedItemList();
-    this.getCheckedItemhistList();
+    this.userzone = localStorage.getItem('UserZone');
+ 
      }
 
   ngOnInit(): void {
@@ -94,66 +100,76 @@ orig_value:any;
     this.resetForm();
     this.refreshEmployeeList();
     this.getZonelist(); 
-    this.unseen();
+    this.zonevalue = this.userzone;
+    this.onZoneChange(this.userzone);
+    this.sendButtonClick();
+    this.viewmessage();
   }
+
+  sendButtonClick() {
+    this._tableservice.sendMessage(null)
+  }
+ 
+  viewmessage()
+  {
+    
+    this._tableservice.onNewMessage().subscribe(msg => {
+      console.log('got a msg: ' , msg.reload);
+      if(msg.reload == true)
+      {
+        this.onZoneChange(this.zonevalue);
+      }
+      else
+      {
+        console.log("don't call");
+      }
+    });
+  }
+
+
+  isItemChecked(id) {
+    return this.masterSelected.includes(id)
+  }
+
 
   checkUncheckAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart[i].isSelected = this.masterSelected;
-      console.log("master", this.masterSelected);
+    if (this.masterSelected.length == this.showdatapart.length) {
+      this.masterSelected = []
+    } else {
+      this.masterSelected = this.showdatapart.map(sdp => sdp.REF_KEY)
     }
-    this.getCheckedItemList();
+
   }
-  isAllSelected() {
-    this.masterSelected = this.showdatapart.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemList();
+  isAllSelected(id) {
+    if (this.masterSelected.includes(id)) {
+      this.masterSelected = [...this.masterSelected].filter(ms => ms != id)
+    } else {
+      this.masterSelected = [...this.masterSelected, id]
+    }
+
   }
 
-  getCheckedItemList() {
-    this.checkedList = [];
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      if (this.showdatapart[i].isSelected)
-        this.checkedList.push(this.showdatapart[i]);
-    }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.checkedList.forEach(element => {
-      this.SelectedIDs.push(element.REF_KEY);
-      this.xbunch = this.SelectedIDs.toString();
-      this.isdelete_button = false;
-      this.formact = "Update Record";
-      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
-    });
+
+  ishistItemChecked(id) {
+    return this.histmasterSelected.includes(id)
   }
 
 
   histcheckUncheckAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart[i].isSelected = this.histmasterSelected;
-      console.log(this.histmasterSelected);
+    if (this.histmasterSelected.length == this.showdatapart.length) {
+      this.histmasterSelected = []
+    } else {
+      this.histmasterSelected = this.showdatapart.map(sdp => sdp.HIST_ID)
     }
-    this.getCheckedItemhistList();
-  }
-  histisAllSelected() {
-    this.histmasterSelected = this.showdatapart.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemhistList();
-  }
 
-  getCheckedItemhistList() {
-    this.histcheckedList = [];
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      if (this.showdatapart[i].isSelected)
-        this.histcheckedList.push(this.showdatapart[i]);
+  }
+  histisAllSelected(id) {
+    if (this.histmasterSelected.includes(id)) {
+      this.histmasterSelected = [...this.histmasterSelected].filter(ms => ms != id)
+    } else {
+      this.histmasterSelected = [...this.histmasterSelected, id]
     }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.histcheckedList.forEach(element => {
-      this.SelectedIDs.push(element.HIST_ID);
-      this.ybunch = this.SelectedIDs.toString();
-      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
-    });
+
   }
 
 
@@ -179,8 +195,8 @@ orig_value:any;
     "USER_ZONE" : this.zonevalue,"USER_ID" : this.UserId,"CHANGE_TYPE":this.changetype};
     
         this._tableservice.get_hrc_changezonelist(obj).subscribe((res)=>{
-          this.showdatapart = res.result;
-          this.toastr.success(res.message, 'zonelist');
+          this.showdatapart = res.result || [];
+    
       
         },(error) => {                              //Error callback
           console.error('error caught in component')
@@ -218,7 +234,7 @@ orig_value:any;
   refreshEmployeeList() {
     this._tableservice.getassignaccesslist().subscribe((res) => {
       this.orig_value = res.result;
-      this._page_authority = parseJSON(this.orig_value);
+      this._page_authority = JSON.parse(this.orig_value);
       console.log("arvind",this._page_authority);
       if(this._page_authority.highriskcountry.approval == false)
       {
@@ -280,26 +296,46 @@ unseen()
   });
 }
 
-  addform = () =>{
+addform = () => {
+  this.toggle = !this.toggle;
+  $("#addForm").toggle();
+  $("#updateform").hide();
+}
+updateform = () => {
+  if (this._tableservice.selectedhrc.REF_KEY == "") {
+    alert("Update item select this row");
+  }
+  else {
     this.toggle = !this.toggle;
-    $("#addForm").toggle();
+    $("#updateform").toggle();
+    $("#addForm").hide();
   }
 
+}
   
-  postChangetype(change_type) {
-    this._tableservice.hrclistpagetype(change_type).subscribe((res) => {
-      this.showdatapart = res.result;
-    },(error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
 
-      //throw error;   //You can also throw the error to a global error handler
-    })
-  }
  
   
-
+  postChangetype(change_type) {
+    if(this.zonevalue == null)
+    {
+      alert("Please Select a Zone");
+    }
+    else
+    {
+      const zonetype = { "CHANGE_TYPE": change_type,"USER_ZONE": this.zonevalue,"ROLE":this.myData,"USER_ID":this.UserId };
+      this._tableservice.hrclistpagetype(zonetype).subscribe((res) => {
+        this.showdatapart = res.result;
+      }, (error) => {                              //Error callback
+        console.error('error caught in component')
+        this.toastr.error(error, 'Blacklisted Bic');
+  
+  
+        //throw error;   //You can also throw the error to a global error handler
+      });
+    }
+  
+  }
 
 
 
@@ -312,45 +348,39 @@ unseen()
   submitform(form: NgForm){
 
    
-    if (form.value.REF_KEY == "") {
+
       this.toggle = !this.toggle;
       $("#addForm").toggle();
   this._tableservice.posthrc(form.value).subscribe((res)=>{
-    //  this.resetForm(form);
-   this.refreshEmployeeList();
-   this.unseen();
-    this.toastr.success(res.message, 'Neutral Words');
+
+    this.toastr.success(res.message, 'HighRiskCountry');
 
   },(error) => {                              //Error callback
     console.error('error caught in component')
-    this.toastr.error(error, 'Neutral - Words');
+    this.toastr.error(error, 'HighRiskCountry');
    
 
     //throw error;   //You can also throw the error to a global error handler
   });
+
 }
-else
-{
-  console.log(form.value);
-this._tableservice.puthrc(form.value).subscribe((res) => {
+
+UpdateSubmitForm(form: NgForm) {
   this.toggle = !this.toggle;
-  $("#addForm").toggle();
-    // this.resetForm(form);
-    this.refreshEmployeeList();
-    this.unseen();
-    this.toastr.info(res.message, 'Neutral Words');
-
-  },(error) => {                              //Error callback
-    console.error('error caught in component')
-    this.toastr.error(error, 'Neutral - Words');
+  $("#updateForm").toggle();
+  this._tableservice.puthrc(form.value).subscribe((res) => {
+    this.masterSelected = [];
+    this.toastr.info(res.message, 'Sensitive Words');
    
+  }, (error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Sensitive Word');
+
 
     //throw error;   //You can also throw the error to a global error handler
   });
-}
-}
 
-
+}
 
 
 
@@ -362,38 +392,47 @@ onEdit(hrc: Highriskcountry,bt:string) {
 
 
 deleteSelected(form: NgForm) {
-  this.delete_toggle = !this.delete_toggle; 
-    this._tableservice.deletehrc(this.xbunch).subscribe((res) => {
-      this.refreshEmployeeList();
-      this.unseen();
-      this.resetForm(form);
-      this.toastr.warning(res.message, 'High Risk Country');
-    },(error) => {                              //Error callback
+  if (this.masterSelected.length <= 0) {
+    alert("Delete Item Select This Row")
+  }
+  else {
+    this._tableservice.deletehrc(this.masterSelected.join(',')).subscribe((res) => {
+      this.toastr.warning(res.message, 'Sensitive Word');
+      this.masterSelected = [];
+    }, (error) => {
       console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
+      this.toastr.error(error, 'Sensitive Word');
 
-      //throw error;   //You can also throw the error to a global error handler
+
+
     });
+
+  }
+
 
 }
 
 
 
 ChkdeleteSelected(status, form: NgForm) {
-  var value1 = {"APPROVE_STATUS":status}
-  this._tableservice.hrcapproved({...form.value,...value1}).subscribe((res) => {
-    this.refreshEmployeeList();
-    this.unseen();
-    this.toastr.success(res.message, status);
+  if (this.histmasterSelected.length <= 0) {
+    alert("check Item Select This Row")
+  }
+  else {
+    var value1 = { "APPROVE_STATUS": status, "HIST_ID": this.histmasterSelected.join(',') }
+    this._tableservice.hrcapproved({ ...form.value, ...value1 }).subscribe((res) => {
+      this.histmasterSelected = [];
+      this.toastr.success(res.message, status);
 
-  },(error) => {                              //Error callback
-    console.error('error caught in component')
-    this.toastr.error(error, 'Neutral - Words');
-   
+    }, (error) => {
+      console.error('error caught in component')
+      this.toastr.error(error, 'Sensitive Word');
 
-    //throw error;   //You can also throw the error to a global error handler
-  });
+
+
+    });
+
+  }
+
 }
-
 }

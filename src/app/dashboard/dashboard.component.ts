@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit {
   features = [];
   _checkout_count = false;
   _access: boolean;
+  zonearray:any;
   neutral: string;
   _page_authority:any;
   constructor(public _authservice: AuthserviceService, public _tableservice: TableDataService,private toastr: ToastrService) {
@@ -31,20 +32,45 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.myData = localStorage.getItem('Role');
     // this.countdata();
-          this._access_management();
-          
+       
+   this.getZonelist();
+   this.viewmessage();
+
   }
-  
-   
+  viewmessage() {
+
+    this._tableservice.onNewMessage().subscribe(msg => {
+      if (msg.reload == true) {
+        window.onload;
+     
+      }
+    });
+  }
+
+  getZonelist()
+  {
+    this._tableservice.getassignzonelist().subscribe((res) => {
+     this.zonearray = res.result.rows;
+     this._access_management(this.zonearray);
+    },(error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+     
+
+      //throw error;   //You can also throw the error to a global error handler
+    })
+  }
 
 
-  _access_management = ()=>{
+  _access_management = (zones)=>{
     // countdata(): void {
-    this._tableservice.fetchcount().subscribe((data) => {
+      const zoneids = zones.map(zone => zone.ZONE_ID);
+      const countdata = {"ZONE_ID":zoneids,"ROLE":this.myData};
+    this._tableservice.fetchcount(countdata).subscribe((data) => {
       this._data = data;
        this._tableservice.getassignaccesslist().subscribe((res) => {
       var orig_value = res.result;
-      this._page_authority = parseJSON(orig_value);
+      this._page_authority = JSON.parse(orig_value);
      if((this._page_authority.neutral_words.view == true) && (this._page_authority.neutral_words.approval == false))
      {
        let obj = {"name": "netural Words", "icon": "fa-minus-circle", "pagelink": "neutralwords", "visible":true}
@@ -188,13 +214,13 @@ export class DashboardComponent implements OnInit {
        if((this._page_authority.zonevsglobal.view == true) && (this._page_authority.zonevsglobal.approval == false))
      {
       
-      let obj = { "name": "zone vs Golbal Keywords", "icon": "fa-globe", "pagelink": "zonevsglobal", "visible":true  }
+      let obj = { "name": "Zone vs Global Keywords", "icon": "fa-globe", "pagelink": "zonevsglobal", "visible":true  }
        this.features.push(obj);
      }
      if((this._page_authority.zonevsglobal.view == true) && (this._page_authority.zonevsglobal.approval == true))
      {
        this._checkout_count = true;
-       let chkobj = { "count_access":true, "name": "zone vs Golbal Keywords", "icon": "fa-plus-circle", "pagelink": "zonevsglobal","visible":true , "insert": this._data.zone_global_keywords[0].ZGK_I_COUNT, "delete": this._data.zone_global_keywords[0].ZGK_D_COUNT, "update": this._data.zone_global_keywords[0].ZGK_U_COUNT };
+       let chkobj = { "count_access":true, "name": "Zone vs Global Keywords", "icon": "fa-plus-circle", "pagelink": "zonevsglobal","visible":true , "insert": this._data.zone_global_keywords[0].ZGK_I_COUNT, "delete": this._data.zone_global_keywords[0].ZGK_D_COUNT, "update": this._data.zone_global_keywords[0].ZGK_U_COUNT };
        this.features.push(chkobj);
      }
        // ******************************************************************************************************* 

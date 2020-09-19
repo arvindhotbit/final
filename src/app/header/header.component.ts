@@ -7,8 +7,16 @@ import {AuthserviceService} from '../auth/authservice.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
-  constructor(public _authservice:AuthserviceService) { }
+  public myData: string;
+  public UserId: string;
+  public UserName: string;
+  public Userzone: string;
+  constructor(public _authservice:AuthserviceService) {
+    this.myData = localStorage.getItem('Role');
+    this.UserId = localStorage.getItem('Id');
+    this.UserName = localStorage.getItem('Username');
+    this.Userzone = localStorage.getItem('UserZone');
+   }
 
   ngOnInit(): void {
   }

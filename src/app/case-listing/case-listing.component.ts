@@ -35,8 +35,6 @@ export class CaseListingComponent implements OnInit {
   pb:number = 1;
   cm:number = 1;
   r: number = 1;
-  nsn = true;
-  zoneid = true;
   zonefilters: string = "";
   selectedNeutralRow: casedetail;
   IS_DELETE = false;
@@ -64,13 +62,15 @@ export class CaseListingComponent implements OnInit {
   isdelete_button: boolean = true;
   tbl_header: any = [];
   userzone: string;
-  zoneidms: boolean = true;
-  matchscorems: boolean = true;
-  paysysms: boolean = true;
-  oldzoneidms: boolean = true;
-  oldmatchscorems: boolean = true;
-  oldpaysysidms: boolean = true;
-  changetypems: boolean = true;
+  nsncol: boolean = true;
+  caseidcol: boolean = true;
+  customernamecol: boolean = true;
+  senderbiccol: boolean = true;
+  receiverbiccol: boolean = true;
+  Paysysidcol: boolean = true;
+  channelcol: boolean = true;
+  amountcol: boolean = true;
+  datecol: boolean = true;
   casedata: any = [];
   casedetail: any = [];
   caseinfo: any = [];
@@ -96,7 +96,7 @@ export class CaseListingComponent implements OnInit {
   _page_authority: any;
   orig_value: any;
   constructor(public _tableservice: TableDataService, public _authservice: AuthserviceService, private toastr: ToastrService, private _location: Location) {
-    this.userzone = "QA";
+    this.userzone = localStorage.getItem('UserZone');
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
@@ -105,15 +105,15 @@ export class CaseListingComponent implements OnInit {
     var filterperseved = JSON.parse(retrievedObject);
     var retrievedObject1 = localStorage.getItem('fromto');
     var datefilterperseved = JSON.parse(retrievedObject1);
-    this.term1 = filterperseved.term1;
-    this.term2 = filterperseved.term2;
-    this.term3 = filterperseved.term3;
-    this.term4 = filterperseved.term4;
-    this.term5 = filterperseved.term5;
-    this.term6 = filterperseved.term6;
-    this.term7 = filterperseved.term7;
-    this.startDate = datefilterperseved.option1;
-    this.endDate = datefilterperseved.option2;
+    // this.term1 = filterperseved.term1;
+    // this.term2 = filterperseved.term2;
+    // this.term3 = filterperseved.term3;
+    // this.term4 = filterperseved.term4;
+    // this.term5 = filterperseved.term5;
+    // this.term6 = filterperseved.term6;
+    // this.term7 = filterperseved.term7;
+    // this.startDate = datefilterperseved.option1;
+    // this.endDate = datefilterperseved.option2;
 
 
   }
@@ -123,7 +123,28 @@ export class CaseListingComponent implements OnInit {
 
     this.refreshEmployeeList();
     this.resetForm();
-    this.unseen();
+    this.sendButtonClick();
+    this.viewmessage();
+  }
+
+  sendButtonClick() {
+    this._tableservice.sendMessage(null)
+  }
+ 
+  viewmessage()
+  {
+    
+    this._tableservice.onNewMessage().subscribe(msg => {
+      console.log('got a msg: ' , msg.reload);
+      if(msg.reload == true)
+      {
+        this.unseen();
+      }
+      else
+      {
+        console.log("don't call");
+      }
+    });
   }
 
 
@@ -143,6 +164,7 @@ export class CaseListingComponent implements OnInit {
       MESSAGE_ID: "",
       COMMENTS: "",
       CREATION_DTTM: "",
+      LOCKED_VIEW:"",
       PAGES: []
 
     }
@@ -207,7 +229,7 @@ export class CaseListingComponent implements OnInit {
     });
     this._tableservice.getassignaccesslist().subscribe((res) => {
       this.orig_value = res.result;
-      this._page_authority = parseJSON(this.orig_value);
+      this._page_authority = JSON.parse(this.orig_value);
       console.log("arvind", this._page_authority);
       if (this._page_authority.zonevsglobal.approval == false) {
         this.valuedelete = "1";
@@ -249,29 +271,39 @@ export class CaseListingComponent implements OnInit {
     });
   }
 
-  getId = (form: casedetail, item: casedetail) => {
-    $(".seconddiv").show();
-    $('html,body').animate({
-      scrollTop: $(".seconddiv").offset().top
-    },
-      'slow');
-    this._tableservice.selectedcasedetail = form;
-    this.selectedNeutralRow = form;
-    var data = { "MESSAGE_ID": form.MESSAGE_ID, "CASE_ID": form.ECM_CASE_ID };
-
-
-    this._tableservice.postcaseids({ ...item, ...data }).subscribe((res) => {
-      this.casedetail = res.result[1].alert_info;
-      this.caseinfo = res.result[2].case_info;
-      this.cmmnt = res.result[3].case_comments;
-
-    }, (error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-
-
-      //throw error;   //You can also throw the error to a global error handler
-    });
+  getId = (form: casedetail, item: casedetail,doc:any) => {
+    
+    if(doc != this.UserId && doc != '0')
+    {
+      alert("another user click");
+      return
+     
+    }
+   
+      $(".seconddiv").show();
+      $('html,body').animate({
+        scrollTop: $(".seconddiv").offset().top
+      },
+        'slow');
+      this._tableservice.selectedcasedetail = form;
+      this.selectedNeutralRow = form;
+      var data = { "MESSAGE_ID": form.MESSAGE_ID, "CASE_ID": form.ECM_CASE_ID };
+  
+  
+      this._tableservice.postcaseids({ ...item, ...data }).subscribe((res) => {
+        this.casedetail = res.result[1].alert_info;
+        this.caseinfo = res.result[2].case_info;
+        this.cmmnt = res.result[3].case_comments;
+        this.unseen();
+      }, (error) => {                              //Error callback
+        console.error('error caught in component')
+        this.toastr.error(error, 'Neutral - Words');
+  
+  
+        //throw error;   //You can also throw the error to a global error handler
+      });
+  
+   
 
   }
 

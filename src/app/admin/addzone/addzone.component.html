@@ -131,13 +131,21 @@
                       [(ngModel)]="_tableservice.selectzone.REF_KEY">
                     <div class="form-group">
                       <label>Zone Id</label>
-                      <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel"
+                      <input type="text" class="form-control" [class.is-invalid]="ZONE_ID.invalid && ZONE_ID.touched"
+                      [class.is-valid]="ZONE_ID.valid" name="ZONE_ID" #ZONE_ID="ngModel"
                         [(ngModel)]="_tableservice.selectzone.ZONE_ID" required>
+                        <span class="help-block" *ngIf="ZONE_ID.errors?.required && ZONE_ID.touched">
+                          Zone Id is required
+                        </span>
                     </div>
                     <div class="form-group">
-                      <label>Noise Word</label>
-                      <input type="text" class="form-control" name="COUNTRY_NAME" #COUNTRY_NAME="ngModel"
+                      <label>Country Name</label>
+                      <input type="text" class="form-control" [class.is-invalid]="COUNTRY_NAME.invalid && COUNTRY_NAME.touched"
+                      [class.is-valid]="COUNTRY_NAME.valid" name="COUNTRY_NAME" #COUNTRY_NAME="ngModel"
                         [(ngModel)]="_tableservice.selectzone.COUNTRY_NAME" required>
+                        <span class="help-block" *ngIf="COUNTRY_NAME.errors?.required && COUNTRY_NAME.touched">
+                          Country Name is required
+                        </span>
                     </div>
                   </div>
                   <div style="display: none;">
@@ -174,7 +182,8 @@
                     </div>
                   </div>
                 </div>
-                <input type="submit" class="btn btn-success" value="{{btn_name}}">
+                <input type="submit" class="btn btn-success" [ngStyle]="!myform.form.valid && {'cursor': 'not-allowed
+                '}"  [disabled]="!myform.form.valid" value="{{btn_name}}">
               </form>
             </div>
           </div>

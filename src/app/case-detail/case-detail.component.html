@@ -1,268 +1,377 @@
+<app-header></app-header>
 
+
+<div class="data-table-area mg-b-15">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="sparkline13-list">
+
+          <div class="sparkline13-graph">
+            <div class="datatable-dashv1-list custom-datatable-overright">
+
+              <div class="topbtn">
+
+                <div class="main-sparkline13-hd">
+                  <div class="part">
+                    <h1>Customer Basic Number Position <small>(Select Row To Update)</small></h1>
+
+                  </div>
+
+
+
+                  <div class="btn-group btn-group-sm">
+                    <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
+                      Back</button>
+
+
+
+
+                    <div class="dropdown btn-group ">
+                      <button class=" dropdown-toggle btn btn-primary btn-sm" type="button" data-toggle="dropdown"><i
+                          class="fa fa-toggle-down"></i> Column
+                      </button>
+                      <ul class="dropdown-menu trust-menu">
+                        <li class="dropdown-item">
+                          <label for="nsncol"> <input type="checkbox" [checked]="nsncol" (change)="nsncol=!nsncol"
+                              id="nsncol" />&nbsp;Sr. No</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="zoneidcol"> <input type="checkbox" [checked]="zoneidcol"
+                              (change)="zoneidcol=!zoneidcol" id="zoneidcol" />&nbsp;Zone Id</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="fieldcol"> <input type="checkbox" [checked]="fieldcol "
+                              (change)="fieldcol =!fieldcol " id="fieldcol" />&nbsp;Entry Type</label>
+                        </li>
+
+
+
+                      </ul>
+                    </div>
+                    <ng-container *ngIf="_isaccess">
+                      <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa
+                        -check-square-o"></i> Approve</button>
+                    <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
+                     </ng-container>
+                     <ng-container *ngIf="!_isaccess">
+                     <button *ngIf="_InsertButtonAccess"  (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
+                     <button *ngIf="_updateButtonAccess" (click)="updateform()"
+                     class="btn btn-primary btn-sm" [class.disabled]="!this.masterSelected.length" ><i
+                       class="fa fa-edit"></i> Update</button>
+                     <button  *ngIf="_DeleteButtonAccess"  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="!this.masterSelected.length"><i  class="fa fa-trash"></i> Delete</button>
+                     </ng-container>
+                  </div>
+
+
+
+
+
+
+
+
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
+                  <thead class="table_header">
+
+
+
+
+                    <tr>
+                      <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [checked]="this.masterSelected.length ==  this.showdatapart.length" (change)="checkUncheckAll()"/></th>
+                      <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [checked]="this.histmasterSelected.length ==  this.showdatapart.length" (change)="histcheckUncheckAll()"/></th>
+                      <th *ngIf="nsncol">Sr.no</th>
+                      <th *ngIf="zoneidcol"><span><select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
+                            (ngModelChange)="onZoneChange($event)">
+                            <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID" selected="Userzone">{{zone.ZONE_ID}}</option>
+                          </select></span></th>
+                      <th *ngIf="fieldcol"><span><input type="text" class="form-control" placeholder="FIELD"
+                            [(ngModel)]="b" /></span> </th>
+
+
+                      <ng-container *ngIf="_isaccess">
+                        <th><span><input type="text" class="form-control" placeholder="OLD_ZONE ID"
+                              [(ngModel)]="d" /></span></th>
+                        <th><span><input type="text" class="form-control" placeholder="OLD_FIELD"
+                              [(ngModel)]="e" /></span> </th>
+                      
+
+                        <th>
+                          <span>
+
+                            <select name="changetype" class="form-control" [(ngModel)]="changetype"
+                              (ngModelChange)="postChangetype($event)">
+                              <option value="INSERT">INSERT</option>
+                              <option value="DELETE">DELETE</option>
+                              <option value="UPDATE">UPDATE</option>
+                            </select>
+                          </span>
+                        </th>
+
+                      </ng-container>
+
+                      <th *ngIf="ref_keys">REF KEY</th>
+
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="showdatapart?.length;else no_data_templ">
+
+                    <ng-container
+                      *ngFor="let item of showdatapart | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
+                      <tr
+                        [ngClass]="{'disabledelitem': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
+                        (click)="onEdit(item,'Update')" [class.selected]="item === selectedcbnRow">
+                        <td *ngIf="!_isaccess" style="text-align: center;">
+                          <input type="checkbox"
+                          [checked]="isItemChecked(item.REF_KEY)" id="{{item.REF_KEY}}" name="delete"
+                            value="{{item.REF_KEY}}"  (change)="isAllSelected(item.REF_KEY)"></td>
+                  
+                        <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+                            [checked]="ishistItemChecked(item.HIST_ID)" id="{{item.HIST_ID}}" name="deletechecker"
+                            value="{{item.HIST_ID}}" (change)="histisAllSelected(item.HIST_ID)"></td>
+                        <td *ngIf="nsncol">{{ (p - 1) * pageSize + i + 1 }}</td>
+                        <td *ngIf="zoneidcol">{{item.ZONE_ID}}</td>
+                        <td *ngIf="fieldcol">{{item.FIELD}}</td>
+
+
+
+
+
+                        <ng-container *ngIf="_isaccess">
+
+                          <td *ngIf="zoneidcol">{{item.OLD_ZONE_ID}}</td>
+                          <td>{{item.OLD_FIELD}}</td>
+                         
+                          <td>{{item.CHANGE_TYPE}}</td>
+
+                        </ng-container>
+
+                      </tr>
+                    </ng-container>
+
+                  </tbody>
+                  <ng-template #no_data_templ>
+                    <tbody>
+                      <tr>
+                        <td style="text-align: center;" colspan="100%"> No data found...</td>
+                      </tr>
+                    </tbody>
+                  </ng-template>
+
+                </table>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+
+
+                  <div class="align-items-md-start d-flex justify-content-lg-end">
+                    <select id="PerPage" [(ngModel)]="pageSize" *ngIf="showdatapart?.length">
+                      <option [ngValue]="5">5</option>
+                      <option [ngValue]="10">10</option>
+                      <option [ngValue]="25">25</option>
+                      <option [ngValue]="50">50</option>
+                    </select>
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                  </div>
+
+
+
+
+
+
+                </div>
+
+              </div>
+
+
+
+
+               <div class="row">
+                 <div class="col-md-6">
+                  <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+                    <div class="panel-body">
+                      <h4>Add Record</h4>
+                    </div>
     
     
- <app-header></app-header>
- 
-      
- <div class="data-table-area mg-b-15">
- <div class="container-fluid">
- <div class="row">
- <div class="col-12">
- <div class="sparkline13-list">
-
- <div class="sparkline13-graph">
- <div class="datatable-dashv1-list custom-datatable-overright">
-
-<div class="">
-
-   <div class="main-sparkline13-hd">
-     <div class="part" >
-       <h1>Customer Basic Number Position <small>(Select Row To Update)</small></h1>
-     
-     </div>
-
-     
+                
+                      
     
-       <div class="btn-group btn-group-sm">
-        <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
-          Back</button>
-         
-     
-         
-   
-       <div class="dropdown btn-group ">
-         <button class=" dropdown-toggle btn btn-primary btn-sm"  type="button" data-toggle="dropdown"><i class="fa fa-toggle-down"></i> Column
-         </button>
-         <ul class="dropdown-menu trust-menu">
+                        <div class="form-group">
+                          <label>Zone Id</label>
+                          <select name="ZONE_ID" class="form-control" [value]="zonevalue" [(ngModel)]="zonevalue">
+                            <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                          </select>
+                        </div>
+    
+                        <div class="form-group">
+                          <label>Field</label>
+                          <input type="text" class="form-control" name="FIELD" #FIELD="ngModel"
+                            [(ngModel)]="_tableservice.selectedcbn.FIELD" required>
+                        </div>
+    
+                        <div class="form-group">
+                          <label>length</label>
+                          <input type="text" class="form-control" name="LENGTH" #LENGTH="ngModel"
+                            [(ngModel)]="_tableservice.selectedcbn.LENGTH" required>
+                        </div>
+                        <div class="form-group">
+                          <label>Start Pos</label>
+                          <input type="text" class="form-control" name="START_POS" #START_POS="ngModel"
+                            [(ngModel)]="_tableservice.selectedcbn.START_POS" required>
+                        </div>
+                        <div class="form-group">
+                          <label>End Pos</label>
+                          <input type="text" class="form-control" name="END_POS" #END_POS="ngModel"
+                            [(ngModel)]="_tableservice.selectedcbn.END_POS" required>
+                        </div>
+    
+                  
+    
+                      <div style="display: none;">
+    
+                        <div class="form-group">
+                          <label>User Id</label>
+                          <input type="text" class="form-control" name="USER_ID" [(ngModel)]="UserId">
+                        </div>
+                        <div class="form-group">
+                          <label>User Name</label>
+                          <input type="text" class="form-control" name="USER_NAME" [(ngModel)]="UserName">
+                        </div>
+    
+    
+    
+                        <div class="form-group">
+                          <label>User Zone</label>
+                          <input type="text" class="form-control" name="USER_ZONE" [(ngModel)]="userzone">
+                        </div>
+                        <div class="form-group">
+                          <label>Role</label>
+                          <input type="text" class="form-control" name="ROLE" [(ngModel)]="myData">
+                        </div>
+    
+    
+    
+                        <input type="text" class="form-control" name="HIST_ID" [(ngModel)]="ybunch">
+    
+    
+                        <input type="text" class="form-control" name="APPROVE_STATUS" [(ngModel)]="apstatus">
+    
+    
+                        <input type="text" class="form-control" name="CHANGE_TYPE" [(ngModel)]="changetype">
+    
+    
+    
+                      </div>
+    
+               
+    
+    
+    
+                    <input type="submit" class="btn btn-success" value="Insert">
+    
+                  </form>
+    
+                 </div>
+                 <div class="col-md-6">
+                  <form #myUform="ngForm" (ngSubmit)="UpdateSubmitForm(myUform)" id="updateform" style="display: none;">
+                    <div class="panel-body">
+                      <h4>update Record</h4>
+                    </div>
+    
+    
+                
+                    
+                        <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
+                          [(ngModel)]="_tableservice.selectedcbn.REF_KEY">
+                        <div class="form-group">
+                          <label>Zone Id</label>
+                          <select name="ZONE_ID" class="form-control" [value]="zonevalue" [(ngModel)]="zonevalue">
+                            <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label>Field</label>
+                          <input type="text" class="form-control" name="FIELD" #FIELD="ngModel"
+                            [(ngModel)]="_tableservice.selectedcbn.FIELD" required>
+                        </div>
+    
+                        <div class="form-group">
+                          <label>length</label>
+                          <input type="text" class="form-control" name="LENGTH" #LENGTH="ngModel"
+                            [(ngModel)]="_tableservice.selectedcbn.LENGTH" required>
+                        </div>
+                        <div class="form-group">
+                          <label>Start Pos</label>
+                          <input type="text" class="form-control" name="START_POS" #START_POS="ngModel"
+                            [(ngModel)]="_tableservice.selectedcbn.START_POS" required>
+                        </div>
+                        <div class="form-group">
+                          <label>End Pos</label>
+                          <input type="text" class="form-control" name="END_POS" #END_POS="ngModel"
+                            [(ngModel)]="_tableservice.selectedcbn.END_POS" required>
+                        </div>
+    
+    
+                 
+    
+                      <div style="display: none;">
+    
+                        <div class="form-group">
+                          <label>User Id</label>
+                          <input type="text" class="form-control" name="USER_ID" [(ngModel)]="UserId">
+                        </div>
+                        <div class="form-group">
+                          <label>User Name</label>
+                          <input type="text" class="form-control" name="USER_NAME" [(ngModel)]="UserName">
+                        </div>
+    
+    
+    
+                        <div class="form-group">
+                          <label>User Zone</label>
+                          <input type="text" class="form-control" name="USER_ZONE" [(ngModel)]="userzone">
+                        </div>
+                        <div class="form-group">
+                          <label>Role</label>
+                          <input type="text" class="form-control" name="ROLE" [(ngModel)]="myData">
+                        </div>
+    
+    
+    
+                        <input type="text" class="form-control" name="HIST_ID" [(ngModel)]="ybunch">
+    
+    
+                        <input type="text" class="form-control" name="APPROVE_STATUS" [(ngModel)]="apstatus">
+    
+    
+                        <input type="text" class="form-control" name="CHANGE_TYPE" [(ngModel)]="changetype">
+    
+    
+    
+                      </div>
+    
+                
+    
+    
+    
+                    <input type="submit" class="btn btn-success" value="Update">
+    
+                  </form>
+                 </div>
+               </div>
 
-
-           <!-- <li class="dropdown-item ">
-           <label for="ZONEID"> <input type="checkbox" [checked]="ZONEID" (change)="ZONEID=!ZONEID" id="ZONEID"/>&nbsp;ZONEID</label> 
-           </li> -->
-         
-        
             
-         
 
-         </ul>
-       </div>
-       <ng-container *ngIf="_page_authority.customerbasicnoposition.approval == '1'">
-        <button class="btn btn-primary btn-sm" (mouseenter)="changetext('Approved',myform)"
-             (click)="ChkdeleteSelected(myform)"><i class="fa fa
-             -check-square-o"></i> Approve</button>
-         <button class="btn btn-primary btn-sm" (mouseenter)="changetextr('Rejected',myform)"
-             (click)="ChkdeleteSelected(myform)"><i class="fa fa-times"></i> Reject</button>
-       </ng-container>
-       <ng-container *ngIf="_page_authority.customerbasicnoposition.approval == '0'">
-       <button *ngIf="_page_authority.customerbasicnoposition.add == '1'" (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
-       <button  *ngIf="_page_authority.customerbasicnoposition.delete == '1'" class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
-       </ng-container>
-     </div>
-    
+           
 
-     
-   
-   
- 
-
-
-</div>
-</div>
-   <div class="table-responsive">
-    <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
-      <thead class="table_header">
-   
-     
-   
-   
-   <tr>
-    <th class="text-center"  *ngIf="_page_authority.customerbasicnoposition.approval == '0'"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
-    <th class="text-center" *ngIf="_page_authority.customerbasicnoposition.approval == '1'"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
-        <th>Sr.no</th>
-        <th ><span><select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
-          (ngModelChange)="onZoneChange($event)">
-          <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
-        </select></span></th>
-        <th ><span><input type="text" class="form-control"    placeholder="FIELD" [(ngModel)]="b"/></span> </th>
-    
-
-        <ng-container *ngIf="_page_authority.customerbasicnoposition.approval == '1'">
-          <th ><span><input type="text" class="form-control"     placeholder="OLD_ZONE ID" [(ngModel)]="d"/></span></th>
-        <th ><span><input type="text" class="form-control"    placeholder="OLD_ENTRY_TYPE" [(ngModel)]="e"/></span> </th>
-        <th ><span><input type="text" class="form-control"   placeholder="OLD_SANCTIONED_CITY" [(ngModel)]="f"/></span> </th>
-   
-        <th>
-          <span>
-            
-              <select name="changetype" class="form-control"  [(ngModel)]="changetype">
-                <option value="INSERT">INSERT</option>
-                <option value="DELETE">DELETE</option>
-                <option value="UPDATE">UPDATE</option>
-              </select>
-            </span>
-           </th>
-    
-        </ng-container>
-       
-        <th *ngIf="ref_keys" >REF KEY</th>
-      
-      </tr> 
-    </thead>
-    <tbody  *ngIf="showdatapart?.length;else no_data_templ">
-      
-      <ng-container  *ngFor="let item of showdatapart  |sanctionfilter:a:b:c:d:e:f:changetype | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
-        <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"   (click)="onEdit(item,'Update')" [class.selected]="item === selectedsanctionRow">
-          <td *ngIf="_page_authority.customerbasicnoposition.approval == '0'" style="text-align: center;">
-            <input type="checkbox"
-            [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
-              value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
-
-          <td *ngIf="_page_authority.customerbasicnoposition.approval == '1'" style="text-align: center;"><input type="checkbox"
-              [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
-              value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
-          <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>         
-          <td *ngIf="zoneid">{{item.ZONE_ID}}</td>
-          <td>{{item.FIELD}}</td>
-         
-        
-        
-    
-      
-          <ng-container *ngIf="_page_authority.customerbasicnoposition.approval == '1'">
-          
-            <td *ngIf="zoneid">{{item.OLD_ZONE_ID}}</td>
-            <td>{{item.OLD_ENTRY_TYPE}}</td>
-            <td >{{item.OLD_SANCTIONED_CITY}}</td>
-            <td >{{item.CHANGE_TYPE}}</td>
- 
-            </ng-container>
-       
-        </tr>
-      </ng-container>
-     
-    </tbody>
-    <ng-template #no_data_templ>
-      <tbody>
-        <tr >
-     <td style="text-align: center;" colspan="100%"> No data found...</td>
-    </tr>
-    </tbody>
-   </ng-template>
-    
-    </table>
-   </div>
-
- <div class="row">
-   <div class="col-12">
-   
-    
-<div class="align-items-md-start d-flex justify-content-lg-end">
-<select id="PerPage"  [(ngModel)]="pageSize"  *ngIf="showdatapart?.length">
- <option [ngValue]="5">5</option>
- <option [ngValue]="10">10</option>
- <option [ngValue]="25">25</option>
- <option [ngValue]="50">50</option>
-</select> <pagination-controls  (pageChange)="p = $event"></pagination-controls>
-</div>
-      
-
-
-    
-   
-   
-   </div>
- 
- </div>
-
-
- <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
-   <div class="panel-body">
-     <h4>Add Record</h4>
-   </div>
-
-     {{myform.value|json}}
- <div class="row">
-       <div class="col-md-4">
-         <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="_tableservice.selectedsanction.REF_KEY">
-         <div class="form-group">
-           <label>Zone Id</label>
-           <select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
-          >
-           <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
-         </select>
-         </div>
-         <div class="form-group">
-           <label>ENTRY_TYPE</label>
-
-         <select class="form-control" name="ENTRY_TYPE" #ENTRY_TYPE="ngModel" [(ngModel)]="_tableservice.selectedsanction.ENTRY_TYPE">
-           <option value="Shared">Shared</option>
-            <option value="Private">Private</option>
-            <option value="Disable">Disable</option>
-         </select>
-       </div>
-       <div class="form-group">
-        <label>SANCTIONED_CITY</label>
-      <input type="text" class="form-control" name="SANCTIONED_CITY" #SANCTIONED_CITY="ngModel" [(ngModel)]="_tableservice.selectedsanction.SANCTIONED_CITY" required>
-    </div>
-   
-
-
-       </div>
-       
-       <div style="display: none;">
-       <div class="col-md-4">
-         <div class="form-group">
-           <label>User Id</label>
-           <input type="text" class="form-control" name="USER_ID"  [value]="UserId"  [(ngModel)]="UserId">
-         </div>
-         <div class="form-group">
-           <label>User Name</label>
-           <input type="text" class="form-control" name="USER_NAME"  [value]="UserName"  [(ngModel)]="UserName">
-         </div>
-         
-       </div>
-       <div class="col-md-4">
-        <div class="form-group">
-            <label>User Zone</label>
-            <input type="text" class="form-control" name="USER_ZONE" [value]="userzone"   [(ngModel)]="userzone">
+            </div>
           </div>
-         <div class="form-group">
-           <label>Role</label>
-           <input type="text" class="form-control" name="ROLE" [value]="myData"  [(ngModel)]="myData">
-         </div>
-       </div>
-       <div class="col-md-4">
-         <div></div>
-         <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}" [(ngModel)]="ybunch">
-     
-
-           <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
-       
-     
-           <input type="text" class="form-control" name="CHANGE_TYPE" [value]="changetype"  [(ngModel)]="changetype">
-
-          
-         
-       </div>
-     </div>
-
-     </div>
-
-
- 
-   <input type="submit" class="btn btn-success"  value="{{btn_name}}">
-   
- </form>
-
-
-
-
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- 
-
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -18,7 +18,7 @@ import { Location } from '@angular/common';
 })
 export class PepComponent implements OnInit {
 
-
+  changetype: string;
   public pageSize: number = 10;
   public myData: string;
   public UserId: string;
@@ -53,8 +53,10 @@ export class PepComponent implements OnInit {
   toggle = true;
   delete_toggle = true;
   clone: any;
-  zone: string = "";
-  noise: string = "";
+  nsncol:boolean=true;
+  zoneidcol:boolean=true;
+  settingflagcol:boolean=true;
+  valueflagcol:boolean=true;
   apstatus: string = "";
   btn_name: string = "Submit";
   isdelete_button: boolean = true;
@@ -63,23 +65,22 @@ export class PepComponent implements OnInit {
   xbunch: string;
   ybunch: string;
   formact: string = "Add Record";
-  masterSelected: boolean;
+  masterSelected: string[];
   checkedList: any;
-  histmasterSelected: boolean;
+  histmasterSelected: string[];
   histcheckedList: any;
   _page_authority:any;
   orig_value:any;
   zonearray:any;
   zonevalue:string;
   constructor(public _tableservice: TableDataService, public _authservice: AuthserviceService, private toastr: ToastrService, private _location: Location) {
-    this.userzone = "QA";
-    this.masterSelected = false;
-    this.histmasterSelected = false;
+    this.masterSelected = [];
+    this.histmasterSelected = [];
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
-    this.getCheckedItemList();
-    this.getCheckedItemhistList();
+    this.userzone = localStorage.getItem('UserZone');
+  
   }
 
   ngOnInit(): void {
@@ -88,70 +89,75 @@ export class PepComponent implements OnInit {
     this.refreshEmployeeList();
     this.getZonelist();
     this.unseen();
+    this.sendButtonClick();
+    this.viewmessage();
   }
 
-  checkUncheckAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart[i].isSelected = this.masterSelected;
-      console.log("master", this.masterSelected);
-    }
-    this.getCheckedItemList();
+  sendButtonClick() {
+    this._tableservice.sendMessage(null)
   }
-  isAllSelected() {
-    this.masterSelected = this.showdatapart.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemList();
-  }
-
-  getCheckedItemList() {
-    this.checkedList = [];
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      if (this.showdatapart[i].isSelected)
-        this.checkedList.push(this.showdatapart[i]);
-    }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.checkedList.forEach(element => {
-      this.SelectedIDs.push(element.REF_KEY);
-      this.xbunch = this.SelectedIDs.toString();
-      this.isdelete_button = false;
-      this.formact = "Update Record";
-      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
+ 
+  viewmessage()
+  {
+    
+    this._tableservice.onNewMessage().subscribe(msg => {
+      console.log('got a msg: ' , msg.reload);
+      if(msg.reload == true)
+      {
+        this.unseen();
+      }
+      else
+      {
+        console.log("don't call");
+      }
     });
   }
 
 
+  isItemChecked(id) {
+    return this.masterSelected.includes(id)
+  }
 
+
+  checkUncheckAll() {
+    if (this.masterSelected.length == this.showdatapart.length) {
+      this.masterSelected = []
+    } else {
+      this.masterSelected = this.showdatapart.map(sdp => sdp.REF_KEY)
+    }
+
+  }
+  isAllSelected(id) {
+    if (this.masterSelected.includes(id)) {
+      this.masterSelected = [...this.masterSelected].filter(ms => ms != id)
+    } else {
+      this.masterSelected = [...this.masterSelected, id]
+    }
+
+  }
+
+
+  ishistItemChecked(id) {
+    return this.histmasterSelected.includes(id)
+  }
 
 
   histcheckUncheckAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart[i].isSelected = this.histmasterSelected;
-      console.log(this.histmasterSelected);
+    if (this.histmasterSelected.length == this.showdatapart.length) {
+      this.histmasterSelected = []
+    } else {
+      this.histmasterSelected = this.showdatapart.map(sdp => sdp.HIST_ID)
     }
-    this.getCheckedItemhistList();
-  }
-  histisAllSelected() {
-    this.histmasterSelected = this.showdatapart.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemhistList();
-  }
 
-  getCheckedItemhistList() {
-    this.histcheckedList = [];
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      if (this.showdatapart[i].isSelected)
-        this.histcheckedList.push(this.showdatapart[i]);
+  }
+  histisAllSelected(id) {
+    if (this.histmasterSelected.includes(id)) {
+      this.histmasterSelected = [...this.histmasterSelected].filter(ms => ms != id)
+    } else {
+      this.histmasterSelected = [...this.histmasterSelected, id]
     }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.histcheckedList.forEach(element => {
-      this.SelectedIDs.push(element.HIST_ID);
-      this.ybunch = this.SelectedIDs.toString();
-      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
-    });
-  }
 
+  }
 
   getZonelist()
   {
@@ -174,7 +180,7 @@ export class PepComponent implements OnInit {
  
     this._tableservice.getassignaccesslist().subscribe((res) => {
       this.orig_value = res.result;
-      this._page_authority = parseJSON(this.orig_value);
+      this._page_authority = JSON.parse(this.orig_value);
       console.log("arvind",this._page_authority);
       if(this._page_authority.pep.approval == false)
       {
@@ -231,11 +237,17 @@ unseen()
 }
 
 
-  addform = () => {
+updateform = () => {
+  if (this._tableservice.selectpep.REF_KEY == "") {
+    alert("Update item select this row");
+  }
+  else {
     this.toggle = !this.toggle;
-    $("#addForm").toggle();
+    $("#updateform").toggle();
+  
   }
 
+}
 
 
 
@@ -268,32 +280,43 @@ unseen()
 
 
 
-
-
-  submitform(form: NgForm) {
-
-
-
-    console.log(form.value);
+  UpdateSubmitForm(form: NgForm) {
+    this.toggle = !this.toggle;
+    $("#updateForm").toggle();
     this._tableservice.putpep(form.value).subscribe((res) => {
-      this.toggle = !this.toggle;
-      $("#addForm").toggle();
-      // this.resetForm(form);
-      this.refreshEmployeeList();
-      this.unseen();
-      this.toastr.info(res.message, 'Neutral Words');
-
-    },(error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
+      this.masterSelected = [];
+      this.toastr.info(res.message, 'Sensitive Words');
      
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Sensitive Word');
+
 
       //throw error;   //You can also throw the error to a global error handler
     });
+
   }
 
 
 
+
+ 
+
+  postChangetype(change_type) {
+ 
+      const zonetype = { "CHANGE_TYPE": change_type,"USER_ZONE": this.userzone,"ROLE":this.myData,"USER_ID":this.UserId };
+      this._tableservice.pep_Change_Type(zonetype).subscribe((res) => {
+        this.showdatapart = res.result;
+      }, (error) => {                              //Error callback
+        console.error('error caught in component')
+        this.toastr.error(error, 'Neutral - Words');
+  
+  
+        //throw error;   //You can also throw the error to a global error handler
+      });
+    }
+
+ 
 
 
 
@@ -307,22 +330,26 @@ unseen()
 
 
   ChkdeleteSelected(status, form: NgForm) {
-    var value1 = {"APPROVE_STATUS":status}
-    this._tableservice.pepapproved({...form.value,...value1}).subscribe((res) => {
-      this.refreshEmployeeList();
-      this.unseen();
-      this.toastr.success(res.message, status);
-  
-    },(error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
+    if (this.histmasterSelected.length <= 0) {
+      alert("check Item Select This Row")
+    }
+    else {
+      var value1 = { "APPROVE_STATUS": status, "HIST_ID": this.histmasterSelected.join(',') }
+      this._tableservice.pepapproved({ ...form.value, ...value1 }).subscribe((res) => {
+        this.histmasterSelected = [];
+        this.toastr.success(res.message, status);
 
-      //throw error;   //You can also throw the error to a global error handler
-    });
+      }, (error) => {
+        console.error('error caught in component')
+        this.toastr.error(error, 'Sensitive Word');
+
+
+
+      });
+
+    }
+
   }
-  
-
 
 
 

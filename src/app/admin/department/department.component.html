@@ -130,13 +130,21 @@
                       [(ngModel)]="_tableservice.selectdepartment.REF_KEY">
                     <div class="form-group">
                       <label>Department Id</label>
-                      <input type="text" class="form-control" name="DEPARTMENT_ID" #DEPARTMENT_ID="ngModel"
+                      <input type="text" class="form-control" [class.is-invalid]="DEPARTMENT_ID.invalid && DEPARTMENT_ID.touched"
+                      [class.is-valid]="DEPARTMENT_ID.valid" name="DEPARTMENT_ID" #DEPARTMENT_ID="ngModel"
                         [(ngModel)]="_tableservice.selectdepartment.DEPARTMENT_ID" required>
+                        <span class="help-block" *ngIf="DEPARTMENT_ID.errors?.required && DEPARTMENT_ID.touched">
+                          Department Id is required
+                        </span>
                     </div>
                     <div class="form-group">
                       <label>Description</label>
-                      <input type="text" class="form-control" name="DESCRIPTIONS" #DESCRIPTIONS="ngModel"
+                      <input type="text" class="form-control" [class.is-invalid]="DESCRIPTIONS.invalid && DESCRIPTIONS.touched"
+                      [class.is-valid]="DESCRIPTIONS.valid" name="DESCRIPTIONS" #DESCRIPTIONS="ngModel"
                         [(ngModel)]="_tableservice.selectdepartment.DESCRIPTIONS" required>
+                        <span class="help-block" *ngIf="DESCRIPTIONS.errors?.required && DESCRIPTIONS.touched">
+                          Description is required
+                        </span>
                     </div>
                   </div>
                   <div style="display: none;">
@@ -173,7 +181,8 @@
                     </div>
                   </div>
                 </div>
-                <input type="submit" class="btn btn-success" value="{{btn_name}}">
+                <input type="submit" class="btn btn-success" [ngStyle]="!myform.form.valid && {'cursor': 'not-allowed
+                '}"  [disabled]="!myform.form.valid" value="{{btn_name}}">
               </form>
             </div>
           </div>

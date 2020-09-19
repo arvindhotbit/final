@@ -71,49 +71,78 @@ export class NeutralWordsComponent implements OnInit {
   xbunch: string;
   ybunch: string;
   formact: string = "Add Record";
-  masterSelected: boolean;
+  masterSelected: string[];
   checkedList: any;
-  histmasterSelected: boolean;
+  histmasterSelected: string[];
   histcheckedList: any;
   Userzone: string;
   zonearray: any;
   zonevalue: string;
+  zonevaluechk: string;
   _page_authority: any;
   orig_value: any;
- 
+
   constructor(public _tableservice: TableDataService, public _authservice: AuthserviceService, private toastr: ToastrService, private _location: Location) {
-    this.masterSelected = false;
-    this.histmasterSelected = false;
+    this.masterSelected = [];
+    this.histmasterSelected = [];
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
     this.Userzone = localStorage.getItem('UserZone');
-    this.getCheckedItemList();
-    this.getCheckedItemhistList();
+
     this.sendButtonClick();
+  
   }
 
   ngOnInit(): void {
-
+ 
     this.resetForm();
     this.refreshEmployeeList();
     this.getZonelist();
-    this.unseen();
+    this.zonevalue = this.Userzone;
+    this.onZoneChange(this.Userzone);
     this.sendButtonClick();
     this.viewmessage();
+
   }
 
   sendButtonClick() {
-    this._tableservice.sendMessage(this.msgInput)
+    this._tableservice.sendMessage(null)
   }
- 
-  viewmessage()
-  {
-    
+
+  viewmessage() {
+
     this._tableservice.onNewMessage().subscribe(msg => {
-      console.log('got a msg: ' , msg.result);
+      if (msg.reload == true) {
+        this.onZoneChange(this.zonevalue);
+      }
     });
   }
+
+
+  onZoneChange(zonevalue) {
+
+    const obj = {
+      "ROLE": this.myData,
+      "USER_ZONE": zonevalue,
+      "USER_ID": this.UserId,
+      "CHANGE_TYPE": this.changetype
+    };
+
+    this._tableservice.getchangezonelist(obj).subscribe((res) => {
+      this.showdata = res.result|| [];
+    
+
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Neutral - Words');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+
+  }
+
 
   resetForm(form?: NgForm) {
     if (form)
@@ -133,54 +162,50 @@ export class NeutralWordsComponent implements OnInit {
     }
   }
 
+ 
+  isItemChecked(id) {
+    return this.masterSelected.includes(id)
+  }
+
+
   checkUncheckAll() {
-    for (var i = 0; i < this.showdata.length; i++) {
-      this.showdata[i].isSelected = this.masterSelected;
-      console.log("master", this.masterSelected);
-    }
-    this.getCheckedItemList();
-  }
-  isAllSelected() {
-    this.masterSelected = this.showdata.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemList();
-  }
-
-  getCheckedItemList() {
-    this.checkedList = [];
-    for (var i = 0; i < this.showdata.length; i++) {
-      if (this.showdata[i].isSelected)
-        this.checkedList.push(this.showdata[i].REF_KEY);
+    if (this.masterSelected.length == this.showdata.length) {
+      this.masterSelected = []
+    } else {
+      this.masterSelected = this.showdata.map(sdp => sdp.REF_KEY)
     }
 
+  }
+  isAllSelected(id) {
+    if (this.masterSelected.includes(id)) {
+      this.masterSelected = [...this.masterSelected].filter(ms => ms != id)
+    } else {
+      this.masterSelected = [...this.masterSelected, id]
+    }
 
-    this.xbunch = this.checkedList.toString();
-    this.isdelete_button = false;
+  }
+
+
+  ishistItemChecked(id) {
+    return this.histmasterSelected.includes(id)
   }
 
 
   histcheckUncheckAll() {
-    for (var i = 0; i < this.showdata.length; i++) {
-      this.showdata[i].isSelected = this.histmasterSelected;
-      console.log(this.histmasterSelected);
+    if (this.histmasterSelected.length == this.showdata.length) {
+      this.histmasterSelected = []
+    } else {
+      this.histmasterSelected = this.showdata.map(sdp => sdp.HIST_ID)
     }
-    this.getCheckedItemhistList();
-  }
-  histisAllSelected() {
-    this.histmasterSelected = this.showdata.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemhistList();
-  }
 
-  getCheckedItemhistList() {
-    this.histcheckedList = [];
-    for (var i = 0; i < this.showdata.length; i++) {
-      if (this.showdata[i].isSelected)
-        this.histcheckedList.push(this.showdata[i].HIST_ID);
+  }
+  histisAllSelected(id) {
+    if (this.histmasterSelected.includes(id)) {
+      this.histmasterSelected = [...this.histmasterSelected].filter(ms => ms != id)
+    } else {
+      this.histmasterSelected = [...this.histmasterSelected, id]
     }
-    this.ybunch = this.histcheckedList.toString();
+
   }
 
 
@@ -226,46 +251,31 @@ export class NeutralWordsComponent implements OnInit {
       //throw error;   //You can also throw the error to a global error handler
     });
   }
+
   postChangetype(change_type) {
-    this._tableservice.neutrallistpagetype(change_type).subscribe((res) => {
-      this.showdata = res.result;
-    }, (error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
+    if(this.zonevalue == null)
+    {
+      alert("Please Select a Zone");
+    }
+    else
+    {
+      const zonetype = { "CHANGE_TYPE": change_type,"USER_ZONE": this.zonevalue,"ROLE":this.myData,"USER_ID":this.UserId };
+      this._tableservice.neutrallistpagetype(zonetype).subscribe((res) => {
+        this.showdata = res.result;
+      }, (error) => {                              //Error callback
+        console.error('error caught in component')
+        this.toastr.error(error, 'Neutral - Words');
+  
+  
+        //throw error;   //You can also throw the error to a global error handler
+      });
+    }
 
-
-      //throw error;   //You can also throw the error to a global error handler
-    });
   }
- 
-
 
   getZonelist() {
     this._tableservice.getassignzonelist().subscribe((res) => {
       this.zonearray = res.result.rows;
-      console.log(this.zonearray);
-    }, (error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-
-
-      //throw error;   //You can also throw the error to a global error handler
-    });
-  }
-
-
-  onZoneChange(zonevalue: any) {
-
-    var obj = {
-      "ROLE": this.myData,
-      "USER_ZONE": this.zonevalue,
-      "USER_ID": this.UserId,
-      "CHANGE_TYPE": this.changetype
-    };
-
-    this._tableservice.getchangezonelist(obj).subscribe((res) => {
-      this.showdata = res.result;
-      this.toastr.success(res.message, 'zonelist');
 
     }, (error) => {                              //Error callback
       console.error('error caught in component')
@@ -274,39 +284,40 @@ export class NeutralWordsComponent implements OnInit {
 
       //throw error;   //You can also throw the error to a global error handler
     });
-
   }
 
 
   addform = () => {
     this.toggle = !this.toggle;
     $("#addForm").toggle();
+    $("#updateform").hide();
   }
   updateform = () => {
-    this.toggle = !this.toggle;
-    $("#updateForm").toggle();
+    if (this._tableservice.selectedneu.REF_KEY == "") {
+      alert("Update item select this row");
+    }
+    else {
+      this.toggle = !this.toggle;
+      $("#updateform").toggle();
+      $("#addForm").hide();
+    }
+
   }
-
-
-
 
   unseen() {
     this._tableservice.neutrallistpage().subscribe((res) => {
       this.showdata = res.result;
-      this.toastr.success(res.message, 'Neutral - Words');
+      // this.toastr.success(res.message, 'Neutral - Words');
     }, (error) => {
       this.toastr.error(error, 'Neutral - Words');
 
     });
   }
 
-
   submitform(form: NgForm) {
     $("#addForm").toggle();
+
     this._tableservice.neutrallistpost(form.value).subscribe((res) => {
-      this.resetForm(form);
-      this.refreshEmployeeList();
-      this.unseen();
       this.toastr.success(res.message, 'Neutral Words');
 
     }, (error) => {                              //Error callback
@@ -319,11 +330,10 @@ export class NeutralWordsComponent implements OnInit {
   }
 
   UpdateSubmitForm(form: NgForm) {
-
+    this.toggle = !this.toggle;
+    $("#updateform").toggle();
     this._tableservice.neutrallistput(form.value).subscribe((res) => {
-      var showdatas = res.result;
-      console.log("update" + showdatas);
-      this.unseen();
+      this.masterSelected = [];
       this.toastr.info(res.message, 'Neutral Words');
 
     }, (error) => {                              //Error callback
@@ -336,49 +346,53 @@ export class NeutralWordsComponent implements OnInit {
 
   }
 
-
-
-
   onEdit(neuscheme: Neutralscheme) {
     this._tableservice.selectedneu = neuscheme;
     this.selectedNeutralRow = neuscheme;
   }
 
-
-
-
   deleteSelected(form: NgForm) {
-    this.delete_toggle = !this.delete_toggle;
-    this._tableservice.neutraldelpage(this.xbunch).subscribe((res) => {
-      this.refreshEmployeeList();
-      this.resetForm(form);
-      this.unseen();
-      this.toastr.warning(res.message, 'Neutral Words');
-    }, (error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
+    if (this.masterSelected.length <= 0) {
+      alert("Delete Item Select This Row")
+    }
+    else {
+      this._tableservice.neutraldelpage(this.masterSelected.join(',')).subscribe((res) => {
+        this.toastr.warning(res.message, 'Sensitive Word');
+        this.masterSelected = [];
+      }, (error) => {
+        console.error('error caught in component')
+        this.toastr.error(error, 'Sensitive Word');
 
 
-      //throw error;   //You can also throw the error to a global error handler
-    });
+
+      });
+
+    }
+
 
   }
-
 
   ChkdeleteSelected(status, form: NgForm) {
-    var value1 = { "APPROVE_STATUS": status }
-    this._tableservice.neudelapproved({ ...form.value, ...value1 }).subscribe((res) => {
-      this.refreshEmployeeList();
-      this.unseen();
-      this.toastr.success(res.message, status);
-
-    }, (error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error.statusTexterror.status, 'Neutral - Words')
 
 
-      //throw error;   //You can also throw the error to a global error handler
-    });
+   
+    var value1 = { "APPROVE_STATUS": status, "HIST_ID": this.histmasterSelected.join(',') }
+      this._tableservice.neudelapproved({ ...form.value, ...value1 }).subscribe((res) => {
+        this.histmasterSelected = [];
+        this.toastr.success(res.message, status);
+       
+      }, (error) => {                              //Error callback
+        console.error('error caught in component')
+        this.toastr.error(error.statusTexterror.status, 'Neutral - Words')
+
+
+        //throw error;   //You can also throw the error to a global error handler
+      });
+    
   }
 
+
 }
+
+
+

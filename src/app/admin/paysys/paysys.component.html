@@ -126,7 +126,7 @@
                 </div>
               </div>
               <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
-                {{myform.value|json}}
+              
                 <div class="panel-body">
                   <h4>Add Record</h4>
                 </div>
@@ -136,26 +136,39 @@
                       [(ngModel)]="paysyssendrefkey">
                     <div class="form-group">
                       <label>PaySys Id</label>
-                      <input type="text" class="form-control" name="PAYSYS_ID" #PAYSYS_ID="ngModel"
+                      <input type="text" class="form-control" [class.is-invalid]="PAYSYS_ID.invalid && PAYSYS_ID.touched"
+                      [class.is-valid]="PAYSYS_ID.valid" name="PAYSYS_ID" #PAYSYS_ID="ngModel"
                         [(ngModel)]="_tableservice.selectpaysys.PAYSYS_ID" required>
+                        <span class="help-block" *ngIf="PAYSYS_ID.errors?.required && PAYSYS_ID.touched">
+                          Department Id is required
+                        </span>
                     </div>
                     <div class="form-group">
                       <label>Case Type Ns</label>
                   
-                        <select class="form-control" name="CASE_TYPE_NS" #CASE_TYPE_NS="ngModel"
+                        <select class="form-control" [class.is-invalid]="CASE_TYPE_NS.invalid && CASE_TYPE_NS.touched"
+                        [class.is-valid]="CASE_TYPE_NS.valid" name="CASE_TYPE_NS" #CASE_TYPE_NS="ngModel"
                         [(ngModel)]="_tableservice.selectpaysys.CASE_TYPE_NS" required>
+                        
                             <option value="Y">Yes</option>
                             <option value="N">NO</option>
                         </select>
+                        <span class="help-block" *ngIf="CASE_TYPE_NS.errors?.required && CASE_TYPE_NS.touched">
+                          Department Id is required
+                        </span>
                     </div>
                     <div class="form-group">
                         <label>Case Type Ps</label>
                         
-                          <select  class="form-control" name="CASE_TYPE_PS" #CASE_TYPE_PS="ngModel"
+                          <select  class="form-control" [class.is-invalid]="CASE_TYPE_PS.invalid && CASE_TYPE_PS.touched"
+                          [class.is-valid]="CASE_TYPE_PS.valid" name="CASE_TYPE_PS" #CASE_TYPE_PS="ngModel"
                           [(ngModel)]="_tableservice.selectpaysys.CASE_TYPE_PS" required>
                           <option value="Y">Yes</option>
                           <option value="N">NO</option>
                           </select>
+                          <span class="help-block" *ngIf="CASE_TYPE_PS.errors?.required && CASE_TYPE_PS.touched">
+                            Department Id is required
+                          </span>
                       </div>
                   </div>
                   <div style="display: none;">
@@ -192,7 +205,8 @@
                     </div>
                   </div>
                 </div>
-                <input type="submit" class="btn btn-success" value="{{btn_name}}">
+                <input type="submit" class="btn btn-success" [ngStyle]="!myform.form.valid && {'cursor': 'not-allowed
+                '}"  [disabled]="!myform.form.valid" value="{{btn_name}}">
               </form>
             </div>
           </div>

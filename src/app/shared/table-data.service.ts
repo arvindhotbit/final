@@ -3,16 +3,18 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Neutralscheme, Bicscheme, Interdefination, sanctioned, internalwatchlist, Highriskcountry, Zonevsglobal, sensitivescheme, pepscheme, Paymentscreenadk, matchscore, namescreen, casedetail, addzonescheme, departscheme, paysysscheme, usersscheme, adepartscheme, azonescheme, apayscheme, unassignitem, createrole } from './tabular';
+import { Neutralscheme, Bicscheme,cbn, Interdefination, sanctioned, internalwatchlist, Highriskcountry, Zonevsglobal, sensitivescheme, pepscheme, Paymentscreenadk, matchscore, namescreen, casedetail, addzonescheme, departscheme, paysysscheme, usersscheme, adepartscheme, azonescheme, apayscheme, unassignitem, createrole } from './tabular';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import * as io from 'socket.io-client';
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
+
 @Injectable({
   providedIn: 'root'
 })
 export class TableDataService {
+  
   socket:SocketIOClient.Socket;
   public myData: string;
   UserId: string;
@@ -40,7 +42,7 @@ export class TableDataService {
   Userzone: string;
   selectroleslist: createrole;
   selectedcasedetail:casedetail;
-
+  selectedcbn:cbn;
 
 
   constructor(private http: HttpClient) {
@@ -48,7 +50,7 @@ export class TableDataService {
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
     this.Userzone = localStorage.getItem('UserZone');
-    console.log(this.UserId);
+
     this.socket = io('http://192.168.29.162:8900');
 
   }
@@ -56,14 +58,14 @@ export class TableDataService {
 
 
   sendMessage(msg: string) {
-  this.socket.emit('newUser', { zone_id: msg });
+  this.socket.emit('CheckData', null);
   }
 
     // HANDLER
     onNewMessage() {
       return Observable.create(observer => {
-        this.socket.on('newUser', msg => {
-          console.log(msg);
+        this.socket.on('CheckData', msg => {
+          // console.log(msg);
           observer.next(msg);
         });
       });
@@ -287,7 +289,7 @@ export class TableDataService {
 
 
 
-  neutrallistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/neutral_words`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
+  neutrallistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/neutral_words`, change_type).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -298,7 +300,7 @@ export class TableDataService {
     })
   )  };
   
-  Ns_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/ns_fields`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
+  Ns_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/ns_fields`, change_type).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -309,19 +311,7 @@ export class TableDataService {
     })
   )  };
 
-  biclistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/blacklisted_bic`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
-    catchError((err) => {
-      console.log('error caught in service')
-      console.error(err.message);
-
-      //Handle the error here
-
-      return throwError(err.statusText);    //Rethrow it back to component
-    })
-  )  };
-  
-
-  hrclistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/high_risk_country`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
+  biclistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/blacklisted_bic`, change_type).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -333,30 +323,7 @@ export class TableDataService {
   )  };
   
 
-  sanction_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/sanctioned_cities`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
-    catchError((err) => {
-      console.log('error caught in service')
-      console.error(err.message);
-
-      //Handle the error here
-
-      return throwError(err.statusText);    //Rethrow it back to component
-    })
-  )  };
-  
-  
-  sensitive_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/sensitive_words`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
-    catchError((err) => {
-      console.log('error caught in service')
-      console.error(err.message);
-
-      //Handle the error here
-
-      return throwError(err.statusText);    //Rethrow it back to component
-    })
-  )  };
-  
-  mslistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/match_score_threshold`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
+  hrclistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/high_risk_country`, change_type).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -368,7 +335,7 @@ export class TableDataService {
   )  };
   
 
-  psadk_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/ps_fields_adk`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
+  sanction_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/sanctioned_cities`, change_type).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -379,7 +346,8 @@ export class TableDataService {
     })
   )  };
   
-  zvg_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/zone_x_global_keywords`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId, "CHANGE_TYPE": change_type }).pipe(
+  
+  sensitive_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/sensitive_words`, change_type).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -390,6 +358,74 @@ export class TableDataService {
     })
   )  };
   
+  mslistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/match_score_threshold`, change_type).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+  
+
+  psadk_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/ps_fields_adk`, change_type).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+  
+  zvg_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/zone_x_global_keywords`, change_type).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+  
+
+  cbn_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/custome_basic_no_position`, change_type).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+  idl_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/internal_list_def`, change_type).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+
+  iwl_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/internal_watch_list`, change_type).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
   
 
   neutrallistpost(neuscheme: Neutralscheme) { return this.http.post<any>(`${environment.apiUrl}/add_neutral_words`, neuscheme).pipe(
@@ -416,7 +452,7 @@ export class TableDataService {
   )  };
 
 
-  neutraldelpage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_neutral_words`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  neutraldelpage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_neutral_words`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -450,7 +486,7 @@ export class TableDataService {
 
 
 
-  paysysdeletepage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/delete_paysys`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  paysysdeletepage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/delete_paysys`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -461,7 +497,7 @@ export class TableDataService {
     })
   )  };
 
-  departdeletepage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/delete_department`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  departdeletepage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/delete_department`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -622,7 +658,7 @@ export class TableDataService {
   )  };
 
 
-  addzonedelpage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_zone_list`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  addzonedelpage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_zone_list`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -689,7 +725,10 @@ export class TableDataService {
 
   // internallist-defination api call start************************************
 
-  fetchinter(): Observable<Interdefination[]> { return this.http.get<Interdefination[]>(`${environment.apiUrl}/internal_list`).pipe(
+
+
+
+  fetchinter() { return this.http.post<any>(`${environment.apiUrl}/internal_list`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -699,6 +738,9 @@ export class TableDataService {
       return throwError(err.statusText);    //Rethrow it back to component
     })
   )  };
+ 
+
+
 
   postinter(interdefs: Interdefination) { return this.http.post<any>(`${environment.apiUrl}/add_internal_list_def`, interdefs).pipe(
     catchError((err) => {
@@ -711,7 +753,8 @@ export class TableDataService {
     })
   )  };
 
-  putinter(interdefs: Interdefination) { return this.http.put<any>(`${environment.apiUrl}/update_internalListDef` + `/${interdefs.REF_KEY}`, interdefs).pipe(
+
+  putinter(interdefs: Interdefination) { return this.http.post<any>(`${environment.apiUrl}/update_internalListDef`, interdefs).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -722,7 +765,12 @@ export class TableDataService {
     })
   )  };
 
-  deleteinter(REF_KEY: string) { return this.http.delete(`${environment.apiUrl}/del_internal_list` + `/${REF_KEY}`).pipe(
+
+
+
+
+
+  deleteinter(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_internal_list`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -736,8 +784,18 @@ export class TableDataService {
 
 
   // internal-watchlist api call start*************************************
+  fetchinterwatch() { return this.http.post<any>(`${environment.apiUrl}/internal_watchlist`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId }).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
-  fetchinterwatch(): Observable<internalwatchlist[]> { return this.http.get<internalwatchlist[]>(`${environment.apiUrl}/internal_watchlist`).pipe(
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+ 
+  postinterwatch(interwatch: internalwatchlist) { return this.http.post<any>(`${environment.apiUrl}/add_internal_watch_list`, interwatch).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -748,7 +806,7 @@ export class TableDataService {
     })
   )  };
 
-  postinterwatch(interwatch: internalwatchlist) { return this.http.post<any>(`${environment.apiUrl}/add_internal_watchlist`, interwatch).pipe(
+  putinterwatch(interwatch: internalwatchlist) { return this.http.post<any>(`${environment.apiUrl}/update_internal_watch_list`, interwatch).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -759,7 +817,7 @@ export class TableDataService {
     })
   )  };
 
-  putinterwatch(interwatch: internalwatchlist) { return this.http.put<any>(`${environment.apiUrl}/update_internalWatchList` + `/${interwatch.UID_SERIAL_NO}`, interwatch).pipe(
+  deleteinterwatch(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_internal_watch_list`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -770,16 +828,7 @@ export class TableDataService {
     })
   )  };
 
-  deleteinterwatch(UID_SERIAL_NO: string) { return this.http.delete(`${environment.apiUrl}/del_internal_watchlist` + `/${UID_SERIAL_NO}`).pipe(
-    catchError((err) => {
-      console.log('error caught in service')
-      console.error(err.message);
-
-      //Handle the error here
-
-      return throwError(err.statusText);    //Rethrow it back to component
-    })
-  )  };
+ 
   // internal-watchlist api call start*************************************
 
 
@@ -817,7 +866,7 @@ export class TableDataService {
     })
   )  };
 
-  deletezvg(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_zone_global_keywords`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deletezvg(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_zone_global_keywords`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -880,7 +929,7 @@ export class TableDataService {
   )  };
 
 
-  deletesensitive(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_sensitive_words`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deletesensitive(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_sensitive_words`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -942,7 +991,7 @@ export class TableDataService {
   )  };
 
 
-  deletebic(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_blacklisted_bic`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deletebic(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_blacklisted_bic`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1012,7 +1061,7 @@ export class TableDataService {
   )  };
 
 
-  deleteinterdef(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_internal_list_def`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deleteinterdef(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_internal_list_def`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1024,6 +1073,17 @@ export class TableDataService {
   )  };
 
   interdefapproved(interdef: Interdefination) { return this.http.post<any>(`${environment.apiUrl}/check_internal_list_def`, interdef).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+  interwatchapproved(interwatch: internalwatchlist) { return this.http.post<any>(`${environment.apiUrl}/check_internal_watch_list`, interwatch).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1075,7 +1135,7 @@ export class TableDataService {
   )  };
 
 
-  deletehrc(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_high_risk_country`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deletehrc(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_high_risk_country`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1127,7 +1187,51 @@ export class TableDataService {
       })
     ) ;
   };
+  postcbn(cbn: cbn) { return this.http.post<any>(`${environment.apiUrl}/add_custome_basic_no_pos`, cbn).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+
+  putcbn(cbn: cbn) { return this.http.post<any>(`${environment.apiUrl}/update_custome_basic_no_pos`, cbn).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+
+  deletecbn(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_custome_basic_no_pos`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+  cbnapproved(cbn: cbn) { return this.http.post<any>(`${environment.apiUrl}/check_custome_basic_no_pos`, cbn).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
 
   postsanction(sanction: sanctioned) { return this.http.post<any>(`${environment.apiUrl}/add_sanctioned_cities`, sanction).pipe(
     catchError((err) => {
@@ -1139,6 +1243,8 @@ export class TableDataService {
       return throwError(err.statusText);    //Rethrow it back to component
     })
   )  };
+
+  
 
 
   putsanction(sanction: sanctioned) { return this.http.post<any>(`${environment.apiUrl}/update_sanctioned_cities`, sanction).pipe(
@@ -1153,7 +1259,7 @@ export class TableDataService {
   )  };
 
 
-  deletesanction(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_sanctioned_cities`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deletesanction(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_sanctioned_cities`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1214,7 +1320,7 @@ export class TableDataService {
   )  };
 
 
-  deletepsadk(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_ps_fields_adk`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deletepsadk(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_ps_fields_adk`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1277,7 +1383,7 @@ export class TableDataService {
   )  };
 
 
-  deletems(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_match_score_threshold`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deletems(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_match_score_threshold`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1340,7 +1446,7 @@ export class TableDataService {
   )  };
 
 
-  deletens(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_ns_fields`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName }).pipe(
+  deletens(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_ns_fields`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1404,8 +1510,8 @@ export class TableDataService {
     ) 
   }
 
-  fetchcount() {
-    return this.http.post<any>(`${environment.apiUrl}/get_count`, { "ROLE": this.myData }).pipe(
+  fetchcount(obj) {
+    return this.http.post<any>(`${environment.apiUrl}/get_count`, obj).pipe(
       catchError((err) => {
         console.log('error caught in service')
         console.error(err.message);
@@ -1439,7 +1545,16 @@ export class TableDataService {
       return throwError(err.statusText);    //Rethrow it back to component
     })
   )  };
+  pep_Change_Type(change_type) { return this.http.post<any>(`${environment.apiUrl}/screen_pep`, change_type).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
 
   getpep() { return this.http.post<any>(`${environment.apiUrl}/screen_pep`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId }).pipe(
     catchError((err) => {

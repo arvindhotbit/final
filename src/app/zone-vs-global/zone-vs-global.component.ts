@@ -37,6 +37,7 @@ export class ZoneVsGlobalComponent implements OnInit {
   pkey: string = "";
   pkeyw: string = "";
   changetype: string = "";
+  userzone :string;
   oldpkey: string = "";
   oldpkeyword: string = "";
   selectedZoneRow: Zonevsglobal;
@@ -51,21 +52,22 @@ export class ZoneVsGlobalComponent implements OnInit {
   xbunch: string;
   ybunch: string;
   formact: string = "Add Record";
-  masterSelected: boolean;
+  masterSelected: string[];
   checkedList: any;
-  histmasterSelected: boolean;
+  histmasterSelected: string[];
   histcheckedList: any;
   zonearray: string;
   zonevalue: string;
   _page_authority: any;
   orig_value: any;
   constructor(public _tableservice: TableDataService, public _authservice: AuthserviceService, private toastr: ToastrService, private _location: Location) {
-
+    this.masterSelected = [];
+    this.histmasterSelected = [];
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
-    this.getCheckedItemList();
-    this.getCheckedItemhistList();
+    this.userzone = localStorage.getItem('UserZone');
+ 
 
   }
 
@@ -74,61 +76,74 @@ export class ZoneVsGlobalComponent implements OnInit {
     this.resetForm();
     this.refreshEmployeeList();
     this.getZonelist();
-    this.unseen();
+    this.zonevalue = this.userzone;
+    this.onZoneChange(this.userzone);
+    this.sendButtonClick();
+    this.viewmessage();
   }
+
+  sendButtonClick() {
+    this._tableservice.sendMessage(null)
+  }
+ 
+  viewmessage()
+  {
+    
+    this._tableservice.onNewMessage().subscribe(msg => {
+      console.log('got a msg: ' , msg);
+      if(msg.reload == true)
+      {
+        this.onZoneChange(this.zonevalue);
+    
+    }
+  });
+}
+  
+  isItemChecked(id) {
+    return this.masterSelected.includes(id)
+  }
+
+
   checkUncheckAll() {
-    for (var i = 0; i < this.showzvg.length; i++) {
-      this.showzvg[i].isSelected = this.masterSelected;
-      console.log("master", this.masterSelected);
+    if (this.masterSelected.length == this.showzvg.length) {
+      this.masterSelected = []
+    } else {
+      this.masterSelected = this.showzvg.map(sdp => sdp.REF_KEY)
     }
-    this.getCheckedItemList();
-  }
-  isAllSelected() {
-    this.masterSelected = this.showzvg.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemList();
-  }
 
-  getCheckedItemList() {
-    this.checkedList = [];
-    for (var i = 0; i < this.showzvg.length; i++) {
-      if (this.showzvg[i].isSelected)
-        this.checkedList.push(this.showzvg[i].REF_KEY);
+  }
+  isAllSelected(id) {
+    if (this.masterSelected.includes(id)) {
+      this.masterSelected = [...this.masterSelected].filter(ms => ms != id)
+    } else {
+      this.masterSelected = [...this.masterSelected, id]
     }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.xbunch = this.checkedList.toString();
-    this.isdelete_button = false;
+
   }
 
 
-
+  ishistItemChecked(id) {
+    return this.histmasterSelected.includes(id)
+  }
 
 
   histcheckUncheckAll() {
-    for (var i = 0; i < this.showzvg.length; i++) {
-      this.showzvg[i].isSelected = this.histmasterSelected;
-      console.log(this.histmasterSelected);
+    if (this.histmasterSelected.length == this.showzvg.length) {
+      this.histmasterSelected = []
+    } else {
+      this.histmasterSelected = this.showzvg.map(sdp => sdp.HIST_ID)
     }
-    this.getCheckedItemhistList();
+
   }
-  histisAllSelected() {
-    this.histmasterSelected = this.showzvg.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemhistList();
+  histisAllSelected(id) {
+    if (this.histmasterSelected.includes(id)) {
+      this.histmasterSelected = [...this.histmasterSelected].filter(ms => ms != id)
+    } else {
+      this.histmasterSelected = [...this.histmasterSelected, id]
+    }
+
   }
 
-  getCheckedItemhistList() {
-    this.histcheckedList = [];
-    for (var i = 0; i < this.showzvg.length; i++) {
-      if (this.showzvg[i].isSelected)
-        this.histcheckedList.push(this.showzvg[i].HIST_ID);
-    }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.ybunch = this.histcheckedList.toString();
-    console.log(this.ybunch);
-  }
 
   getZonelist() {
     this._tableservice.getassignzonelist().subscribe((res) => {
@@ -136,7 +151,7 @@ export class ZoneVsGlobalComponent implements OnInit {
       console.log(this.zonearray);
     },(error) => {                              //Error callback
       console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
+      this.toastr.error(error, 'Zone vs Global Keywords');
      
 
       //throw error;   //You can also throw the error to a global error handler
@@ -147,16 +162,16 @@ export class ZoneVsGlobalComponent implements OnInit {
 
     var obj = {
       "ROLE": this.myData,
-      "USER_ZONE": this.zonevalue, "USER_ID": this.UserId, "CHANGE_TYPE": this.changetype
+      "USER_ZONE": zonevalue, "USER_ID": this.UserId, "CHANGE_TYPE": this.changetype
     };
 
     this._tableservice.getchangezonebiclist(obj).subscribe((res) => {
       this.showzvg = res.result;
-      this.toastr.success(res.message, 'zonelist');
+  
 
     },(error) => {                              //Error callback
       console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
+      this.toastr.error(error, 'Zone vs Global Keywords');
      
 
       //throw error;   //You can also throw the error to a global error handler
@@ -166,10 +181,20 @@ export class ZoneVsGlobalComponent implements OnInit {
 
   addform = () => {
     this.toggle = !this.toggle;
-    $("#addzoneform").toggle();
+    $("#addForm").toggle();
+    $("#updateform").hide();
   }
+  updateform = () => {
+    if (this._tableservice.selectedzvg.REF_KEY == "") {
+      alert("Update item select this row");
+    }
+    else {
+      this.toggle = !this.toggle;
+      $("#updateform").toggle();
+      $("#addForm").hide();
+    }
 
-
+  }
 
   resetForm(formdata?: NgForm) {
     if (formdata)
@@ -192,43 +217,41 @@ export class ZoneVsGlobalComponent implements OnInit {
   }
   submitform(formdata: NgForm) {
 
-    if (formdata.value.REF_KEY == "") {
+   
       this.toggle = !this.toggle;
       $("#addzoneform").toggle();
 
       this._tableservice.postzvg(formdata.value).subscribe((res) => {
-        console.log(formdata.value);
-        // this.resetForm(formdata);
-        this.refreshEmployeeList();
         this.toastr.success(res.message, 'Zone Vs Global Words');
 
       },(error) => {                              //Error callback
         console.error('error caught in component')
-        this.toastr.error(error, 'Neutral - Words');
+        this.toastr.error(error, 'Zone vs Global Keywords');
        
   
         //throw error;   //You can also throw the error to a global error handler
       });
-    }
-
-    else {
-      this.toggle = !this.toggle;
-      $("#addzoneform").toggle();
-      this._tableservice.putzvg(formdata.value).subscribe((res) => {
-        // this.resetForm(formdata);
-        this.refreshEmployeeList();
-        this.unseen();
-        this.toastr.info(res.message, 'Zone Vs Global Words');
-      },(error) => {                              //Error callback
-        console.error('error caught in component')
-        this.toastr.error(error, 'Neutral - Words');
-       
   
-        //throw error;   //You can also throw the error to a global error handler
-      });
 
-    }
+ 
   }
+  UpdateSubmitForm(form: NgForm) {
+    this.toggle = !this.toggle;
+    $("#updateForm").toggle();
+    this._tableservice.putzvg(form.value).subscribe((res) => {
+      this.masterSelected = [];
+      this.toastr.info(res.message, 'Sensitive Words');
+     
+    }, (error) => {                              //Error callback
+      console.error('error caught in component')
+      this.toastr.error(error, 'Sensitive Word');
+
+
+      //throw error;   //You can also throw the error to a global error handler
+    });
+
+  }
+
  
   unseen()
   {
@@ -240,7 +263,7 @@ export class ZoneVsGlobalComponent implements OnInit {
   refreshEmployeeList() {
     this._tableservice.getassignaccesslist().subscribe((res) => {
       this.orig_value = res.result;
-      this._page_authority = parseJSON(this.orig_value);
+      this._page_authority = JSON.parse(this.orig_value);
       console.log("arvind", this._page_authority);
       if (this._page_authority.zonevsglobal.approval == false) {
         this.valuedelete = "1";
@@ -278,22 +301,33 @@ export class ZoneVsGlobalComponent implements OnInit {
           }
     },(error) => {                              //Error callback
       console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
+      this.toastr.error(error, 'Zone vs Global Keywords');
      
 
       //throw error;   //You can also throw the error to a global error handler
     });
   }
-  postChangetype(change_type) {
-    this._tableservice.zvg_Change_Type(change_type).subscribe((res) => {
-      this.showzvg = res.result;
-    },(error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
+ 
 
-      //throw error;   //You can also throw the error to a global error handler
-    })
+  postChangetype(change_type) {
+    if(this.zonevalue == null)
+    {
+      alert("Please Select a Zone");
+    }
+    else
+    {
+      const zonetype = { "CHANGE_TYPE": change_type,"USER_ZONE": this.zonevalue,"ROLE":this.myData,"USER_ID":this.UserId };
+      this._tableservice.zvg_Change_Type(zonetype).subscribe((res) => {
+        this.showzvg = res.result;
+      }, (error) => {                              //Error callback
+        console.error('error caught in component')
+        this.toastr.error(error, 'Zone vs Global Keywords');
+  
+  
+        //throw error;   //You can also throw the error to a global error handler
+      });
+    }
+
   }
 
   onEdit(zvg: Zonevsglobal) {
@@ -304,38 +338,48 @@ export class ZoneVsGlobalComponent implements OnInit {
 
   }
   deleteSelected(form: NgForm) {
-    this.delete_toggle = !this.delete_toggle;
-    this._tableservice.deletezvg(this.xbunch).subscribe((res) => {
-      this.refreshEmployeeList();
-      this.unseen();
-      this.resetForm(form);
-      this.toastr.warning(res.message, 'NAME SCREEN');
-    },(error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
+    if (this.masterSelected.length <= 0) {
+      alert("Delete Item Select This Row")
+    }
+    else {
+      this._tableservice.deletezvg(this.masterSelected.join(',')).subscribe((res) => {
+        this.toastr.warning(res.message, 'Sensitive Word');
+        this.masterSelected = [];
+      }, (error) => {
+        console.error('error caught in component')
+        this.toastr.error(error, 'Sensitive Word');
 
-      //throw error;   //You can also throw the error to a global error handler
-    });
+
+
+      });
+
+    }
+
 
   }
  
 
 
   ChkdeleteSelected(status, form: NgForm) {
-    var value1 = {"APPROVE_STATUS":status}
-    this._tableservice.zvgapproved({...form.value,...value1}).subscribe((res) => {
-      this.refreshEmployeeList();
-      this.unseen();
-      this.toastr.success(res.message, status);
-  
-    },(error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
+    if (this.histmasterSelected.length <= 0) {
+      alert("check Item Select This Row")
+    }
+    else {
+      var value1 = { "APPROVE_STATUS": status, "HIST_ID": this.histmasterSelected.join(',') }
+      this._tableservice.zvgapproved({ ...form.value, ...value1 }).subscribe((res) => {
+        this.histmasterSelected = [];
+        this.toastr.success(res.message, status);
 
-      //throw error;   //You can also throw the error to a global error handler
-    });
+      }, (error) => {
+        console.error('error caught in component')
+        this.toastr.error(error, 'Sensitive Word');
+
+
+
+      });
+
+    }
+
   }
 
 }

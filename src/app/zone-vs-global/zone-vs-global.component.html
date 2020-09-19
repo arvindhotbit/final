@@ -10,7 +10,7 @@
           <div class="sparkline13-graph">
             <div class="datatable-dashv1-list custom-datatable-overright">
 
-              <div class="">
+              <div class="topbtn">
                 <div class="main-sparkline13-hd">
                   <div class="part">
                     <h1>{{listtitle}} <small>(Select Row To Update)</small>
@@ -57,17 +57,17 @@
                       </ul>
                     </div>
                     <ng-container *ngIf="_isaccess">
-                      <button class="btn btn-primary btn-sm" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa
+                      <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa
                         -check-square-o"></i> Approve</button>
-                    <button class="btn btn-primary btn-sm" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
-                    </ng-container>
-                    <ng-container *ngIf="_isaccess">
-                      <button *ngIf="_InsertButtonAccess" (click)="addform()"
-                        class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add Form</button>
-                      <button *ngIf="_DeleteButtonAccess" class="btn btn-primary btn-sm"
-                        (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i class="fa fa-trash"></i>
-                        Delete</button>
-                    </ng-container>
+                    <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
+                     </ng-container>
+                     <ng-container *ngIf="!_isaccess">
+                     <button *ngIf="_InsertButtonAccess"  (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
+                     <button *ngIf="_updateButtonAccess" (click)="updateform()"
+                     class="btn btn-primary btn-sm" [class.disabled]="!this.masterSelected.length" ><i
+                       class="fa fa-edit"></i> Update</button>
+                     <button  *ngIf="_DeleteButtonAccess"  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="!this.masterSelected.length"><i  class="fa fa-trash"></i> Delete</button>
+                     </ng-container>
 
                   </div>
                 </div>
@@ -78,14 +78,12 @@
 
                 <thead class="table_header">
                   <tr class="text-center">
-                    <th class="text-center" *ngIf="!_isaccess"><input type="checkbox"
-                        name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()" /></th>
-                    <th class="text-center" *ngIf="_isaccess"><input type="checkbox"
-                        name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()" /></th>
+                    <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [checked]="this.masterSelected.length ==  this.showzvg.length" (change)="checkUncheckAll()"/></th>
+                    <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [checked]="this.histmasterSelected.length ==  this.showzvg.length" (change)="histcheckUncheckAll()"/></th>
                     <th *ngIf="SERIAL">Sr.no</th>
                     <th *ngIf="ZONEID"><select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
                         (ngModelChange)="onZoneChange($event)">
-                        <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                        <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID" selected="userzone">{{zone.ZONE_ID}}</option>
                       </select></th>
                     <th *ngIf="PROGRAMKEYWORD"><input type="text" class="form-control" [(ngModel)]="pkey"
                         placeholder="PROGRAM KEYWORD" /></th>
@@ -117,15 +115,16 @@
                   <ng-container
                     *ngFor="let item of showzvg  |filter:pkey:pkeyw:oldpkey:oldpkeyword:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
                     <tr
-                      [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == updatemark)}"
+                      [ngClass]="{'disabledelitem': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == updatemark)}"
                       (click)="onEdit(item)" [class.selected]="item === selectedZoneRow">
                       <td *ngIf="!_isaccess" style="text-align: center;">
-                        <input type="checkbox" [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
-                          value="{{item.REF_KEY}}" (change)="isAllSelected()"></td>
-
-                      <td *ngIf="_isaccess" style="text-align: center;"><input
-                          type="checkbox" [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
-                          value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
+                        <input type="checkbox"
+                        [checked]="isItemChecked(item.REF_KEY)" id="{{item.REF_KEY}}" name="delete"
+                          value="{{item.REF_KEY}}"  (change)="isAllSelected(item.REF_KEY)"></td>
+                
+                      <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+                          [checked]="ishistItemChecked(item.HIST_ID)" id="{{item.HIST_ID}}" name="deletechecker"
+                          value="{{item.HIST_ID}}" (change)="histisAllSelected(item.HIST_ID)"></td>
 
                       <td *ngIf="SERIAL">{{ (p - 1) * pageSize + i + 1 }}</td>
                       <td *ngIf="ZONEID">{{item.ZONE_ID}}</td>
@@ -182,77 +181,204 @@
 
               <ng-template #elseBlock>No record found</ng-template>
 
+                      <div class="row">
+                        <div class="col-6">
+                          <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addzoneform" style="display: none;">
+                            <div class="panel-body">
+                              <h4>Add Record</h4>
+                            </div>
+            
+                          
+                          
+                                <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
+                                  [(ngModel)]="_tableservice.selectedzvg.REF_KEY">
+                                <div class="form-group">
+                                  <label>Zone Id</label>
+                                  <!-- <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel" [(ngModel)]="_tableservice.selectedzvg.ZONE_ID"> -->
+                                  <select name="ZONE_ID" [value]="zonevalue" [(ngModel)]="_tableservice.selectedzvg.ZONE_ID">
+                                    <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label>PROGRAM_KEYWORD</label>
+                                  <input type="text" class="form-control" name="PROGRAM_KEYWORD" #PROGRAM_KEYWORD="ngModel"
+                                    [(ngModel)]="_tableservice.selectedzvg.PROGRAM_KEYWORD">
+                                </div>
+                                <div class="form-group">
+                                  <label>PROGRAM_KEYWORD_DESC</label>
+                                  <input type="text" class="form-control" name="PROGRAM_KEYWORD_DESC"
+                                    #PROGRAM_KEYWORD_DESC="ngModel" [(ngModel)]="_tableservice.selectedzvg.PROGRAM_KEYWORD_DESC">
+                                </div>
+            
+            
+                          
+            
+                             
+            
+                                <div class="form-group">
+                                  <label>PAYSYS_ID</label>
+                                  <input type="text" class="form-control" name="PAYSYS_ID" #PAYSYS_ID="ngModel"
+                                    [(ngModel)]="_tableservice.selectedzvg.PAYSYS_ID">
+                                </div>
+                                <div class="form-group">
+                                  <label>SCOPE</label>
+                                  <select class="form-control" name="SCOPE" #SCOPE="ngModel"
+                                    [(ngModel)]="_tableservice.selectedzvg.SCOPE">
+                                    <option value="Shared">Shared</option>
+                                    <option value="Private"> Private</option>
+                                    <option value="Disable">Disable</option>
+                                  </select>
+                                </div>
+                                <div style="display: none;">
 
-              <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addzoneform" style="display: none;">
-                <div class="panel-body">
-                  <h4>Add Record</h4>
-                </div>
+                                  <div class="form-group">
+                                    <label>User Id</label>
+                                    <input type="text" class="form-control" name="USER_ID"  [(ngModel)]="UserId">
+                                  </div>
+                                  <div class="form-group">
+                                    <label>User Name</label>
+                                    <input type="text" class="form-control" name="USER_NAME" 
+                                      [(ngModel)]="UserName">
+                                  </div>
+            
+            
+            
+                                  <div class="form-group">
+                                    <label>User Zone</label>
+                                    <input type="text" class="form-control" name="USER_ZONE" 
+                                      [(ngModel)]="userzone">
+                                  </div>
+                                  <div class="form-group">
+                                    <label>Role</label>
+                                    <input type="text" class="form-control" name="ROLE"  [(ngModel)]="myData">
+                                  </div>
+            
+            
+            
+                                  <input type="text" class="form-control" name="HIST_ID"  [(ngModel)]="ybunch">
+            
+            
+                                  <input type="text" class="form-control" name="APPROVE_STATUS" 
+                                    [(ngModel)]="apstatus">
+            
+            
+                                  <input type="text" class="form-control" name="CHANGE_TYPE" 
+                                    [(ngModel)]="changetype">
+            
+            
+            
+                                </div>
+            
+                          
+            
+                          
+            
+            
+            
+                            <input type="submit" class="btn btn-success" value="Add Item">
+            
+                          </form>
+                        </div>
+                        <div class="col-6">
+                          <form #myUform="ngForm" (ngSubmit)="UpdateSubmitForm(myUform)" id="updateform" style="display: none;">
+                            <div class="panel-body">
+                              <h4>Update Record</h4>
+                            </div>
+            
+                      
+                       
+                           
+                                <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
+                                  [(ngModel)]="_tableservice.selectedzvg.REF_KEY">
+                                <div class="form-group">
+                                  <label>Zone Id</label>
+                                  <!-- <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel" [(ngModel)]="_tableservice.selectedzvg.ZONE_ID"> -->
+                                  <select name="ZONE_ID" [value]="zonevalue" [(ngModel)]="_tableservice.selectedzvg.ZONE_ID">
+                                    <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label>PROGRAM_KEYWORD</label>
+                                  <input type="text" class="form-control" name="PROGRAM_KEYWORD" #PROGRAM_KEYWORD="ngModel"
+                                    [(ngModel)]="_tableservice.selectedzvg.PROGRAM_KEYWORD">
+                                </div>
+                                <div class="form-group">
+                                  <label>PROGRAM_KEYWORD_DESC</label>
+                                  <input type="text" class="form-control" name="PROGRAM_KEYWORD_DESC"
+                                    #PROGRAM_KEYWORD_DESC="ngModel" [(ngModel)]="_tableservice.selectedzvg.PROGRAM_KEYWORD_DESC">
+                                </div>
+            
+            
+                             
+            
+                            
+            
+                                <div class="form-group">
+                                  <label>PAYSYS_ID</label>
+                                  <input type="text" class="form-control" name="PAYSYS_ID" #PAYSYS_ID="ngModel"
+                                    [(ngModel)]="_tableservice.selectedzvg.PAYSYS_ID">
+                                </div>
+                                <div class="form-group">
+                                  <label>SCOPE</label>
+                                  <select class="form-control" name="SCOPE" #SCOPE="ngModel"
+                                    [(ngModel)]="_tableservice.selectedzvg.SCOPE">
+                                    <option value="Shared">Shared</option>
+                                    <option value="Private"> Private</option>
+                                    <option value="Disable">Disable</option>
+                                  </select>
+                                </div>
+                                <div style="display: none;">
 
-                <!-- {{zvgform.value|json}} -->
-                <div class="row">
-                  <div class="col-md-4">
-                    <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
-                      [(ngModel)]="_tableservice.selectedzvg.REF_KEY">
-                    <div class="form-group">
-                      <label>Zone Id</label>
-                      <!-- <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel" [(ngModel)]="_tableservice.selectedzvg.ZONE_ID"> -->
-                      <select name="ZONE_ID" [value]="zonevalue" [(ngModel)]="_tableservice.selectedzvg.ZONE_ID">
-                        <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label>PROGRAM_KEYWORD</label>
-                      <input type="text" class="form-control" name="PROGRAM_KEYWORD" #PROGRAM_KEYWORD="ngModel"
-                        [(ngModel)]="_tableservice.selectedzvg.PROGRAM_KEYWORD">
-                    </div>
-                    <div class="form-group">
-                      <label>PROGRAM_KEYWORD_DESC</label>
-                      <input type="text" class="form-control" name="PROGRAM_KEYWORD_DESC"
-                        #PROGRAM_KEYWORD_DESC="ngModel" [(ngModel)]="_tableservice.selectedzvg.PROGRAM_KEYWORD_DESC">
-                    </div>
-
-
-                  </div>
-
-                  <div class="col-md-4">
-
-                    <div class="form-group">
-                      <label>PAYSYS_ID</label>
-                      <input type="text" class="form-control" name="PAYSYS_ID" #PAYSYS_ID="ngModel"
-                        [(ngModel)]="_tableservice.selectedzvg.PAYSYS_ID">
-                    </div>
-                    <div class="form-group">
-                      <label>SCOPE</label>
-                      <select class="form-control" name="SCOPE" #SCOPE="ngModel"
-                        [(ngModel)]="_tableservice.selectedzvg.SCOPE">
-                        <option value="Shared">Shared</option>
-                        <option value="Private"> Private</option>
-                        <option value="Disable">Disable</option>
-                      </select>
-                    </div>
-                    <div style="display: none;">
-                      <input type="text" class="form-control" name="USER_ZONE" value="QA"
-                        [(ngModel)]="_tableservice.selectedzvg.USER_ZONE">
-                      <input type="text" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
-                      <input type="text" class="form-control" name="USER_NAME" [value]="UserName"
-                        [(ngModel)]="UserName">
-                      <input type="text" class="form-control" name="USER_ID" [value]="UserId" [(ngModel)]="UserId">
-                      <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}" [(ngModel)]="ybunch">
-                      <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"
-                        [(ngModel)]="apstatus">
-                      <input type="text" class="form-control" name="CHANGE_TYPE" value="{{changetype}}"
-                        [(ngModel)]="changetype">
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-
-                <input type="submit" class="btn btn-success">
-
-              </form>
+                                  <div class="form-group">
+                                    <label>User Id</label>
+                                    <input type="text" class="form-control" name="USER_ID"  [(ngModel)]="UserId">
+                                  </div>
+                                  <div class="form-group">
+                                    <label>User Name</label>
+                                    <input type="text" class="form-control" name="USER_NAME" 
+                                      [(ngModel)]="UserName">
+                                  </div>
+            
+            
+            
+                                  <div class="form-group">
+                                    <label>User Zone</label>
+                                    <input type="text" class="form-control" name="USER_ZONE" 
+                                      [(ngModel)]="userzone">
+                                  </div>
+                                  <div class="form-group">
+                                    <label>Role</label>
+                                    <input type="text" class="form-control" name="ROLE"  [(ngModel)]="myData">
+                                  </div>
+            
+            
+            
+                                  <input type="text" class="form-control" name="HIST_ID"  [(ngModel)]="ybunch">
+            
+            
+                                  <input type="text" class="form-control" name="APPROVE_STATUS" 
+                                    [(ngModel)]="apstatus">
+            
+            
+                                  <input type="text" class="form-control" name="CHANGE_TYPE" 
+                                    [(ngModel)]="changetype">
+            
+            
+            
+                                </div>
+            
+                            
+            
+                        
+            
+            
+            
+                            <input type="submit" class="btn btn-success" value="update">
+            
+                          </form>
+                        </div>
+                      </div>
+            
             </div>
           </div>
         </div>

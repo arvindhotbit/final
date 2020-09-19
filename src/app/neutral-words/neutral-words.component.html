@@ -11,7 +11,7 @@
         <div class="sparkline13-list">
           <div class="sparkline13-graph">
             <div class="datatable-dashv1-list custom-datatable-overright">
-              <div class="">
+              <div class="topbtn">
                 <div class="main-sparkline13-hd">
                   <div class="part">
                     <h1>Neutral words <small>(Select Row To Update)</small></h1>
@@ -48,25 +48,17 @@
                       </ul>
                     </div>
                     <ng-container *ngIf="_isaccess">
-                      <button class="btn btn-primary btn-sm" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa
-                          -check-square-o"></i> Approve</button>
-                      <button class="btn btn-primary btn-sm" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
-                    </ng-container>
-                    <ng-container *ngIf="!_isaccess">
-
-                      <button *ngIf="_InsertButtonAccess" (click)="addform()"
-                        class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i
-                          class="fa fa-plus"></i> Add</button>
-
-                      <button *ngIf="_updateButtonAccess" (click)="updateform()"
-                        class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i
-                          class="fa fa-edit"></i> Update</button>
-
-
-                      <button *ngIf="_DeleteButtonAccess" class="btn btn-primary btn-sm"
-                        (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i class="fa fa-trash"></i>
-                        Delete</button>
-                    </ng-container>
+                      <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa
+                        -check-square-o"></i> Approve</button>
+                    <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
+                     </ng-container>
+                     <ng-container *ngIf="!_isaccess">
+                     <button *ngIf="_InsertButtonAccess"  (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
+                     <button *ngIf="_updateButtonAccess" (click)="updateform()"
+                     class="btn btn-primary btn-sm" [class.disabled]="!this.masterSelected.length" ><i
+                       class="fa fa-edit"></i> Update</button>
+                     <button  *ngIf="_DeleteButtonAccess"  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="!this.masterSelected.length"><i  class="fa fa-trash"></i> Delete</button>
+                     </ng-container>
                   </div>
                 </div>
               </div>
@@ -84,15 +76,20 @@
               <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
                 <thead class="table_header">
                   <tr>
-                    <th class="text-center" *ngIf="!_isaccess"><input type="checkbox"
-                        name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()" /></th>
-                    <th class="text-center" *ngIf="_isaccess"><input type="checkbox"
-                        name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()" /></th>
+                    <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [checked]="this.masterSelected.length ==  this.showdata.length" (change)="checkUncheckAll()"/></th>
+                    <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [checked]="this.histmasterSelected.length ==  this.showdata.length" (change)="histcheckUncheckAll()"/></th>
                     <th>Sr.no</th>
-                    <th *ngIf="zoneidcol"><span> <select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
+                    <th ><span> 
+                      <select name="USER_ZONE"  [(ngModel)]="zonevalue"
                       (ngModelChange)="onZoneChange($event)">
-                      <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
-                    </select></span></th>
+                      <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID" >{{zone.ZONE_ID}}</option>
+                    </select>
+                  </span></th>
+                  <!-- <th *ngIf="_isaccess"><span> 
+                    <select name="USER_ZONE"  [(ngModel)]="zonevaluechk">
+                    <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                  </select>
+                </span></th> -->
                     <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="Noise Word"
                           [(ngModel)]="noise" /></span> </th>
                     <ng-container *ngIf="_isaccess">
@@ -119,17 +116,18 @@
                   <ng-container
                     *ngFor="let item of showdata | neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
                     <tr
-                      [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
+                      [ngClass]="{'disabledelitem': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
                       (click)="onEdit(item)" [class.selected]="item === selectedNeutralRow">
 
 
                       <td *ngIf="!_isaccess" style="text-align: center;">
-                        <input type="checkbox" [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
-                          value="{{item.REF_KEY}}" (change)="isAllSelected()"></td>
-
-                      <td *ngIf="_isaccess" style="text-align: center;"><input
-                          type="checkbox" [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
-                          value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
+                        <input type="checkbox"
+                        [checked]="isItemChecked(item.REF_KEY)" id="{{item.REF_KEY}}" name="delete"
+                          value="{{item.REF_KEY}}"  (change)="isAllSelected(item.REF_KEY)"></td>
+                
+                      <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+                          [checked]="ishistItemChecked(item.HIST_ID)" id="{{item.HIST_ID}}" name="deletechecker"
+                          value="{{item.HIST_ID}}" (change)="histisAllSelected(item.HIST_ID)"></td>
 
                       <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
 
@@ -180,121 +178,135 @@
               <div class="row">
                 <div class="col-6">
                   <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+                  
                     <div class="panel-body">
-                      <h4>Add Form</h4>
+                      <h4>Add Item</h4>
                     </div>
-                    <div class="row">
-                      <div class="col-md-4">
+                 
+                 
 
                         <div class="form-group">
                           <label>Zone Id</label>
-                          <select name="ZONE_ID" class="form-control" [(ngModel)]="_tableservice.selectedneu.ZONE_ID">
-                            <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                          <select name="ZONE_ID" class="form-control" [class.is-invalid]="ZONE_ID.invalid && ZONE_ID.touched"
+                          [class.is-valid]="ZONE_ID.valid" [(ngModel)]="_tableservice.selectedneu.ZONE_ID">
+                            <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID" >{{zone.ZONE_ID}}</option>
                           </select>
+                          <span class="help-block" *ngIf="ZONE_ID.errors?.required && ZONE_ID.touched">
+                            Zone ID is required
+                          </span>
                         </div>
 
 
                         <div class="form-group">
                           <label>Noise Word</label>
-                          <input type="text" class="form-control" name="NOISE_WORD" #NOISE_WORD="ngModel"
-                            [(ngModel)]="_tableservice.selectedneu.NOISE_WORD" required>
+                          <input type="text" class="form-control" [class.is-invalid]="NOISE_WORD.invalid && NOISE_WORD.touched"
+                          [class.is-valid]="NOISE_WORD.valid" name="NOISE_WORD" #NOISE_WORD="ngModel"
+                            [(ngModel)]="_tableservice.selectedneu.NOISE_WORD" required maxlength="80">
+                            <span class="help-block" *ngIf="NOISE_WORD.errors?.required && NOISE_WORD.touched">
+                              User ID is required
+                            </span>
                         </div>
-                      </div>
+                
                       <div style="display: none;">
                         <div class="col-md-4">
                           <div class="form-group">
                             <label>User Id</label>
-                            <input type="text" class="form-control" name="USER_ID" [value]="UserId"
-                              [(ngModel)]="UserId">
+                            <input type="text" class="form-control" name="USER_ID" 
+                              [(ngModel)]="UserId" required>
                           </div>
                           <div class="form-group">
                             <label>User Name</label>
-                            <input type="text" class="form-control" name="USER_NAME" [value]="UserName"
-                              [(ngModel)]="UserName">
+                            <input type="text" class="form-control" name="USER_NAME" 
+                              [(ngModel)]="UserName" required>
                           </div>
                         </div>
                         <div class="col-md-4">
                           <div class="form-group">
                             <label>User Zone</label>
-                            <input type="text" class="form-control" name="USER_ZONE" value="QA"
-                              [(ngModel)]="_tableservice.selectedneu.USER_ZONE">
+                            <input type="text" class="form-control" name="USER_ZONE"
+                              [(ngModel)]="Userzone" required>
                           </div>
                           <div class="form-group">
                             <label>Role</label>
-                            <input type="text" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
+                            <input type="text" class="form-control" name="ROLE" [(ngModel)]="myData" required>
                           </div>
                         </div>
                         <div class="col-md-4">
                           <div></div>
-                          <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}"
+                          <input type="text" class="form-control" name="HIST_ID" 
                             [(ngModel)]="ybunch">
-                          <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"
+                          <input type="text" class="form-control" name="APPROVE_STATUS" 
                             [(ngModel)]="apstatus">
-                          <input type="text" class="form-control" name="CHANGE_TYPE" value="{{changetype}}"
+                          <input type="text" class="form-control" name="CHANGE_TYPE" 
                             [(ngModel)]="changetype">
                         </div>
                       </div>
-                    </div>
-                    <input type="submit" class="btn btn-success" value="Add Item">
+               
+      <input type="submit" [ngStyle]="!myform.form.valid && {'cursor': 'not-allowed'}" [disabled]="!myform.form.valid" class="btn btn-success" value="Submit">
                   </form>
                 </div>
                 <div class="col-6">
-                  <form #myUform="ngForm" (ngSubmit)="UpdateSubmitForm(myUform)" id="updateForm" style="display: none;">
-           
+                  <form #myUform="ngForm" (ngSubmit)="UpdateSubmitForm(myUform)" id="updateform" style="display: none;">
+                    
                     <div class="panel-body">
                       <h4>Update form</h4>
                     </div>
-                    <div class="row">
-                      <div class="col-md-4">
+              
                         <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
                           [(ngModel)]="_tableservice.selectedneu.REF_KEY">
+
                         <div class="form-group">
                           <label>Zone Id</label>
-                          <input type="text" class="form-control" name="ZONE_ID" #ZONE_ID="ngModel"
+                          <input type="text" class="form-control"  name="ZONE_ID" #ZONE_ID="ngModel"
                             [(ngModel)]="_tableservice.selectedneu.ZONE_ID" required>
+                           
                         </div>
                         <div class="form-group">
                           <label>Noise Word</label>
-                          <input type="text" class="form-control" name="NOISE_WORD" #NOISE_WORD="ngModel"
-                            [(ngModel)]="_tableservice.selectedneu.NOISE_WORD" required>
+                          <input type="text" class="form-control" [class.is-invalid]="NOISE_WORD.invalid && NOISE_WORD.touched"
+                          [class.is-valid]="NOISE_WORD.valid" name="NOISE_WORD" #NOISE_WORD="ngModel"
+                            [(ngModel)]="_tableservice.selectedneu.NOISE_WORD" required maxlength="80">
+                            <span class="help-block" *ngIf="NOISE_WORD.errors?.required && NOISE_WORD.touched">
+                              NOISE WORD  is required
+                            </span>
                         </div>
-                      </div>
+                   
                       <div style="display: none;">
-                        <div class="col-md-4">
+                      
                           <div class="form-group">
                             <label>User Id</label>
-                            <input type="text" class="form-control" name="USER_ID" [value]="UserId"
-                              [(ngModel)]="UserId">
+                            <input type="text" class="form-control" name="USER_ID" 
+                              [(ngModel)]="UserId" required>
                           </div>
                           <div class="form-group">
                             <label>User Name</label>
-                            <input type="text" class="form-control" name="USER_NAME" [value]="UserName"
-                              [(ngModel)]="UserName">
+                            <input type="text" class="form-control" name="USER_NAME" 
+                              [(ngModel)]="UserName" required>
                           </div>
-                        </div>
-                        <div class="col-md-4">
+                    
+                   
                           <div class="form-group">
                             <label>User Zone</label>
-                            <input type="text" class="form-control" name="USER_ZONE" value="QA"
-                              [(ngModel)]="_tableservice.selectedneu.USER_ZONE">
+                            <input type="text" class="form-control" name="USER_ZONE"
+                              [(ngModel)]="Userzone" required>
                           </div>
                           <div class="form-group">
                             <label>Role</label>
-                            <input type="text" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
+                            <input type="text" class="form-control" name="ROLE" [(ngModel)]="myData" required>
                           </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div></div>
-                          <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}"
+                      
+                      
+                         
+                          <input type="text" class="form-control" name="HIST_ID" 
                             [(ngModel)]="ybunch">
-                          <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"
+                          <input type="text" class="form-control" name="APPROVE_STATUS" 
                             [(ngModel)]="apstatus">
-                          <input type="text" class="form-control" name="CHANGE_TYPE" value="{{changetype}}"
+                          <input type="text" class="form-control" name="CHANGE_TYPE" 
                             [(ngModel)]="changetype">
-                        </div>
-                      </div>
-                    </div>
-                    <input type="submit" class="btn btn-success" value="Update Item">
+                       </div>
+                    
+                    <input type="submit"  [disabled]="!myUform.form.valid" [ngStyle]="!myUform.form.valid && {'cursor': 'not-allowed
+                    '}" class="btn btn-success" value="Update Item">
                   </form>
                 </div>
               </div>

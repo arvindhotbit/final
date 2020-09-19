@@ -166,7 +166,7 @@ export class RoleManageComponent implements OnInit {
   global_crud:boolean = true;
   cbn_check_auth:boolean = true;
   cbn_crud:boolean = true;
-  
+ 
   checkboxs:any = [];
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
  
@@ -606,9 +606,31 @@ export class RoleManageComponent implements OnInit {
   //     this.customerbasicnoposition_view = '0';
   //   }
   // }
+// napl(e)
+// {
+//   if (this.neutral_words_add == true || this.neutral_words_update == true || this.neutral_words_delete == true) {
+//       this.neutral_check_auth = false;
+//       this.neutral_words_view = true;
+//     }
+//     else {
+//       this.neutral_check_auth = true;
+//       this.neutral_words_view = false;
+//     }
+// }
+// chknapl(e)
+// {
+//     if (this.neutral_words_check == true) {
+//       this.neutral_crud = false;
+//       this.neutral_words_view = true;
+//     }
+//     else {
+//       this.neutral_crud = true;
+//       this.neutral_words_view = false;
+//     }
+// }
 napl(e)
 {
-
+  
 }
 chknapl(e)
 {

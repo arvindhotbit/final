@@ -13,7 +13,7 @@
  <div class="sparkline13-graph">
  <div class="datatable-dashv1-list custom-datatable-overright">
 
-<div class="">
+<div class="topbtn">
 
    <div class="main-sparkline13-hd">
      <div class="part" >
@@ -29,22 +29,51 @@
      
          
    
-       <div class="dropdown btn-group ">
-         <button class=" dropdown-toggle btn btn-primary btn-sm"  type="button" data-toggle="dropdown"><i class="fa fa-toggle-down"></i> Column
-         </button>
-         <ul class="dropdown-menu trust-menu">
-
-
-         </ul>
-       </div>
-       <ng-container *ngIf="_isaccess">
-        <button class="btn btn-primary btn-sm" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa-check-square-o"></i> Approve</button>
-        <button class="btn btn-primary btn-sm" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
-       </ng-container>
-       <ng-container>
-       <button *ngIf="_InsertButtonAccess"  (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
-       <button  *ngIf="_DeleteButtonAccess" class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="isdelete_button"><i  class="fa fa-trash"></i> Delete</button>
-       </ng-container>
+          <div class="dropdown btn-group ">
+            <button class=" dropdown-toggle btn btn-primary btn-sm" type="button" data-toggle="dropdown"><i
+                class="fa fa-toggle-down"></i> Column
+            </button>
+            <ul class="dropdown-menu trust-menu">
+              <li class="dropdown-item">
+                <label for="nsncol"> <input type="checkbox" [checked]="nsncol"
+                    (change)="nsncol=!nsncol" id="nsncol" />&nbsp;Sr. No</label>
+              </li>
+              <li class="dropdown-item">
+                <label for="zoneidcol"> <input type="checkbox" [checked]="zoneidcol"
+                    (change)="zoneidcol=!zoneidcol" id="zoneidcol" />&nbsp;Zone Id</label>
+              </li>
+              <li class="dropdown-item">
+                <label for="customernameenglishcol"> <input type="checkbox" [checked]="customernameenglishcol "
+                    (change)="customernameenglishcol =!customernameenglishcol " id="customernameenglishcol" />&nbsp;Customer Name</label>
+              </li>
+              <li class="dropdown-item">
+                <label for="citycol"> <input type="checkbox" [checked]="citycol "
+                    (change)="citycol =!citycol " id="citycol" />&nbsp;City</label>
+              </li>
+          
+              <li class="dropdown-item">
+                <label for="watchlistnamecol"> <input type="checkbox" [checked]="watchlistnamecol"
+                    (change)="watchlistnamecol =!watchlistnamecol " id="watchlistnamecol" />&nbsp;Watchlist Name</label>
+              </li>
+              <li class="dropdown-item">
+                <label for="watchlistidcol"> <input type="checkbox" [checked]="watchlistidcol"
+                    (change)="watchlistidcol =!watchlistidcol " id="watchlistidcol" />&nbsp;Watchlist Id</label>
+              </li>
+           
+            </ul>
+          </div>
+          <ng-container *ngIf="_isaccess">
+            <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa
+              -check-square-o"></i> Approve</button>
+          <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
+           </ng-container>
+           <ng-container *ngIf="!_isaccess">
+           <button *ngIf="_InsertButtonAccess"  (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
+           <button *ngIf="_updateButtonAccess" (click)="updateform()"
+           class="btn btn-primary btn-sm" [class.disabled]="!this.masterSelected.length" ><i
+             class="fa fa-edit"></i> Update</button>
+           <button  *ngIf="_DeleteButtonAccess"  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="!this.masterSelected.length"><i  class="fa fa-trash"></i> Delete</button>
+           </ng-container>
      </div>
     
 
@@ -64,23 +93,33 @@
    
    
    <tr>
-    <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [(ngModel)]="masterSelected" (change)="checkUncheckAll()"/></th>
-    <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [(ngModel)]="histmasterSelected" (change)="histcheckUncheckAll()"/></th>
-        <th>Sr.no</th>
-        <th ><span><select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
+    <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [checked]="this.masterSelected.length ==  this.showdatapart.length" (change)="checkUncheckAll()"/></th>
+    <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [checked]="this.histmasterSelected.length ==  this.showdatapart.length" (change)="histcheckUncheckAll()"/></th>
+        <th *ngIf="nsncol">Sr.no</th>
+        <th *ngIf="zoneidcol"><span><select name="USER_ZONE" [value]="zonevalue" [(ngModel)]="zonevalue"
           (ngModelChange)="onZoneChange($event)">
-          <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+          <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID" selected="userzone">{{zone.ZONE_ID}}</option>
         </select></span></th>
-        <th ><span><input type="text" class="form-control"   placeholder="LIST_TYPE" /></span> </th>
-        <th ><span><input type="text" class="form-control"  placeholder="LIST_CATEGORY" /></span> </th>
-        <th ><span><input type="text" class="form-control"   placeholder="WATCHLIST_NAME" /></span> </th>
-        <th><span><input type="text" class="form-control"    placeholder="WATCHLIST_ID" /></span> </th>
+        <th *ngIf="customernameenglishcol"><span><input type="text" class="form-control"   placeholder="Customer Name" /></span> </th>
+        <th *ngIf="citycol"><span><input type="text" class="form-control"  placeholder="City" /></span> </th>
+        <th *ngIf="watchlistnamecol"><span><input type="text" class="form-control"   placeholder="WATCHLIST_NAME" /></span> </th>
+        <th *ngIf="watchlistidcol"><span><input type="text" class="form-control"    placeholder="WATCHLIST_ID" /></span> </th>
         <ng-container *ngIf="_isaccess">
           <th ><span><input type="text" class="form-control"  placeholder="OLD_LIST_TYPE " /></span> </th>
           <th ><span><input type="text" class="form-control"  placeholder="OLD_LIST_CATEGORY" /></span> </th>
           <th ><span><input type="text" class="form-control"  placeholder="OLD_WATCHLIST_NAME" /></span> </th>
           <th ><span><input type="text" class="form-control"  placeholder="OLD_WATCHLIST_ID" /></span> </th>
-          <th ><span><input type="text" class="form-control"  placeholder="CHANGE_TYPE" /></span> </th>
+          <th>
+            <span>
+              
+              <select name="changetype" class="form-control" [(ngModel)]="changetype" (ngModelChange)="postChangetype($event)">
+                <option value="INSERT">INSERT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="UPDATE">UPDATE</option>
+              </select>
+              </span>
+             </th>
+      
         
         </ng-container>
        
@@ -88,43 +127,49 @@
       
       </tr> 
     </thead>
-    <tbody  *ngIf="showdatapart?.length;else no_data_templ">
-      
-      <ng-container  *ngFor="let item of showdatapart | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
-        <tr  [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"   (click)="onEdit(item,'Update')" [class.selected]="item === selectedinternalistRow">
+ 
+ 
+    <tbody *ngIf="showdatapart?.length;else no_data_templ">
+
+      <ng-container
+        *ngFor="let item of showdatapart | paginate: { itemsPerPage: pageSize, currentPage: p }  let i=index">
+        <tr
+          [ngClass]="{'disabledelitem': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
+          (click)="onEdit(item,'Update')" [class.selected]="item === selectedinternalistwatchlistRow">
           <td *ngIf="!_isaccess" style="text-align: center;">
             <input type="checkbox"
-            [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}" name="delete"
-              value="{{item.REF_KEY}}"  (change)="isAllSelected()"></td>
-
+            [checked]="isItemChecked(item.REF_KEY)" id="{{item.REF_KEY}}" name="delete"
+              value="{{item.REF_KEY}}"  (change)="isAllSelected(item.REF_KEY)"></td>
+    
           <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
-              [(ngModel)]="item.isSelected" id="{{item.HIST_ID}}" name="deletechecker"
-              value="{{item.HIST_ID}}" (change)="histisAllSelected()"></td>
-          <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>         
-          <td *ngIf="zoneid">{{item.ZONE_ID}}</td>
+              [checked]="ishistItemChecked(item.HIST_ID)" id="{{item.HIST_ID}}" name="deletechecker"
+              value="{{item.HIST_ID}}" (change)="histisAllSelected(item.HIST_ID)"></td>
+          <td *ngIf="nsncol">{{ (p - 1) * pageSize + i + 1 }}</td>
+          <td *ngIf="zoneidcol">{{item.ZONE_ID}}</td>
           <td>{{item.CUSTOMER_NAME_ENGLISH}}</td>
           <td>{{item.CITY}}</td>
-          <td>{{item.WATCHLIST_NAME}}</td>
-          <td>{{item.WATCHLIST_ID}}</td> 
-      
-        
-    
-      
-          <ng-container *ngIf="_isaccess">
-          
-          
-            <td>{{item.OLD_CUSTOMER_NAME_ENGLISH}}</td>
-            <td >{{item.OLD_CITY}}</td>
-            <td >{{item.OLD_WATCHLIST_NAME}}</td>
-            <td >{{item.OLD_WATCHLIST_ID}}</td>
-            <td >{{item.CHANGE_TYPE}}</td>
+          <td *ngIf="watchlistnamecol">{{item.WATCHLIST_NAME}}</td>
+          <td *ngIf="watchlistidcol">{{item.WATCHLIST_ID}}</td>
 
-            </ng-container>
-       
+
+
+
+          <ng-container *ngIf="_isaccess">
+
+
+            <td>{{item.OLD_LIST_TYPE}}</td>
+            <td>{{item.OLD_LIST_CATEGORY}}</td>
+            <td>{{item.OLD_WATCHLIST_NAME}}</td>
+            <td>{{item.OLD_WATCHLIST_ID}}</td>
+            <td>{{item.CHANGE_TYPE}}</td>
+
+          </ng-container>
+
         </tr>
       </ng-container>
-     
+
     </tbody>
+ 
     <ng-template #no_data_templ>
       <tbody>
         <tr >
@@ -157,88 +202,171 @@
    </div>
  
  </div>
-
-
- <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
-   <div class="panel-body">
-     <h4>Add Record</h4>
-   </div>
-
-     {{myform.value|json}}
  <div class="row">
-       <div class="col-md-4">
-         <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="_tableservice.selectedinterdef.REF_KEY">
-         <div class="form-group">
-           <label>Zone Id</label>
-           <select name="ZONE_ID" class="form-control" [value]="zonevalue" [(ngModel)]="zonevalue"
-        >
-           <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
-         </select>
-         </div>
-         <div class="form-group">
-           <label>LIST_TYPE</label>
-         <input type="text" class="form-control" name="LIST_TYPE" #LIST_TYPE="ngModel" [(ngModel)]="_tableservice.selectedinterdef.LIST_TYPE" required>
-       </div>
-       <div class="form-group">
-        <label>LIST_CATEGORY</label>
-      <input type="text" class="form-control" name="LIST_CATEGORY" #LIST_CATEGORY="ngModel" [(ngModel)]="_tableservice.selectedinterdef.LIST_CATEGORY" required>
-    </div>
-
-<div class="form-group">
-  <label>WATCHLIST_NAME</label>
-<input type="text" class="form-control" name="WATCHLIST_NAME" #WATCHLIST_NAME="ngModel" [(ngModel)]="_tableservice.selectedinterdef.WATCHLIST_NAME" required>
-</div>
-<div class="form-group">
-  <label>WATCHLIST_ID</label>
-<input type="text" class="form-control" name="WATCHLIST_ID" #WATCHLIST_ID="ngModel" [(ngModel)]="_tableservice.selectedinterdef.WATCHLIST_ID" required>
-</div>
-       </div>
-       
-       <div style="display: none;">
-       <div class="col-md-4">
-         <div class="form-group">
-           <label>User Id</label>
-           <input type="text" class="form-control" name="USER_ID"  [value]="UserId"  [(ngModel)]="UserId">
-         </div>
-         <div class="form-group">
-           <label>User Name</label>
-           <input type="text" class="form-control" name="USER_NAME"  [value]="UserName"  [(ngModel)]="UserName">
-         </div>
-         
-       </div>
-       <div class="col-md-4">
-        <div class="form-group">
-            <label>User Zone</label>
-            <input type="text" class="form-control" name="USER_ZONE" [value]="userzone"   [(ngModel)]="userzone">
-          </div>
-         <div class="form-group">
-           <label>Role</label>
-           <input type="text" class="form-control" name="ROLE" [value]="myData"  [(ngModel)]="myData">
-         </div>
-       </div>
-       <div class="col-md-4">
-         <div></div>
-         <input type="text" class="form-control" name="HIST_ID" value="{{ybunch}}"
-         [(ngModel)]="ybunch">
-     
-
-           <input type="text" class="form-control" name="APPROVE_STATUS"  value="{{apstatus}}"   [(ngModel)]="apstatus">
-       
-     
-           <input type="text" class="form-control" name="CHANGE_TYPE" value=""  [(ngModel)]="_tableservice.selectedinterdef.CHANGE_TYPE">
-
-          
-         
-       </div>
-     </div>
-
-     </div>
-
-
- 
-   <input type="submit" class="btn btn-success"  value="{{btn_name}}">
+  <div class="col-md-6">
+    <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+      <div class="panel-body">
+        <h4>Add Record</h4>
+      </div>
    
- </form>
+      
+   
+         
+            <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="_tableservice.selectedinterwatch.REF_KEY">
+            <div class="form-group">
+              <label>Zone Id</label>
+              <select name="ZONE_ID" class="form-control" [value]="zonevalue" [(ngModel)]="zonevalue"
+           >
+              <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+            </select>
+            </div>
+            <div class="form-group">
+             <label>CUSTOMER_ACCOUNT</label>
+           <input type="text" class="form-control" name="CUSTOMER_ACCOUNT" #CUSTOMER_ACCOUNT="ngModel" [(ngModel)]="_tableservice.selectedinterwatch.CUSTOMER_ACCOUNT" required>
+         </div>
+   
+   <div class="form-group">
+     <label>WATCHLIST_NAME</label>
+   <input type="text" class="form-control" name="WATCHLIST_NAME" #WATCHLIST_NAME="ngModel" [(ngModel)]="_tableservice.selectedinterwatch.WATCHLIST_NAME" required>
+   </div>
+   <div class="form-group">
+     <label>WATCHLIST_ID</label>
+   <input type="text" class="form-control" name="WATCHLIST_ID" #WATCHLIST_ID="ngModel" [(ngModel)]="_tableservice.selectedinterwatch.WATCHLIST_ID" required>
+   </div>
+         
+          
+          <div style="display: none;">
+   
+           <div class="form-group">
+             <label>User Id</label>
+             <input type="text" class="form-control" name="USER_ID"  [(ngModel)]="UserId">
+           </div>
+           <div class="form-group">
+             <label>User Name</label>
+             <input type="text" class="form-control" name="USER_NAME" 
+               [(ngModel)]="UserName">
+           </div>
+   
+   
+   
+           <div class="form-group">
+             <label>User Zone</label>
+             <input type="text" class="form-control" name="USER_ZONE" 
+               [(ngModel)]="userzone">
+           </div>
+           <div class="form-group">
+             <label>Role</label>
+             <input type="text" class="form-control" name="ROLE"  [(ngModel)]="myData">
+           </div>
+   
+   
+   
+           <input type="text" class="form-control" name="HIST_ID"  [(ngModel)]="ybunch">
+   
+   
+           <input type="text" class="form-control" name="APPROVE_STATUS" 
+             [(ngModel)]="apstatus">
+   
+   
+           <input type="text" class="form-control" name="CHANGE_TYPE" 
+             [(ngModel)]="changetype">
+   
+   
+   
+         </div>
+   
+        
+   
+         
+    
+      <input type="submit" class="btn btn-success"  value="Insert">
+      
+    </form>
+  </div>
+  <div class="col-md-6">
+    <form #myUform="ngForm" (ngSubmit)="UpdateSubmitForm(myUform)" id="updateform" style="display: none;">
+      <div class="panel-body">
+        <h4>Update Record</h4>
+      </div>
+    
+      
+   
+        
+            <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="_tableservice.selectedinterwatch.REF_KEY">
+            <div class="form-group">
+              <label>Zone Id</label>
+              <select name="ZONE_ID" class="form-control" [value]="zonevalue" [(ngModel)]="zonevalue"
+           >
+              <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID" >{{zone.ZONE_ID}}</option>
+            </select>
+            </div>
+            <div class="form-group">
+              <label>CUSTOMER_ACCOUNT</label>
+            <input type="text" class="form-control" name="CUSTOMER_ACCOUNT" #CUSTOMER_ACCOUNT="ngModel" [(ngModel)]="_tableservice.selectedinterwatch.CUSTOMER_ACCOUNT" required>
+          </div>
+       
+    
+    <div class="form-group">
+     <label>WATCHLIST_NAME</label>
+    <input type="text" class="form-control" name="WATCHLIST_NAME" #WATCHLIST_NAME="ngModel" [(ngModel)]="_tableservice.selectedinterwatch.WATCHLIST_NAME" required>
+    </div>
+    <div class="form-group">
+     <label>WATCHLIST_ID</label>
+    <input type="text" class="form-control" name="WATCHLIST_ID" #WATCHLIST_ID="ngModel" [(ngModel)]="_tableservice.selectedinterwatch.WATCHLIST_ID" required>
+    </div>
+        
+          
+          <div style="display: none;">
+    
+            <div class="form-group">
+              <label>User Id</label>
+              <input type="text" class="form-control" name="USER_ID"  [(ngModel)]="UserId">
+            </div>
+            <div class="form-group">
+              <label>User Name</label>
+              <input type="text" class="form-control" name="USER_NAME" 
+                [(ngModel)]="UserName">
+            </div>
+    
+    
+    
+            <div class="form-group">
+              <label>User Zone</label>
+              <input type="text" class="form-control" name="USER_ZONE" 
+                [(ngModel)]="userzone">
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <input type="text" class="form-control" name="ROLE"  [(ngModel)]="myData">
+            </div>
+    
+    
+    
+            <input type="text" class="form-control" name="HIST_ID"  [(ngModel)]="ybunch">
+    
+    
+            <input type="text" class="form-control" name="APPROVE_STATUS" 
+              [(ngModel)]="apstatus">
+    
+    
+            <input type="text" class="form-control" name="CHANGE_TYPE" 
+              [(ngModel)]="changetype">
+    
+    
+    
+          </div>
+    
+        
+    
+    
+    
+      <input type="submit" class="btn btn-success"  value="Update">
+      
+    </form>
+    
+  </div>
+</div>
+
 
 
 

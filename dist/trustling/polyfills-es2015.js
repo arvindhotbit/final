@@ -3026,7 +3026,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 2:
+/***/ 6:
 /*!********************************!*\
   !*** multi ./src/polyfills.ts ***!
   \********************************/
@@ -3038,5 +3038,5 @@ module.exports = __webpack_require__(/*! C:\Users\hotbit- g\Desktop\bank\trustap
 
 /***/ })
 
-},[[2,"runtime"]]]);
+},[[6,"runtime"]]]);
 //# sourceMappingURL=polyfills-es2015.js.map

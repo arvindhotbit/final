@@ -2,43 +2,58 @@
 <app-header></app-header>
 
 
-<div class="maintenance ">
-  <div class="main_logo">
-    <span> <img src="../../assets/datatable/img/maintence.svg" height="50" width="50"/>
-     <span class=""></span>
-   </span>
-  
-    
-  </div>
- <div class="float-right">
-  <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
-    Back</button>
+<div class="maintenance">
+  <div class="main_logo container justify-content-between">
+    <div class="float-left">
+      <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-circle-left fa-2x"></i>
+      </button>
+    </div>
+    <div>
+      <figure> <img src="../../assets/datatable/img/maintence.svg" height="50" width="50" />
+       
+      </figure>
 
- </div>
+
+    </div>
+    <div></div>
+  </div>
  
   <div class="divider">
     <hr/>
   </div>
   <div class="container">
-   <div class="row" >
-     <div class="col-md-3 mb-4" *ngFor="let feature of features">
-       <a class="dropdown-link" role="presentation" [routerLinkActive]="['active']"  routerLink="/{{feature.pagelink}}">
-       <div class="card card-default" *ngIf="feature.visible">
-         <div class="card-header">
-    
-             <div class="feature_icon" >
-               <i class="fa {{feature.icon}}"></i>
-             </div>
-         </div>
-         <div class="card-body">
-          <h4 class="feature_title">{{feature.name}}</h4>
-         </div>
-         
-       </div>
-     </a>
-     </div>
-    
+    <ng-container>
+      <div class="row" >
+        <div class="col-md-3 mb-4" *ngFor="let feature of features">
+          <ng-container >
+          <a class="dropdown-link" role="presentation" [routerLinkActive]="['active']"  routerLink="/{{feature.pagelink}}">
+          <div class="card card-default hv" *ngIf="feature.visible">
+            <div class="card-header">
+                <div class="feature_icon" >
+                  <i class="fa {{feature.icon}}"></i>
+                </div>
+            </div>
+            <div class="card-body">
+             <h4 class="feature_title">{{feature.name}}</h4>
+           
+           
+     
+            </div>
+            <ng-container *ngIf="feature.count_access">
+              <div class="card-footer d-flex justify-content-between">
+                <button class="btn btn-success btn-sm"><i class="fa fa-plus"></i>&nbsp;<span class="badge badge-light">{{feature.insert}}</span></button>
+
+                <button class="btn btn-info btn-sm"><i class="fa fa-edit"></i>&nbsp;<span class="badge badge-light">{{feature.update}}</span></button>
+                <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;<span class="badge badge-light">{{feature.delete}}</span></button>
+               </div>
+             </ng-container>
+          </div>
+        </a>
+        </ng-container>
+        </div>
+    </div>
+    </ng-container>
+  
    </div>
-  </div>
  
 </div>

@@ -36,22 +36,26 @@
          
           <li class="nav-item">
           <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle">
-           <i class="fa fa-user"></i>
+           <i class="fa fa-user text-white"></i>
          
           </a>
         
-          <ul role="menu" class="dropdown-header-top author-log dropdown-menu animated zoomIn p-2">
-            <li> 
-        </li>
+          <ul role="menu" class="dropdown-header-top author-log dropdown-menu animated zoomIn p-2 text-dark">
+
+            <li><a><strong>User Id</strong> : {{UserId | uppercase}}</a> </li>
+         
+            <li><a href="#" ><i class="fa fa-user"></i>{{UserName}}</a></li>
+         
             <li class="divider"></li>
-          <li><a href="#" ><span class="edu-icon edu-home-admin author-log-ic"></span>Help Center</a>
+
+          <li><a href="#" ><i class="fa fa-header"></i>Help Center</a>
           </li>
-          <li><a href="#" ><span class="edu-icon edu-user-rounded author-log-ic"></span>Settings</a>
+          <li><a href="#" ><i class="fa fa-gear"></i>Settings</a>
           </li>
-          <li><a href="#" ><span class="edu-icon edu-money author-log-ic"></span>About</a>
+          <li><a href="#" ><i class="fa fa-info"></i>About</a>
           </li>
            <li><a href="#"  routerLink="/login" routerLinkActive="active" *ngIf="!_authservice.loggenIn()"><span class="edu-icon edu-locked author-log-ic"></span>Sign In</a></li>
-              <li><a href="#" *ngIf="_authservice.loggenIn()" (click)="_authservice.loggedOut()"><span class="edu-icon edu-locked author-log-ic"></span>Sign Out</a>
+              <li><a href="#" *ngIf="_authservice.loggenIn()" (click)="_authservice.loggedOut()"><i class="fa fa-power-off"></i>Sign Out</a>
             </li> 
           </ul>
           </li>

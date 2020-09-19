@@ -4,7 +4,7 @@ import { NgForm, FormBuilder, FormGroup, FormArray, FormControl,FormsModule } fr
 import { map } from 'rxjs/operators';
 import {TableDataService} from '../shared/table-data.service';
 import {AuthserviceService} from '../auth/authservice.service';
-import {sanctioned} from '../shared/tabular';
+import {cbn} from '../shared/tabular';
 import { ToastrService } from 'ngx-toastr';
 import { element } from 'protractor';
 import { data, parseJSON } from 'jquery';
@@ -23,15 +23,19 @@ export class CaseDetailComponent implements OnInit {
   public UserName:string;
   selectedAllclone: any;
   public showdatapart:any = [];
+  _InsertButtonAccess:boolean;
+  _DeleteButtonAccess:boolean;
+  _updateButtonAccess:boolean;
   p:number =1;
-  nsn = true;
-  zoneid = true;
+  nsncol:boolean=true;
+  zoneidcol:boolean=true;
+  fieldcol:boolean=true;
   zonefilters:string ="";
   IS_DELETE= false;
   IS_UPDATE= false;
   ref_keys= false;
   DELETE_FLG= false;
-  selectedsanctionRow : sanctioned;
+  selectedcbnRow : cbn;
   public selectedAll = "";
   public SelectedIDs:any = [];
   checkbox: boolean;
@@ -56,9 +60,9 @@ export class CaseDetailComponent implements OnInit {
   xbunch: string;
   ybunch: string;
   formact: string = "Add Record";
-  masterSelected: boolean;
+  masterSelected: string[];
   checkedList: any;
-  histmasterSelected: boolean;
+  histmasterSelected: string[];
   histcheckedList: any;
   a:string;
   b:string;
@@ -73,83 +77,89 @@ export class CaseDetailComponent implements OnInit {
   _page_authority:any;
   orig_value:any;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
-    this.userzone = "QA";
-    this.masterSelected = false;
-    this.histmasterSelected = false;
+    this.masterSelected = [];
+    this.histmasterSelected = [];
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
-    this.getCheckedItemList();
-    this.getCheckedItemhistList();
+    this.userzone = localStorage.getItem('UserZone');
+   
      }
 
   ngOnInit(): void {
     
     this.resetForm();
     this.refreshEmployeeList();
-    this.getZonelist()
+    this.getZonelist();
+    this.zonevalue = this.userzone;
+    this.onZoneChange(this.userzone);
+    this.sendButtonClick();
+    this.viewmessage();
   }
 
-  checkUncheckAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart[i].isSelected = this.masterSelected;
-      console.log("master", this.masterSelected);
-    }
-    this.getCheckedItemList();
+  sendButtonClick() {
+    this._tableservice.sendMessage(null)
   }
-  isAllSelected() {
-    this.masterSelected = this.showdatapart.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemList();
-  }
-
-  getCheckedItemList() {
-    this.checkedList = [];
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      if (this.showdatapart[i].isSelected)
-        this.checkedList.push(this.showdatapart[i]);
-    }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.checkedList.forEach(element => {
-      this.SelectedIDs.push(element.REF_KEY);
-      this.xbunch = this.SelectedIDs.toString();
-      this.isdelete_button = false;
-      this.formact = "Update Record";
-      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
+ 
+  viewmessage()
+  {
+    
+    this._tableservice.onNewMessage().subscribe(msg => {
+      console.log('got a msg: ' , msg.reload);
+      if(msg.reload == true)
+      {
+        this.onZoneChange(this.zonevalue);
+      }
+      else
+      {
+        console.log("don't call");
+      }
     });
   }
 
+  isItemChecked(id) {
+    return this.masterSelected.includes(id)
+  }
 
 
+  checkUncheckAll() {
+    if (this.masterSelected.length == this.showdatapart.length) {
+      this.masterSelected = []
+    } else {
+      this.masterSelected = this.showdatapart.map(sdp => sdp.REF_KEY)
+    }
+
+  }
+  isAllSelected(id) {
+    if (this.masterSelected.includes(id)) {
+      this.masterSelected = [...this.masterSelected].filter(ms => ms != id)
+    } else {
+      this.masterSelected = [...this.masterSelected, id]
+    }
+
+  }
+
+
+  ishistItemChecked(id) {
+    return this.histmasterSelected.includes(id)
+  }
 
 
   histcheckUncheckAll() {
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      this.showdatapart[i].isSelected = this.histmasterSelected;
-      console.log(this.histmasterSelected);
+    if (this.histmasterSelected.length == this.showdatapart.length) {
+      this.histmasterSelected = []
+    } else {
+      this.histmasterSelected = this.showdatapart.map(sdp => sdp.HIST_ID)
     }
-    this.getCheckedItemhistList();
-  }
-  histisAllSelected() {
-    this.histmasterSelected = this.showdatapart.every(function (item: any) {
-      return item.isSelected == true;
-    })
-    this.getCheckedItemhistList();
-  }
 
-  getCheckedItemhistList() {
-    this.histcheckedList = [];
-    for (var i = 0; i < this.showdatapart.length; i++) {
-      if (this.showdatapart[i].isSelected)
-        this.histcheckedList.push(this.showdatapart[i]);
+  }
+  histisAllSelected(id) {
+    if (this.histmasterSelected.includes(id)) {
+      this.histmasterSelected = [...this.histmasterSelected].filter(ms => ms != id)
+    } else {
+      this.histmasterSelected = [...this.histmasterSelected, id]
     }
-    // this.checkedList = JSON.stringify(this.checkedList);
-    this.histcheckedList.forEach(element => {
-      this.SelectedIDs.push(element.HIST_ID);
-      this.ybunch = this.SelectedIDs.toString();
-      console.log("add" + this.SelectedIDs, this.SelectedIDs.length);
-    });
+
   }
 
   getZonelist()
@@ -169,11 +179,11 @@ export class CaseDetailComponent implements OnInit {
   onZoneChange(zonevalue:any){
 
     var obj = {  "ROLE" : this.myData,
-    "USER_ZONE" : this.zonevalue,"USER_ID" : this.UserId,"CHANGE_TYPE":this.changetype};
+    "USER_ZONE" : zonevalue,"USER_ID" : this.UserId,"CHANGE_TYPE":this.changetype};
     
         this._tableservice.get_cbn_changezonelist(obj).subscribe((res)=>{
           this.showdatapart = res.result;
-          this.toastr.success(res.message, 'zonelist');
+      
       
         },(error) => {                              //Error callback
           console.error('error caught in component')
@@ -185,54 +195,82 @@ export class CaseDetailComponent implements OnInit {
     
       }
 
-
-  
-  refreshEmployeeList() {
-
+      unseen() {
+        this._tableservice.fetchcbn().subscribe((res) => {
+          this.showdatapart = res.result;
+        },(error) => {                              //Error callback
+          console.error('error caught in component')
+          this.toastr.error(error, 'Neutral - Words');
+         
     
-    this._tableservice.fetchcbn().subscribe((res) => {
-      this.showdatapart = res.result;
-  
-   
-    },(error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
-
-      //throw error;   //You can also throw the error to a global error handler
-    })
-    this._tableservice.getassignaccesslist().subscribe((res) => {
-      this.orig_value = res.result;
-      this._page_authority = parseJSON(this.orig_value);
-      console.log("arvind",this._page_authority);
-      if(this._page_authority.customerbasicnoposition.approval == "0")
-      {
-      this.valuedelete = "1";
-      this._isaccess = false;
-      this.updatemark = "1";
-      }
-      if(this._page_authority.customerbasicnoposition.approval == "1")
-      {
-        this.valuedelete = "y";
-        this._isaccess = true;
-        this.updatemark = "y";
+          //throw error;   //You can also throw the error to a global error handler
+        });
       }
   
-    },(error) => {                              //Error callback
-      console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
-
-      //throw error;   //You can also throw the error to a global error handler
-    });
-  }
-
-  addform = () =>{
-    this.toggle = !this.toggle;
-    $("#addForm").toggle();
-  }
-
-  
+      refreshEmployeeList() {
+        this._tableservice.getassignaccesslist().subscribe((res) => {
+          this.orig_value = res.result;
+          this._page_authority = JSON.parse(this.orig_value);
+          console.log("arvind", this._page_authority);
+          if (this._page_authority.customerbasicnoposition.approval == false) {
+            this.valuedelete = "1";
+            this._isaccess = false;
+            this.updatemark = "1";
+          }
+          if (this._page_authority.customerbasicnoposition.approval == true) {
+            this.valuedelete = "y";
+            this._isaccess = true;
+            this.updatemark = "y";
+          }
+          if(this._page_authority.customerbasicnoposition.add == false)
+          {
+            this._InsertButtonAccess = false;
+          }
+          if(this._page_authority.customerbasicnoposition.add == true)
+          {
+            this._InsertButtonAccess = true;
+          }
+          if(this._page_authority.customerbasicnoposition.delete == false)
+          {
+            this._DeleteButtonAccess = false;
+          }
+          if(this._page_authority.customerbasicnoposition.delete == true)
+          {
+            this._DeleteButtonAccess = true;
+          }
+          if(this._page_authority.customerbasicnoposition.update == false)
+          {
+            this._updateButtonAccess = false;
+          }
+          if(this._page_authority.customerbasicnoposition.update == true)
+          {
+            this._updateButtonAccess = true;
+          }
+    
+        },(error) => {                              //Error callback
+          console.error('error caught in component')
+          this.toastr.error(error, 'Neutral - Words');
+         
+    
+          //throw error;   //You can also throw the error to a global error handler
+        });
+      }
+      addform = () => {
+        this.toggle = !this.toggle;
+        $("#addForm").toggle();
+        $("#updateform").hide();
+      }
+      updateform = () => {
+        if (this._tableservice.selectedcbn.REF_KEY == "") {
+          alert("Update item select this row");
+        }
+        else {
+          this.toggle = !this.toggle;
+          $("#updateform").toggle();
+          $("#addForm").hide();
+        }
+    
+      }
   
  
   
@@ -241,16 +279,17 @@ export class CaseDetailComponent implements OnInit {
  resetForm(form?: NgForm) {
    if (form)
   form.reset();
-     this._tableservice.selectedsanction = {
+     this._tableservice.selectedcbn = {
               REF_KEY : "",
               USER_ID : "",
+              FIELD : "",
+              LENGTH:"",
+              START_POS:"",
+              END_POS:"",
               USER_NAME : "",
               USER_ZONE : "",
               ROLE : "",
-              ZONE_ID : "",
-              ENTRY_TYPE : "",
-              SANCTIONED_CITY : "",
-              HIST_ID : "",
+              ZONE_ID:"",
               APPROVE_STATUS : "",
               CHANGE_TYPE : ""
  
@@ -259,110 +298,119 @@ export class CaseDetailComponent implements OnInit {
 
  
   
-  
  
+  postChangetype(change_type) {
+    if(this.zonevalue == null)
+    {
+      alert("Please Select a Zone");
+    }
+    else
+    {
+      const zonetype = { "CHANGE_TYPE": change_type,"USER_ZONE": this.zonevalue,"ROLE":this.myData,"USER_ID":this.UserId };
+      this._tableservice.cbn_Change_Type(zonetype).subscribe((res) => {
+        this.showdatapart = res.result;
+      }, (error) => {                              //Error callback
+        console.error('error caught in component')
+        this.toastr.error(error, 'Customer Basic Number Position');
+  
+  
+        //throw error;   //You can also throw the error to a global error handler
+      });
+    }
+
+  }
 
 
 
   submitform(form: NgForm){
 
-   
-    if (form.value.REF_KEY == "") {
-      this.toggle = !this.toggle;
-      $("#addForm").toggle();
-  this._tableservice.postsanction(form.value).subscribe((res)=>{
-    //  this.resetForm(form);
-   this.refreshEmployeeList();
-    this.toastr.success(res.message, 'Neutral Words');
+    
+
+    $("#addform").toggle();
+  this._tableservice.postcbn(form.value).subscribe((res)=>{
+    this.toastr.success(res.message, 'Customer Basic Number Position');
 
   },(error) => {                              //Error callback
     console.error('error caught in component')
-    this.toastr.error(error, 'Neutral - Words');
+    this.toastr.error(error, 'Customer Basic Number Position');
    
 
     //throw error;   //You can also throw the error to a global error handler
   });
+
+ 
+
 }
-else
-{
-  console.log(form.value);
-this._tableservice.putsanction(form.value).subscribe((res) => {
+
+UpdateSubmitForm(form: NgForm) {
   this.toggle = !this.toggle;
-  $("#addForm").toggle();
-    // this.resetForm(form);
-    this.refreshEmployeeList();
-    this.toastr.info(res.message, 'Neutral Words');
-
-  },(error) => {                              //Error callback
-    console.error('error caught in component')
-    this.toastr.error(error, 'Neutral - Words');
+  $("#updateform").toggle();
+  this._tableservice.putcbn(form.value).subscribe((res) => {
+    this.masterSelected = [];
+    this.toastr.info(res.message, 'Sensitive Words');
    
+  }, (error) => {                              //Error callback
+    console.error('error caught in component')
+    this.toastr.error(error, 'Customer Basic Number Position');
+
 
     //throw error;   //You can also throw the error to a global error handler
   });
+
 }
-}
 
 
 
-
-
-onEdit(sanction: sanctioned,bt:string) {
+onEdit(cbn: cbn,bt:string) {
   this.btn_name = "Update";
-  this._tableservice.selectedsanction = sanction;
-  this.selectedsanctionRow = sanction;
+  this._tableservice.selectedcbn = cbn;
+  this.selectedcbnRow = cbn;
 }
 
 deleteSelected(form: NgForm) {
-  this.delete_toggle = !this.delete_toggle; 
-    this._tableservice.deletesanction(this.xbunch).subscribe((res) => {
-      this.refreshEmployeeList();
-      this.resetForm(form);
-      this.toastr.warning(res.message, 'Neutral Words');
-    },(error) => {                              //Error callback
+  if (this.masterSelected.length <= 0) {
+    alert("Delete Item Select This Row")
+  }
+  else {
+    this._tableservice.deletecbn(this.masterSelected.join(',')).subscribe((res) => {
+      this.toastr.warning(res.message, 'Customer Basic Number Position');
+      this.masterSelected = [];
+    }, (error) => {
       console.error('error caught in component')
-      this.toastr.error(error, 'Neutral - Words');
-     
+      this.toastr.error(error, 'Customer Basic Number Position');
 
-      //throw error;   //You can also throw the error to a global error handler
+
+
     });
 
+  }
+
+
 }
 
 
 
-changetext(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
+ChkdeleteSelected(status, form: NgForm) {
+  if (this.histmasterSelected.length <= 0) {
+    alert("check Item Select This Row")
+  }
+  else {
+    var value1 = { "APPROVE_STATUS": status, "HIST_ID": this.histmasterSelected.join(',') }
+    this._tableservice.cbnapproved({ ...form.value, ...value1 }).subscribe((res) => {
+      this.histmasterSelected = [];
+      this.toastr.success(res.message, status);
+
+    }, (error) => {
+      console.error('error caught in component')
+      this.toastr.error(error, 'Customer Basic Number Position');
+
+
+
+    });
+
+  }
+
 }
-changetextr(status:string,form:NgForm)
-{
-  this.apstatus = status;
-  this.myData = localStorage.getItem('Role');
-  this.UserId = localStorage.getItem('Id');
-  this.UserName = localStorage.getItem('Username');
-  console.log(this.apstatus);
-}
-
-ChkdeleteSelected(form: NgForm) {
-
-  this._tableservice.sanctionapproved(form.value).subscribe((res) => {
-    this.refreshEmployeeList();
-    this.toastr.success(res.message, 'Approved');
-
-  },(error) => {                              //Error callback
-    console.error('error caught in component')
-    this.toastr.error(error, 'Neutral - Words');
-   
-
-    //throw error;   //You can also throw the error to a global error handler
-  });
-}
-
 
 }
 

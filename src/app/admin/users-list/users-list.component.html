@@ -12,11 +12,7 @@
                 <div class="main-sparkline13-hd">
                   <div class="part">
                     <h1>Users List <small>(Select Row To Update)</small></h1>
-
                   </div>
-                
-                  
-
                   <form #roles="ngForm" class="d-none">
                     <div class="form-group">
                       <label>Role</label>
@@ -27,15 +23,15 @@
                   <div class="btn-group btn-group-sm">
                     <form #myform="ngForm" (ngSubmit)="submitform(myform)">
 
-                    
-                          <select class="form-control" name="ROLE" [value]="user" [(ngModel)]="user"
-                            (ngModelChange)="onroleChange($event)">
-  
-                            <option *ngFor="let v of rlist" [value]="v.ROLE_NAME">{{v.ROLE_NAME}}</option>
-  
-                          </select>
-                        
-  
+
+                      <select class="form-control" name="ROLE" [value]="user" [(ngModel)]="user"
+                        (ngModelChange)="onroleChange($event)">
+
+                        <option *ngFor="let v of rlist" [value]="v.ROLE_NAME">{{v.ROLE_NAME}}</option>
+
+                      </select>
+
+
                     </form>
                     <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
                       Back</button>
@@ -45,25 +41,42 @@
                       </button>
                       <ul class="dropdown-menu trust-menu">
                         <li class="dropdown-item">
-                          <label for="zoneidcol"> <input type="checkbox" [checked]="zoneidcol"
-                              (change)="zoneidcol=!zoneidcol" id="zoneidcol" />&nbsp;Zone Id</label>
+                          <label for="nsn"> <input type="checkbox" [checked]="nsn" (change)="nsn=!nsn"
+                              id="nsn" />&nbsp;Sr. No.</label>
                         </li>
                         <li class="dropdown-item">
-                          <label for="noisewordcol"> <input type="checkbox" [checked]="noisewordcol "
-                              (change)="noisewordcol =!noisewordcol " id="noisewordcol" />&nbsp;Noise Word</label>
+                          <label for="uidcol"> <input type="checkbox" [checked]="uidcol" (change)="uidcol=!uidcol"
+                              id="uidcol" />&nbsp;Uid</label>
                         </li>
                         <li class="dropdown-item">
-                          <label for="oldzoneidcol"> <input type="checkbox" [checked]="oldzoneidcol "
-                              (change)="oldzoneidcol =!oldzoneidcol " id="oldzoneidcol" />&nbsp;Old Zone Id</label>
+                          <label for="Cncol"> <input type="checkbox" [checked]="Cncol " (change)="Cncol =!Cncol "
+                              id="Cncol" />&nbsp;Cn</label>
                         </li>
                         <li class="dropdown-item">
-                          <label for="oldnoisewordcol"> <input type="checkbox" [checked]="oldnoisewordcol"
-                              (change)="oldnoisewordcol =!oldnoisewordcol " id="oldnoisewordcol" />&nbsp;Old Noise
-                            Word</label>
+                          <label for="Sncol"> <input type="checkbox" [checked]="Sncol " (change)="Sncol =!Sncol "
+                              id="Sncol" />&nbsp;Sn</label>
                         </li>
                         <li class="dropdown-item">
-                          <label for="changetypecol"> <input type="checkbox" [checked]="changetypecol"
-                              (change)="changetypecol =!changetypecol " id="changetypecol" />&nbsp;Change Type</label>
+                          <label for="Departmentcol"> <input type="checkbox" [checked]="Departmentcol"
+                              (change)="Departmentcol =!Departmentcol " id="Departmentcol" />&nbsp;Department Number
+                          </label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="Employeecol"> <input type="checkbox" [checked]="Employeecol"
+                              (change)="Employeecol =!Employeecol " id="Employeecol" />&nbsp;Employee Number</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="Employeetypecol"> <input type="checkbox" [checked]="Employeetypecol"
+                              (change)="Employeetypecol =!Employeetypecol " id="Employeetypecol" />&nbsp;Employee
+                            Type</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="Mailcol"> <input type="checkbox" [checked]="Mailcol" (change)="Mailcol =!Mailcol "
+                              id="Mailcol" />&nbsp;Mail</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="Dncol"> <input type="checkbox" [checked]="Dncol" (change)="Dncol =!Dncol "
+                              id="Dncol" />&nbsp;Dn</label>
                         </li>
                       </ul>
                     </div>
@@ -81,24 +94,19 @@
                 <thead class="table_header">
                   <tr>
                     <th class="text-center"><input type="checkbox" class="disabled" /></th>
-                    <th>Sr.no</th>
-                    <th *ngIf="zoneidcol"><span><input type="text" class="form-control" placeholder="Uid"
-                          [(ngModel)]="zone" /></span></th>
-                    <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="CN"
-                          [(ngModel)]="noise" /></span> </th>
-                    <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="SN"
-                          [(ngModel)]="noise" /></span> </th>
+                    <th *ngIf="nsn">Sr.no</th>
+                    <th *ngIf="uidcol"><span><input type="text" class="form-control" placeholder="Uid" /></span></th>
+                    <th *ngIf="Cncol"><span><input type="text" class="form-control" placeholder="CN" /></span> </th>
+                    <th *ngIf="Sncol"><span><input type="text" class="form-control" placeholder="SN" /></span> </th>
 
-                    <th *ngIf="oldzoneidcol"><span><input type="text" class="form-control"
-                          placeholder="Department Number" [(ngModel)]="oldzone" /></span> </th>
-                    <th *ngIf="oldnoisewordcol"><span><input type="text" class="form-control"
-                          placeholder="Employee Number" [(ngModel)]="oldnoise" /></span> </th>
-                    <th *ngIf="oldnoisewordcol"><span><input type="text" class="form-control"
-                          placeholder="Employee Type" [(ngModel)]="oldnoise" /></span> </th>
-                    <th *ngIf="changetypecol"><span><input type="text" class="form-control" placeholder="Mail"
-                          [(ngModel)]="changetype" /></span> </th>
-                    <th *ngIf="changetypecol"><span><input type="text" class="form-control" placeholder="DN"
-                          [(ngModel)]="changetype" /></span> </th>
+                    <th *ngIf="Departmentcol"><span><input type="text" class="form-control"
+                          placeholder="Department Number" /></span> </th>
+                    <th *ngIf="Employeecol"><span><input type="text" class="form-control"
+                          placeholder="Employee Number" /></span> </th>
+                    <th *ngIf="Employeetypecol"><span><input type="text" class="form-control"
+                          placeholder="Employee Type" /></span> </th>
+                    <th *ngIf="Mailcol"><span><input type="text" class="form-control" placeholder="Mail" /></span> </th>
+                    <th *ngIf="Dncol"><span><input type="text" class="form-control" placeholder="DN" /></span> </th>
 
 
                     <th *ngIf="ref_keys">REF KEY</th>
@@ -106,21 +114,21 @@
                 </thead>
                 <tbody *ngIf="showdata?.length;else no_data_templ">
                   <ng-container
-                    *ngFor="let item of showdata |neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
+                    *ngFor="let item of showdata  | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
                     <tr
                       [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
                       (click)="onEdit(item,'Update')" [class.selected]="item === selectedpaysysRow">
                       <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
                           id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"></td>
                       <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
-                      <td *ngIf="noisewordcol" (click)="getuserid(item,roles)">{{item.uid}}</td>
-                      <td *ngIf="zoneidcol">{{item.cn}}</td>
-                      <td *ngIf="noisewordcol">{{item.sn}}</td>
-                      <td *ngIf="noisewordcol">{{item.departmentNumber}}</td>
-                      <td *ngIf="noisewordcol">{{item.employeeNumber}}</td>
-                      <td *ngIf="noisewordcol">{{item.employeeType}}</td>
-                      <td *ngIf="noisewordcol">{{item.mail}}</td>
-                      <td *ngIf="noisewordcol">{{item.dn}}</td>
+                      <td *ngIf="uidcol" (click)="getuserid(item,roles)">{{item.uid}}</td>
+                      <td *ngIf="Cncol">{{item.cn}}</td>
+                      <td *ngIf="Sncol">{{item.sn}}</td>
+                      <td *ngIf="Departmentcol">{{item.departmentNumber}}</td>
+                      <td *ngIf="Employeecol">{{item.employeeNumber}}</td>
+                      <td *ngIf="Employeetypecol">{{item.employeeType}}</td>
+                      <td *ngIf="Mailcol">{{item.mail}}</td>
+                      <td *ngIf="Dncol">{{item.dn}}</td>
 
 
                     </tr>
@@ -176,22 +184,22 @@
                     <form #assdepartment="ngForm" (ngSubmit)="assigndepartment(assdepartment)">
 
                       <div class="input-group">
-                        <select  name="REF_KEY" [(ngModel)]="selectdepartmentid">
-  
+                        <select name="REF_KEY" [(ngModel)]="selectdepartmentid">
+
                           <option *ngFor="let v of departselect" [value]="v.REF_KEY">{{v.DEPARTMENT_ID}}</option>
-  
+
                         </select>
                         <div class="input-group-append">
-                          <button  type="submit" >Assign Department</button>
+                          <button type="submit">Assign Department</button>
                         </div>
                       </div>
                       <input type="hidden" name="ROLE" [(ngModel)]="myData" />
-  
-  
+
+
                     </form>
                     <form #unassdepartment="ngForm" (ngSubmit)="unassigndepartment(unassdepartment)">
-               
-  
+
+
                       <input type="hidden" name="REF_KEY" [(ngModel)]="departsendrefkey" />
                       <input type="hidden" name="ASSIGN_USER_ID"
                         [(ngModel)]="_tableservice.selectunassignitem.USER_ID" />
@@ -200,10 +208,11 @@
                       <input type="hidden" name="USER_NAME" [(ngModel)]="UserName" />
                       <input type="hidden" name="USER_ZONE" [(ngModel)]="Userzone" />
                       <input type="hidden" name="ROLE" [(ngModel)]="myData" />
-                      <input type="submit" name="unassign Department" *ngIf="departsendrefkey != null" value="Unassign Department" />
+                      <input type="submit" name="unassign Department" *ngIf="departsendrefkey != null"
+                        value="Unassign Department" />
                     </form>
                   </div>
-              
+
 
 
                   <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
@@ -211,14 +220,12 @@
                       <tr>
                         <th class="text-center"><input type="checkbox" class="disabled" /></th>
                         <th>Sr.no</th>
-                        <th *ngIf="zoneidcol"><span><input type="text" class="form-control" placeholder="USER_ID"
-                              [(ngModel)]="zone" /></span></th>
-                        <th *ngIf="noisewordcol"><span><input type="text" class="form-control"
-                              placeholder="DEPARTMENT_ID" [(ngModel)]="noise" /></span> </th>
+                        <th><span><input type="text" class="form-control" placeholder="USER_ID" /></span></th>
+                        <th><span><input type="text" class="form-control" placeholder="DEPARTMENT_ID" /></span> </th>
 
 
-                        <th *ngIf="oldzoneidcol"><span><input type="text" class="form-control"
-                              placeholder="DESCRIPTIONS" [(ngModel)]="oldzone" /></span> </th>
+                        <th><span><input type="text" class="form-control" placeholder="DESCRIPTIONS"
+                              /></span> </th>
 
 
 
@@ -227,16 +234,16 @@
                     </thead>
                     <tbody *ngIf="department.rows?.length;else no_data_templ">
                       <ng-container
-                        *ngFor="let item of department.rows |neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
+                        *ngFor="let item of department.rows | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
                         <tr (click)="onEdit(item,'Update')" [class.selected]="item === selecteddepartRow">
-                          <td style="text-align: center;" >
-                            <input type="checkbox" [(ngModel)]="item.isSelected"
-                              id="{{item.REF_KEY}}" name="deletecheck"  value="{{item.REF_KEY}}"></td>
+                          <td style="text-align: center;">
+                            <input type="checkbox" [(ngModel)]="item.isSelected" id="{{item.REF_KEY}}"
+                              name="deletecheck" value="{{item.REF_KEY}}"></td>
                           <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
-                          <td *ngIf="noisewordcol">{{item.USER_ID}}</td>
-                          <td *ngIf="zoneidcol">{{item.DEPARTMENT_ID}}</td>
+                          <td>{{item.USER_ID}}</td>
+                          <td>{{item.DEPARTMENT_ID}}</td>
 
-                          <td *ngIf="noisewordcol">{{item.DESCRIPTIONS}}</td>
+                          <td>{{item.DESCRIPTIONS}}</td>
 
                         </tr>
                       </ng-container>
@@ -264,9 +271,9 @@
                     </div>
                   </div>
                   <div class="col-12">
-               
 
-                
+
+
                   </div>
                 </div>
               </div>
@@ -282,47 +289,46 @@
               <div id="collapseTwo" class="collapse" data-parent="#accordion">
                 <div class="card-body">
                   <div class="d-flex justify-content-end">
-                  <form #asszone="ngForm" (ngSubmit)="assignzone(asszone)">
+                    <form #asszone="ngForm" (ngSubmit)="assignzone(asszone)">
 
-                    <div class="input-group">
-                        <select  name="ZONE_ID" [(ngModel)]="selectzoneid">
+                      <div class="input-group">
+                        <select name="ZONE_ID" [(ngModel)]="selectzoneid">
 
                           <option *ngFor="let v of zoneselect" [value]="v.ZONE_ID">{{v.ZONE_ID}}</option>
 
                         </select>
-                        <input type="hidden"  name="ROLE" [value]="myData" [(ngModel)]="myData">
+                        <input type="hidden" name="ROLE" [value]="myData" [(ngModel)]="myData">
                         <div class="input-group-append">
-                          
-                          <button  type="submit" >Assign Zone</button>
+
+                          <button type="submit">Assign Zone</button>
                         </div>
                       </div>
-                   
-                  </form>
-                  <form #unasszone="ngForm" (ngSubmit)="unassignzone(unasszone)">
+
+                    </form>
+                    <form #unasszone="ngForm" (ngSubmit)="unassignzone(unasszone)">
 
 
-                    <input type="hidden" name="REF_KEY" [(ngModel)]="departsendrefkey" />
-                    <input type="hidden" name="ASSIGN_USER_ID" [(ngModel)]="_tableservice.selectunassignitem.USER_ID" />
-                    <input type="hidden" name="TYPE" [(ngModel)]="zonetype" />
-                    <input type="hidden" name="USER_ID" [(ngModel)]="UserId" />
-                    <input type="hidden" name="USER_NAME" [(ngModel)]="UserName" />
-                    <input type="hidden" name="USER_ZONE" [(ngModel)]="Userzone" />
-                    <input type="hidden" name="ROLE" [(ngModel)]="myData" />
-                    <input type="submit" name="unassign zone" value="Unassign Zone" *ngIf="departsendrefkey != null" />
-                  </form>
+                      <input type="hidden" name="REF_KEY" [(ngModel)]="departsendrefkey" />
+                      <input type="hidden" name="ASSIGN_USER_ID"
+                        [(ngModel)]="_tableservice.selectunassignitem.USER_ID" />
+                      <input type="hidden" name="TYPE" [(ngModel)]="zonetype" />
+                      <input type="hidden" name="USER_ID" [(ngModel)]="UserId" />
+                      <input type="hidden" name="USER_NAME" [(ngModel)]="UserName" />
+                      <input type="hidden" name="USER_ZONE" [(ngModel)]="Userzone" />
+                      <input type="hidden" name="ROLE" [(ngModel)]="myData" />
+                      <input type="submit" name="unassign zone" value="Unassign Zone"
+                        *ngIf="departsendrefkey != null" />
+                    </form>
                   </div>
                   <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
                     <thead class="table_header">
                       <tr>
                         <th class="text-center"><input type="checkbox" class="disabled" /></th>
                         <th>Sr.no</th>
-                        <th *ngIf="zoneidcol"><span><input type="text" class="form-control" placeholder="USER_ID"
-                              [(ngModel)]="zone" /></span></th>
-                        <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="ZONE_ID"
-                              [(ngModel)]="noise" /></span> </th>
+                        <th><span><input type="text" class="form-control" placeholder="USER_ID" /></span></th>
+                        <th><span><input type="text" class="form-control" placeholder="ZONE_ID" /></span> </th>
 
-                        <th *ngIf="noisewordcol"><span><input type="text" class="form-control"
-                              placeholder="Primary" /></span> </th>
+                        <th><span><input type="text" class="form-control" placeholder="Primary" /></span> </th>
 
 
 
@@ -330,13 +336,13 @@
                     </thead>
                     <tbody *ngIf="zoneslist.rows?.length;else no_data_templ">
                       <ng-container
-                        *ngFor="let item of zoneslist.rows |neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
+                        *ngFor="let item of zoneslist.rows  | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
                         <tr (click)="onEditZone(item,'Update')" [class.selected]="item === selectedzoneRow">
                           <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
                               id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"></td>
                           <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
-                          <td *ngIf="noisewordcol" (onload)="AllItemList(item)">{{item.USER_ID}}</td>
-                          <td *ngIf="zoneidcol">{{item.ZONE_ID}}</td>
+                          <td (onload)="AllItemList(item)">{{item.USER_ID}}</td>
+                          <td>{{item.ZONE_ID}}</td>
                           <td>{{item.PRIMARY_FLAG}} <small class="float-right"><select name="PRIMARY_FLAG"
                                 [(ngModel)]="primary_flag" (ngModelChange)="onflagChange(item,$event)">
 
@@ -371,7 +377,7 @@
                       </div>
                     </div>
                   </div>
-                
+
                 </div>
               </div>
             </div>
@@ -389,38 +395,40 @@
                   <div class="d-flex justify-content-end">
                     <form #asspay="ngForm" (ngSubmit)="assignpaysys(asspay)">
 
-                   
-                        <div class="input-group">
-                          <select  name="REF_KEY" [(ngModel)]="selectpayid">
-  
-                            <option *ngFor="let v of paysysselect" [value]="v.REF_KEY">{{v.PAYSYS_ID}}</option>
-  
-  
-                          </select>
-                          <input type="hidden" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
-                          <div class="input-group-append">
-                          
-                            <button  type="submit" >Assign PaysysId</button>
-                          </div>
+
+                      <div class="input-group">
+                        <select name="REF_KEY" [(ngModel)]="selectpayid">
+
+                          <option *ngFor="let v of paysysselect" [value]="v.REF_KEY">{{v.PAYSYS_ID}}</option>
+
+
+                        </select>
+                        <input type="hidden" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
+                        <div class="input-group-append">
+
+                          <button type="submit">Assign PaysysId</button>
                         </div>
-                      
-  
-  
-                   
-                 
+                      </div>
+
+
+
+
+
                     </form>
-  
+
                     <form #unasspay="ngForm" (ngSubmit)="unassignpay(unasspay)">
-  
-  
+
+
                       <input type="hidden" name="REF_KEY" [(ngModel)]="departsendrefkey" />
-                      <input type="hidden" name="ASSIGN_USER_ID" [(ngModel)]="_tableservice.selectunassignitem.USER_ID" />
+                      <input type="hidden" name="ASSIGN_USER_ID"
+                        [(ngModel)]="_tableservice.selectunassignitem.USER_ID" />
                       <input type="hidden" name="TYPE" [(ngModel)]="paysystype" />
                       <input type="hidden" name="USER_ID" [(ngModel)]="UserId" />
                       <input type="hidden" name="USER_NAME" [(ngModel)]="UserName" />
                       <input type="hidden" name="USER_ZONE" [(ngModel)]="Userzone" />
                       <input type="hidden" name="ROLE" [(ngModel)]="myData" />
-                      <input type="submit" name="unassign zone" value="UnAssign PaysysId"  *ngIf="departsendrefkey != null"/>
+                      <input type="submit" name="unassign zone" value="UnAssign PaysysId"
+                        *ngIf="departsendrefkey != null" />
                     </form>
                   </div>
                   <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
@@ -428,14 +436,10 @@
                       <tr>
                         <th class="text-center"><input type="checkbox" class="disabled" /></th>
                         <th>Sr.no</th>
-                        <th *ngIf="zoneidcol"><span><input type="text" class="form-control" placeholder="USER_ID"
-                              [(ngModel)]="zone" /></span></th>
-                        <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="PAYSYS_ID"
-                              [(ngModel)]="noise" /></span> </th>
-                        <th *ngIf="noisewordcol"><span><input type="text" class="form-control"
-                              placeholder="CASE_TYPE_NS" [(ngModel)]="noise" /></span> </th>
-                        <th *ngIf="noisewordcol"><span><input type="text" class="form-control"
-                              placeholder="CASE_TYPE_PS" [(ngModel)]="noise" /></span> </th>
+                        <th><span><input type="text" class="form-control" placeholder="USER_ID" /></span></th>
+                        <th><span><input type="text" class="form-control" placeholder="PAYSYS_ID" /></span> </th>
+                        <th><span><input type="text" class="form-control" placeholder="CASE_TYPE_NS" /></span> </th>
+                        <th><span><input type="text" class="form-control" placeholder="CASE_TYPE_PS" /></span> </th>
 
 
 
@@ -445,15 +449,15 @@
                     </thead>
                     <tbody *ngIf="paysyslist.rows?.length;else no_data_templ">
                       <ng-container
-                        *ngFor="let item of paysyslist.rows |neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
+                        *ngFor="let item of paysyslist.rows  | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
                         <tr (click)="onEditpaysys(item,'Update')" [class.selected]="item === selectedpay">
                           <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
                               id="{{item.REF_KEY}}" name="deletecheck" value="{{item.REF_KEY}}"></td>
                           <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
-                          <td *ngIf="noisewordcol">{{item.USER_ID}}</td>
-                          <td *ngIf="zoneidcol">{{item.PAYSYS_ID}}</td>
-                          <td *ngIf="zoneidcol">{{item.CASE_TYPE_NS}}</td>
-                          <td *ngIf="zoneidcol">{{item.CASE_TYPE_PS}}</td>
+                          <td>{{item.USER_ID}}</td>
+                          <td>{{item.PAYSYS_ID}}</td>
+                          <td>{{item.CASE_TYPE_NS}}</td>
+                          <td>{{item.CASE_TYPE_PS}}</td>
 
 
                         </tr>
@@ -481,7 +485,7 @@
                       </div>
                     </div>
                   </div>
-            
+
                 </div>
               </div>
             </div>
