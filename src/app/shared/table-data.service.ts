@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Neutralscheme, Bicscheme,cbn, Interdefination, sanctioned, internalwatchlist, Highriskcountry, Zonevsglobal, sensitivescheme, pepscheme, Paymentscreenadk, matchscore, namescreen, casedetail, addzonescheme, departscheme, paysysscheme, usersscheme, adepartscheme, azonescheme, apayscheme, unassignitem, createrole } from './tabular';
+import { Neutralscheme, Bicscheme,cbn, Interdefination, sanctioned, internalwatchlist, Highriskcountry, Zonevsglobal, sensitivescheme, pepscheme, Paymentscreenadk, matchscore, namescreen, casedetail, addzonescheme, departscheme, paysysscheme, usersscheme, adepartscheme, azonescheme, apayscheme, unassignitem, createrole,usergroup,pseph } from './tabular';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import * as io from 'socket.io-client';
@@ -43,8 +43,8 @@ export class TableDataService {
   selectroleslist: createrole;
   selectedcasedetail:casedetail;
   selectedcbn:cbn;
-
-
+  selectedusergroup:usergroup;
+ selectedpseph:pseph;
   constructor(private http: HttpClient) {
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
@@ -140,6 +140,16 @@ export class TableDataService {
     })
   )  };
 
+  get_ephchangezonelist(obj: any) { return this.http.post<any>(`${environment.apiUrl}/ps_fields_eph`, obj).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
 
   getchangepagehistroylist(obj: any) { return this.http.post<any>(`${environment.apiUrl}/get_history_info`, obj).pipe(
     catchError((err) => {
@@ -275,6 +285,16 @@ export class TableDataService {
     })
   ) };
 
+  ephlistpage() { return this.http.post<any>(`${environment.apiUrl}/ps_fields_eph`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId }).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  ) };
 
   adminreportlist() { return this.http.post<any>(`${environment.apiUrl}/get_history_info`, { "ROLE": this.myData, "USER_ZONE": this.Userzone, "USER_ID": this.UserId }).pipe(
     catchError((err) => {
@@ -290,6 +310,17 @@ export class TableDataService {
 
 
   neutrallistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/neutral_words`, change_type).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+  ephlistpagetype(change_type) { return this.http.post<any>(`${environment.apiUrl}/ps_fields_eph`, change_type).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -439,7 +470,16 @@ export class TableDataService {
     })
   )  };
 
+  ephlistpost(pse: pseph) { return this.http.post<any>(`${environment.apiUrl}/add_ps_fields_eph`, pse).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
   neutrallistput(neuscheme: Neutralscheme) { return this.http.post<any>(`${environment.apiUrl}/update_neutralWords`, neuscheme).pipe(
     catchError((err) => {
       console.log('error caught in service')
@@ -451,8 +491,28 @@ export class TableDataService {
     })
   )  };
 
+ ephlistput(pse: pseph) { return this.http.post<any>(`${environment.apiUrl}/update_ps_fields_eph`, pse).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
   neutraldelpage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_neutral_words`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+  ephdelpage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_ps_fields_eph`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -473,7 +533,16 @@ export class TableDataService {
       return throwError(err.statusText);    //Rethrow it back to component
     })
   )  };
+  ephdelapproved(neuscheme: Neutralscheme) { return this.http.post<any>(`${environment.apiUrl}/check_ps_fields_eph`, neuscheme).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
   //  **********************************************************************************************************
           //  Neutral Words
   //  **********************************************************************************************************
@@ -609,6 +678,16 @@ export class TableDataService {
       return throwError(err.statusText);    //Rethrow it back to component
     })
   )  };
+  roleslistput(croles: createrole) { return this.http.post<any>(`${environment.apiUrl}/update_roles`, croles).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
 
 
   paysyslistput(paysys: paysysscheme) { return this.http.post<any>(`${environment.apiUrl}/update_paysys`, paysys).pipe(
@@ -632,7 +711,16 @@ export class TableDataService {
       return throwError(err.statusText);    //Rethrow it back to component
     })
   )  };
+  usergrouplistpage() { return this.http.post<any>(`${environment.apiUrl}/userGroupList`, { "ROLE": this.myData,"USER_ID":this.UserId }).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
 
   addzonelistpost(addzone: addzonescheme) { return this.http.post<any>(`${environment.apiUrl}/add_zone`, addzone).pipe(
     catchError((err) => {
@@ -645,7 +733,16 @@ export class TableDataService {
     })
   )  };
 
+  addusergrouplistpost(userg: usergroup) { return this.http.post<any>(`${environment.apiUrl}/addUserGroup`, userg).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
   addzonelistput(addzone: addzonescheme) { return this.http.post<any>(`${environment.apiUrl}/update_zone_list`, addzone).pipe(
     catchError((err) => {
       console.log('error caught in service')
@@ -659,6 +756,18 @@ export class TableDataService {
 
 
   addzonedelpage(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/del_zone_list`, { "ROLE": this.myData, "REF_KEY": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
+
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
+
+
+  usergroupdel(REF_KEY: string) { return this.http.post<any>(`${environment.apiUrl}/deleteUserGroup`, { "ROLE": this.myData, "GROUP_ID": REF_KEY, "USER_ID": this.UserId, "USER_NAME": this.UserName,"USER_ZONE":this.Userzone }).pipe(
     catchError((err) => {
       console.log('error caught in service')
       console.error(err.message);
@@ -1483,9 +1592,36 @@ export class TableDataService {
     ) 
   };
 
+  
+  fetchNscase(obj) {
+    return this.http.post<any>(`${environment.apiUrl}/ns_case_decision`, obj).pipe(
+      catchError((err) => {
+        console.log('error caught in service')
+        console.error(err.message);
+  
+        //Handle the error here
+  
+        return throwError(err.statusText);    //Rethrow it back to component
+      })
+    ) 
+  };
+
   sendcomment(obj)
   {
     return this.http.post<any>(`${environment.apiUrl}/add_comment_case`, obj).pipe(
+      catchError((err) => {
+        console.log('error caught in service')
+        console.error(err.message);
+  
+        //Handle the error here
+  
+        return throwError(err.statusText);    //Rethrow it back to component
+      })
+    ) 
+  }
+  sendNscomment(obj)
+  {
+    return this.http.post<any>(`${environment.apiUrl}/ns_add_comment_case`, obj).pipe(
       catchError((err) => {
         console.log('error caught in service')
         console.error(err.message);
@@ -1534,7 +1670,16 @@ export class TableDataService {
     })
   )  };
 
+  postNScaseids(cs: casedetail) { return this.http.post<any>(`${environment.apiUrl}/ns_information`, cs).pipe(
+    catchError((err) => {
+      console.log('error caught in service')
+      console.error(err.message);
 
+      //Handle the error here
+
+      return throwError(err.statusText);    //Rethrow it back to component
+    })
+  )  };
   postuserids(user: usersscheme) { return this.http.post<any>(`${environment.apiUrl}/get_assign_items`, user).pipe(
     catchError((err) => {
       console.log('error caught in service')

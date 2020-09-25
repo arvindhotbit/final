@@ -14,7 +14,7 @@
 
                                 <div class="main-sparkline13-hd">
                                     <div class="part">
-                                        <h1>Case Listing
+                                        <h1>NS Case Listing
 
                                             <small>(Select Row To Update)</small></h1>
 
@@ -170,7 +170,7 @@
 
 
                                             <tr
-                                                [ngClass]="{'hiddenRow': (item.CASE_DECISION == '1'),'yellowRow': (item.ROUTE_DEPT_ID != [myData] && item.CASE_DECISION == '2'),'greenRow': (item.CASE_DECISION == '3'),'disabled': (item.ROUTED_USER != [UserId] && item.CASE_DECISION == '3')}">
+                                                [ngClass]="{'hiddenRow': (item.CASE_DECISION == '1'),'yellowRow': (item.CASE_DECISION == '2'),'greenRow': (item.CASE_DECISION == '3'),'disabled': (item.ROUTED_USER != [UserId] && item.CASE_DECISION == '3')}">
 
                                                 <td *ngIf="nsncol">{{ (p - 1) * pageSize + i + 1 }}</td>
                                                 <td (click)="getId(item,myform.value,item.LOCKED_VIEW)" *ngIf="caseidcol"><a
@@ -357,34 +357,33 @@
                                                         <th>Transaction Amount</th>
                                                         <td>$3500</td>
                                                     </tr>
-                                          
+                                                    <form #routeform="ngForm" (ngSubmit)="routes(routeform.value,msg)">
+                                                        <tr *ngIf="_isaccess">
+
+                                                            <td>
+
+                                                                <div class="form-group">
+                                                                    <textarea name="COMMENTS" style="height:150px"
+                                                                        placeholder="write a Comments"
+                                                                        [(ngModel)]="_tableservice.selectedcasedetail.COMMENTS"
+                                                                        class="form-control" cols="20"
+                                                                        rows="20"></textarea>
+                                                                </div>
+
+
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="submit" class="btn btn-success btn-sm"
+                                                                    value="submit" />
+
+                                                            </td>
+                                                        </tr>
+                                                    </form>
                                                 </table>
-                                                <form *ngIf="_isaccess" #routeform="ngForm" (ngSubmit)="routes(routeform.value,msg)">
-                                                    <tr >
-
-                                                        <td>
-
-                                                            <div class="form-group">
-                                                                <textarea name="COMMENTS" style="height:150px"
-                                                                    placeholder="write a Comments"
-                                                                    [(ngModel)]="_tableservice.selectedcasedetail.COMMENTS"
-                                                                    class="form-control" cols="20"
-                                                                    rows="20"></textarea>
-                                                            </div>
-
-
-                                                        </td>
-
-
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <input type="submit" class="btn btn-success btn-sm"
-                                                                value="submit" />
-
-                                                        </td>
-                                                    </tr>
-                                                </form>
                                             </div>
                                         </div>
                                     </div>

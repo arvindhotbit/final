@@ -78,13 +78,17 @@
 
             </div>
             <div class="form-group">
-              <label>Emp. No.</label>
-              <input type="text" class="form-control" [class.is-invalid]="empNo.invalid && empNo.touched"
-                [class.is-valid]="empNo.valid" name="empNo" [(ngModel)]="this._authservice.authscheme.empNo"
-                #empNo="ngModel" required>
-              <span class="help-block" *ngIf="empNo.errors?.required && empNo.touched">
-                Emp. No. is required
-              </span>
+              <label>User Group</label>
+              <select name="usergroup" class="form-control" [class.is-invalid]="usergroup.invalid && usergroup.touched"
+              [class.is-valid]="usergroup.valid" [(ngModel)]="this._authservice.authscheme.usergroup" #usergroup="ngModel"
+              required>
+              <option *ngFor="let r of showdatagroup" [value]="r.GROUP_NAME">
+                {{r.GROUP_NAME}}
+              </option>
+            </select>
+            <span class="help-block" *ngIf="usergroup.errors?.required && usergroup.touched">
+              user group is required
+            </span>
             </div>
           </div>
           <div class="col-4">

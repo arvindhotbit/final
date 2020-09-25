@@ -32,7 +32,7 @@ export class RoleManageComponent implements OnInit {
   IS_UPDATE= false;
   ref_keys= false;
   DELETE_FLG= false;
-  selectedpaysysRow : paysysscheme;
+  selectedrolesRow : createrole;
   public selectedAll = "";
   public SelectedIDs:any = [];
   checkbox: boolean;
@@ -107,6 +107,11 @@ export class RoleManageComponent implements OnInit {
   paymentscreenadk_update: boolean = false;
   paymentscreenadk_delete: boolean = false;
   paymentscreenadk_check: boolean = false;
+  paymentscreeneph_view: boolean = false;
+  paymentscreeneph_add: boolean = false;
+  paymentscreeneph_update: boolean = false;
+  paymentscreeneph_delete: boolean = false;
+  paymentscreeneph_check: boolean = false;
   matchscorethreshold_view: boolean = false;
   matchscorethreshold_add: boolean = false;
   matchscorethreshold_update: boolean = false;
@@ -166,8 +171,8 @@ export class RoleManageComponent implements OnInit {
   global_crud:boolean = true;
   cbn_check_auth:boolean = true;
   cbn_crud:boolean = true;
- 
   checkboxs:any = [];
+
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
  
     this.masterSelected = false;
@@ -198,6 +203,7 @@ export class RoleManageComponent implements OnInit {
      this.customerbasicnoposition_view = true;
      this.zonevsglobal_view = true;
      this.paymentscreenadk_view = true;
+     this.paymentscreeneph_view = true;
      this.namescreening_view = true;
      this.pep_view = true;
      this.matchscorethreshold_view = true;
@@ -215,6 +221,7 @@ export class RoleManageComponent implements OnInit {
       this.customerbasicnoposition_view = false;
       this.zonevsglobal_view = false;
       this.paymentscreenadk_view = false;
+      this.paymentscreeneph_view = false;
       this.namescreening_view = false;
       this.pep_view = false;
       this.matchscorethreshold_view = false;
@@ -235,6 +242,7 @@ export class RoleManageComponent implements OnInit {
      this.customerbasicnoposition_check = true;
      this.zonevsglobal_check = true;
      this.paymentscreenadk_check = true;
+     this.paymentscreeneph_check = true;
      this.namescreening_check = true;
      this.pep_check = true;
      this.matchscorethreshold_check = true;
@@ -251,7 +259,7 @@ export class RoleManageComponent implements OnInit {
       this.sensitive_word_check = false;
       this.customerbasicnoposition_check = false;
       this.zonevsglobal_check = false;
-      this.paymentscreenadk_check = false;
+      this.paymentscreeneph_check = false;
       this.namescreening_check = false;
       this.pep_check = false;
       this.matchscorethreshold_check = false;
@@ -272,6 +280,7 @@ export class RoleManageComponent implements OnInit {
      this.customerbasicnoposition_add = true;
      this.zonevsglobal_add = true;
      this.paymentscreenadk_add = true;
+     this.paymentscreeneph_add = true;
      this.namescreening_add = true;
      this.pep_add = true;
      this.matchscorethreshold_add = true;
@@ -289,6 +298,7 @@ export class RoleManageComponent implements OnInit {
       this.customerbasicnoposition_add = false;
       this.zonevsglobal_add = false;
       this.paymentscreenadk_add = false;
+      this.paymentscreeneph_add = false;
       this.namescreening_add = false;
       this.pep_add = false;
       this.matchscorethreshold_add = false;
@@ -309,6 +319,7 @@ export class RoleManageComponent implements OnInit {
      this.customerbasicnoposition_update = true;
      this.zonevsglobal_update = true;
      this.paymentscreenadk_update = true;
+     this.paymentscreeneph_update = true;
      this.namescreening_update = true;
      this.pep_update = true;
      this.matchscorethreshold_update = true;
@@ -326,6 +337,7 @@ export class RoleManageComponent implements OnInit {
       this.customerbasicnoposition_update = false;
       this.zonevsglobal_update = false;
       this.paymentscreenadk_update = false;
+      this.paymentscreeneph_update = false;
       this.namescreening_update = false;
       this.pep_update = false;
       this.matchscorethreshold_update = false;
@@ -346,6 +358,7 @@ export class RoleManageComponent implements OnInit {
      this.customerbasicnoposition_delete = true;
      this.zonevsglobal_delete = true;
      this.paymentscreenadk_delete = true;
+     this.paymentscreeneph_delete = true;
      this.namescreening_delete = true;
      this.pep_delete = true;
      this.matchscorethreshold_delete = true;
@@ -363,6 +376,7 @@ export class RoleManageComponent implements OnInit {
       this.customerbasicnoposition_delete = false;
       this.zonevsglobal_delete = false;
       this.paymentscreenadk_delete = false;
+      this.paymentscreeneph_delete = false;
       this.namescreening_delete = false;
       this.pep_delete = false;
       this.matchscorethreshold_delete = false;
@@ -648,6 +662,7 @@ chknapl(e)
       USER_ZONE : "",
       ROLE : "",
       ROLE_NAME:"",
+      ROLE_AUTHORITY:[],
       PAGES : []
  
    }
@@ -727,8 +742,8 @@ chknapl(e)
          for(var i = 0;i < res.result.length; i++)
          {
           var arvind = res.result[i].ROLE_AUTHORITY;
-          var yadav = parseJSON(arvind);
-          console.log("res",yadav);
+          // var yadav = JSON.parse(arvind);
+          // console.log("res",yadav);
          }
      
    
@@ -760,7 +775,7 @@ chknapl(e)
   submitform(form: NgForm){
    
    
-    if (form.value.REF_KEY == null) {
+   
       this.toggle = !this.toggle;
       $("#addForm").toggle();
   this._tableservice.roleslistpost(form.value).subscribe((res)=>{
@@ -769,32 +784,31 @@ chknapl(e)
     this.toastr.success('data inserted successfully', 'Neutral Words');
 
   });
+
+
 }
-else
+
+updatesubmitform(form: NgForm)
 {
-this._tableservice.paysyslistput(form.value).subscribe((res) => {
-  this.toggle = !this.toggle;
-  $("#addForm").toggle();
-    // this.resetForm(form);
-    var showdatas = res.result;
-    console.log("update" + showdatas);
-    this.refreshEmployeeList();
-    this.toastr.info('data update successfully', 'Neutral Words');
-
-  });
+  this._tableservice.roleslistput(form.value).subscribe((res) => {
+    this.toggle = !this.toggle;
+    $("#addForm").toggle();
+      // this.resetForm(form);
+      var showdatas = res.result;
+      console.log("update" + showdatas);
+      this.refreshEmployeeList();
+      this.toastr.info('data update successfully', 'Neutral Words');
+  
+    });
 }
-}
 
 
 
-
-
-onEdit(paysys: paysysscheme,bt:string) {
-  this.btn_name = "Update";
-  this._tableservice.selectpaysys = paysys;
-  this.selectedpaysysRow = paysys;
-  this.selectedpaysysRow = paysys;
-  this.paysyssendrefkey = JSON.stringify(this.selectedpaysysRow.REF_KEY);
+onEdit(roles: createrole) {
+  this._tableservice.selectroleslist = roles;
+  this.selectedrolesRow = roles;
+  this.selectedrolesRow = roles;
+  this.paysyssendrefkey = JSON.stringify(this.selectedrolesRow.REF_KEY);
 }
 
 
@@ -829,14 +843,14 @@ changetextr(status:string,form:NgForm)
   this.UserName = localStorage.getItem('Username');
   console.log(this.apstatus);
 }
-ChkdeleteSelected(form:NgForm,paysys:paysysscheme)
+ChkdeleteSelected(form:NgForm,roles:createrole)
 {
 
-    this._tableservice.selectpaysys = paysys;
-    this.selectedpaysysRow = paysys;
-    console.log(form.value,paysys);
+    this._tableservice.selectroleslist = roles;
+    this.selectedrolesRow = roles;
+    console.log(form.value,roles);
 
-      this._tableservice.neudelapproved({...form.value,...paysys}).subscribe((res) => {
+      this._tableservice.neudelapproved({...form.value,...roles}).subscribe((res) => {
          this.refreshEmployeeList();
         this.toastr.success('Data Delete Successfully', 'Approved');
      

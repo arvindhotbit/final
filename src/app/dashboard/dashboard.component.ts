@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostListener } from '@angular/core';
 import { AuthserviceService } from '../auth/authservice.service';
 import { TableDataService } from '../shared/table-data.service';
 import { Auth } from '../auth/auth';
@@ -32,11 +32,25 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.myData = localStorage.getItem('Role');
     // this.countdata();
-       
    this.getZonelist();
    this.viewmessage();
 
   }
+  @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
+    console.log("Processing beforeunload...");
+    event.returnValue = false;
+}
+canDeactivate() {
+  if(window.location.pathname == "/login")
+  {
+    return confirm("Do you really want to leave?");
+  }
+  else
+  {
+   return true;
+  }
+ 
+}
   viewmessage() {
 
     this._tableservice.onNewMessage().subscribe(msg => {
@@ -161,13 +175,25 @@ export class DashboardComponent implements OnInit {
        if((this._page_authority.paymentscreenadk.view == true) && (this._page_authority.paymentscreenadk.approval == false))
      {
     
-      let obj =  { "name": "payement screening", "icon": "fa-credit-card", "pagelink": "payment-screen-adk", "visible":true  }
+      let obj =  { "name": "payement screening ADK", "icon": "fa-credit-card", "pagelink": "payment-screen-adk", "visible":true  }
       this.features.push(obj);
      }
      if((this._page_authority.paymentscreenadk.view == true) && (this._page_authority.paymentscreenadk.approval == true))
      {
        this._checkout_count = true;
-       let chkobj = {"count_access":true, "name": "payement screening", "icon": "fa-credit-card", "pagelink": "payment-screen-adk","visible":true , "insert": this._data.ps_fields_adk[0].ADK_I_COUNT, "delete": this._data.ps_fields_adk[0].ADK_D_COUNT, "update": this._data.ps_fields_adk[0].ADK_U_COUNT };
+       let chkobj = {"count_access":true, "name": "payement screening ADK", "icon": "fa-credit-card", "pagelink": "payment-screen-adk","visible":true , "insert": this._data.ps_fields_adk[0].ADK_I_COUNT, "delete": this._data.ps_fields_adk[0].ADK_D_COUNT, "update": this._data.ps_fields_adk[0].ADK_U_COUNT };
+       this.features.push(chkobj);
+     }
+     if((this._page_authority.paymentscreeneph.view == true) && (this._page_authority.paymentscreeneph.approval == false))
+     {
+     
+      let obj =  { "name": "payement screening EPH", "icon": "fa-credit-card", "pagelink": "payment-screen-eph", "visible":true  }
+      this.features.push(obj);
+     }
+     if((this._page_authority.paymentscreeneph.view == true) && (this._page_authority.paymentscreeneph.approval == true))
+     {
+       this._checkout_count = true;
+       let chkobj = {"count_access":true, "name": "payement screening EPH", "icon": "fa-credit-card", "pagelink": "payment-screen-eph","visible":true , "insert": this._data.ps_fields_eph[0].EPH_I_COUNT, "delete": this._data.ps_fields_eph[0].EPH_D_COUNT, "update": this._data.ps_fields_eph[0].EPH_U_COUNT };
        this.features.push(chkobj);
      }
        // ******************************************************************************************************* 
@@ -236,6 +262,7 @@ export class DashboardComponent implements OnInit {
        let chkobj = { "count_access":true, "name": "Customer Basic Number Position", "icon": "fa-building-o", "pagelink": "customer-basic-number","visible":true , "insert": this._data.cust_basic_number_pos[0].CBNP_I_COUNT, "delete": this._data.cust_basic_number_pos[0].CBNP_D_COUNT, "update": this._data.cust_basic_number_pos[0].CBNP_U_COUNT };
        this.features.push(chkobj);
      }
+       // ******************************************************************************************************* 
      if((this._page_authority.caselisting.view == true) && (this._page_authority.caselisting.approval == false))
      {
       
@@ -248,7 +275,19 @@ export class DashboardComponent implements OnInit {
        let chkobj = { "name": "case-listing", "icon": "fa-building-o", "pagelink": "case-listing","visible":true };
        this.features.push(chkobj);
      }
-
+     if((this._page_authority.caselisting.view == true) && (this._page_authority.caselisting.approval == false))
+     {
+      
+      let obj =  { "name": "NS Case Decision", "icon": "fa-building-o", "pagelink": "NS_Case_Decision","visible":true }
+       this.features.push(obj);
+     }
+     if((this._page_authority.caselisting.view == true) && (this._page_authority.caselisting.approval == true))
+     {
+       this._checkout_count = true;
+       let chkobj = { "name": "NS Case Decision", "icon": "fa-building-o", "pagelink": "NS_Case_Decision","visible":true };
+       this.features.push(chkobj);
+     }
+  // ******************************************************************************************************* 
      if(this._page_authority.report.view == true)
      {
       
@@ -256,6 +295,8 @@ export class DashboardComponent implements OnInit {
        this.features.push(obj);
      }
    
+     
+ 
        // ******************************************************************************************************* 
   
     },(error) => {                              //Error callback

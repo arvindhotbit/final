@@ -27,7 +27,20 @@ export interface Neutralscheme {
 
 };
 
+export interface pseph {
+	REF_KEY : string,
+	ROLE : String,
+	USER_ID : String,
+	USER_NAME : String,
+	 USER_ZONE : String,
+	 FIELD_LABEL : String,
+	 SCAN:String,
+	ZONE_ID : String,
+	HIST_ID : String,
+	APPROVE_STATUS : String,
+	CHANGE_TYPE : String
 
+};
 export interface addzonescheme {
 	REF_KEY : string,
 	ROLE : String,
@@ -39,6 +52,16 @@ export interface addzonescheme {
 	HIST_ID : String,
 	APPROVE_STATUS : String,
 	CHANGE_TYPE : String
+
+};
+export interface usergroup {
+	REF_KEY : string,
+	ROLE : String,
+	USER_ID : String,
+	USER_NAME : String,
+	 USER_ZONE : String,
+	 GROUP_NAME : String,
+	ZONE_ID : String,
 
 };
 
@@ -339,6 +362,7 @@ export interface internalwatchlist {
 						USER_ZONE : string,
 						ROLE : string,
 						ROLE_NAME:string,
+						ROLE_AUTHORITY:[],
 						PAGES : [];
 						}
 

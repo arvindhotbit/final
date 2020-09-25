@@ -1,5 +1,6 @@
 
 
+
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { NgForm, FormBuilder, FormGroup, FormArray, FormControl, FormsModule } from '@angular/forms';
 import { map } from 'rxjs/operators';
@@ -15,13 +16,12 @@ import * as $ from 'jquery';
 import { DateArray } from 'ngx-bootstrap/chronos/types';
 import { AnyTxtRecord } from 'dns';
 
-
 @Component({
-  selector: 'app-case-listing',
-  templateUrl: './case-listing.component.html',
-  styleUrls: ['./case-listing.component.css']
+  selector: 'app-ns-case-listing',
+  templateUrl: './ns-case-listing.component.html',
+  styleUrls: ['./ns-case-listing.component.css']
 })
-export class CaseListingComponent implements OnInit {
+export class NsCaseListingComponent implements OnInit {
   public pageSize: number = 10;
   public pageSizepb: number = 10;
   public pageSizecp: number = 10;
@@ -175,7 +175,7 @@ export class CaseListingComponent implements OnInit {
     var caseid = msg.ECM_CASE_ID;
     var obj = { "ROLE": this.myData, "USER_ID": this.UserId, "CASE_ID": caseid, "ROLE_PRIORITY": "admin", "USER_DEPARTMENT": this.department }
     console.log({ ...obj, ...form });
-    this._tableservice.sendcomment({ ...obj, ...form }).subscribe((res) => {
+    this._tableservice.sendNscomment({ ...obj, ...form }).subscribe((res) => {
       this._actionaccess = false;
       this.commentbox = res.CASE_DECISION;
       this.commentboxtext = res.COMMENTS;
@@ -191,6 +191,27 @@ export class CaseListingComponent implements OnInit {
       //throw error;   //You can also throw the error to a global error handler
     })
   }
+  // commentNssend(form: casedetail, msg: any) {
+
+  //   var caseid = msg.ECM_CASE_ID;
+  //   var obj = { "ROLE": this.myData, "USER_ID": this.UserId, "CASE_ID": caseid, "ROLE_PRIORITY": "admin", "USER_DEPARTMENT": this.department }
+  //   console.log({ ...obj, ...form });
+  //   this._tableservice.sendNscomment({ ...obj, ...form }).subscribe((res) => {
+  //     this._actionaccess = false;
+  //     this.commentbox = res.CASE_DECISION;
+  //     this.commentboxtext = res.COMMENTS;
+  //     this.unseen();
+  //     console.log("comment", this.commentbox);
+
+
+  //   }, (error) => {                              //Error callback
+  //     console.error('error caught in component')
+  //     this.toastr.error(error, 'Neutral - Words');
+
+
+  //     //throw error;   //You can also throw the error to a global error handler
+  //   })
+  // }
   routes(form: casedetail, msg: any) {
 
     var caseid = msg.ECM_CASE_ID;
@@ -231,12 +252,12 @@ export class CaseListingComponent implements OnInit {
       this.orig_value = res.result;
       this._page_authority = JSON.parse(this.orig_value);
       console.log("arvind", this._page_authority);
-      if (this._page_authority.caselisting.approval == false) {
+      if (this._page_authority.zonevsglobal.approval == false) {
         this.valuedelete = "1";
         this._isaccess = false;
         this.updatemark = "1";
       }
-      if (this._page_authority.caselisting.approval == true) {
+      if (this._page_authority.zonevsglobal.approval == true) {
         this.valuedelete = "y";
         this._isaccess = true;
         this.updatemark = "y";
@@ -258,7 +279,7 @@ export class CaseListingComponent implements OnInit {
 
 
     var obj = { "ROLE": this.myData, "USER_ID": this.UserId, "USER_ZONE": this.userzone, "USER_DEPARTMENT": this.department };
-    this._tableservice.fetchcase(obj).subscribe((res) => {
+    this._tableservice.fetchNscase(obj).subscribe((res) => {
       this.showdatapart = res.result;
       console.log("data", this.showdatapart);
 
@@ -290,7 +311,7 @@ export class CaseListingComponent implements OnInit {
       var data = { "MESSAGE_ID": form.MESSAGE_ID, "CASE_ID": form.ECM_CASE_ID };
   
   
-      this._tableservice.postcaseids({ ...item, ...data }).subscribe((res) => {
+      this._tableservice.postNScaseids({ ...item, ...data }).subscribe((res) => {
         this.casedetail = res.result[0].alert_info;
         this.caseinfo = res.result[1].case_info;
         this.cmmnt = res.result[2].case_comments;
@@ -324,5 +345,6 @@ export class CaseListingComponent implements OnInit {
 
 
 }
+
 
 

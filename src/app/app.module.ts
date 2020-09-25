@@ -3,18 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive'; // this includes the core NgIdleModule but includes keepalive providers for easy wireup
 import { MomentModule } from 'angular2-moment'; // optional, provides moment-style pipes for date formatting
-
 import { NgModule } from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
 import { AppComponent } from './app.component';
-
 import { InterlistManagementComponent } from './interlist-management/interlist-management.component';
 import { InternallistDefinationComponent } from './interlist-management/internallist-defination/internallist-defination.component';
 import { InternallistWatchlistComponent } from './interlist-management/internallist-watchlist/internallist-watchlist.component';
-
 import { AppRoutingModule } from './app-routing.module';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
@@ -31,9 +26,8 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ActivateGuard } from './activate.guard';
+import { DeactivateGuard } from './deactivate-guard';
 import { MatchScoreComponent } from './match-score/match-score.component';
-import { ExPaymentScreeningComponent } from './ex-payment-screening/ex-payment-screening.component';
-import { DeleteGoodGuyComponent } from './delete-good-guy/delete-good-guy.component';
 import { NameScreeningFieldsComponent } from './name-screening-fields/name-screening-fields.component';
 import { PaymentScreeningForEPHComponent } from './payment-screening-for-eph/payment-screening-for-eph.component';
 import { PaymentScreeningForAdkComponent } from './payment-screening-for-adk/payment-screening-for-adk.component';
@@ -48,7 +42,7 @@ import { SensitivefilterPipe } from './filter/sensitivefilter.pipe';
 import { PepComponent } from './pep/pep.component';
 import { PsadkPipe } from './filter/psadk.pipe';
 import { NamescreenPipe } from './filter/namescreen.pipe';
- import { CaselistPipe } from './filter/caselist.pipe';
+import { CaselistPipe } from './filter/caselist.pipe';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AddzoneComponent } from './admin/addzone/addzone.component';
@@ -73,88 +67,90 @@ import { HomepageComponent } from './reports/homepage/homepage.component';
 import { AdminReportComponent } from './reports/admin-report/admin-report.component';
 import { OperationReportComponent } from './reports/operation-report/operation-report.component';
 import { ComplianceReportComponent } from './reports/compliance-report/compliance-report.component';
+import { NsCaseListingComponent } from './ns-case-listing/ns-case-listing.component';
+import { EphPipe } from './filter/eph.pipe';
 
 
 
 // NOT RECOMMENDED (Angular 9 doesn't support this kind of import)
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    InterlistManagementComponent,
-    InternallistDefinationComponent,
-    InternallistWatchlistComponent,
-    BlacklistBicComponent,
-    NeutralWordsComponent,
-    SanctionedCitiesComponent,
-    HighRiskCountriesComponent,
-    ZoneVsGlobalComponent,
-    LoginComponent,
-    RegisterComponent,
-    DashboardComponent,
-    MatchScoreComponent,
-    ExPaymentScreeningComponent,
-    DeleteGoodGuyComponent,
-    NameScreeningFieldsComponent,
-    PaymentScreeningForEPHComponent,
-    PaymentScreeningForAdkComponent,
-    CaseListingComponent,
-    CaseDetailComponent,
-    FilterPipe,
-    NeutralfilterPipe,
-    HeaderComponent,
-    SensitiveWordComponent,
-    SensitivefilterPipe,
-    PepComponent,
-    PsadkPipe,
-    NamescreenPipe,
-     CaselistPipe,
-     AddzoneComponent,
-     CustomRangeFilterPipe,
-     DepartmentComponent,
-     PaysysComponent,
-     UsersListComponent,
-     PageNotFoundComponent,
-     MatchscorefilterPipe,
-     BicfilterPipe,
-     HrcfilterPipe,
-     SanctionfilterPipe,
-     RoleManageComponent,
-     HomeComponent,
-     BackbuttonDirective,
-     ApproveTextDirective,
-     RejectedTextDirective,
-     UsergroupComponent,
-     KeysPipe,
-     HomepageComponent,
-     AdminReportComponent,
-     OperationReportComponent,
-     ComplianceReportComponent,
-   
- 
+declarations: [
+AppComponent,
+InterlistManagementComponent,
+InternallistDefinationComponent,
+InternallistWatchlistComponent,
+BlacklistBicComponent,
+NeutralWordsComponent,
+SanctionedCitiesComponent,
+HighRiskCountriesComponent,
+ZoneVsGlobalComponent,
+LoginComponent,
+RegisterComponent,
+DashboardComponent,
+MatchScoreComponent,
+NameScreeningFieldsComponent,
+PaymentScreeningForEPHComponent,
+PaymentScreeningForAdkComponent,
+CaseListingComponent,
+CaseDetailComponent,
+FilterPipe,
+NeutralfilterPipe,
+HeaderComponent,
+SensitiveWordComponent,
+SensitivefilterPipe,
+PepComponent,
+PsadkPipe,
+NamescreenPipe,
+CaselistPipe,
+AddzoneComponent,
+CustomRangeFilterPipe,
+DepartmentComponent,
+PaysysComponent,
+UsersListComponent,
+PageNotFoundComponent,
+MatchscorefilterPipe,
+BicfilterPipe,
+HrcfilterPipe,
+SanctionfilterPipe,
+RoleManageComponent,
+HomeComponent,
+BackbuttonDirective,
+ApproveTextDirective,
+RejectedTextDirective,
+UsergroupComponent,
+KeysPipe,
+HomepageComponent,
+AdminReportComponent,
+OperationReportComponent,
+ComplianceReportComponent,
+NsCaseListingComponent,
+EphPipe,
 
 
-  ],
-  imports: [ 
-    MbscModule, 
-    BrowserModule,
-    BsDatepickerModule.forRoot(),
-    NgIdleKeepaliveModule.forRoot(),
-    MomentModule,
-    BrowserAnimationsModule,
-    Ng2SearchPipeModule,
-    DataTablesModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    ModalModule.forRoot(),
-    NgxPaginationModule,
-    ToastrModule.forRoot(), // ToastrModule added
-    LoadingBarRouterModule,
-    LoadingBarModule,
-    LoadingBarHttpClientModule
-  ],
-  providers: [ActivateGuard,AuthserviceService],
-  bootstrap: [AppComponent]
+
+
+],
+imports: [ 
+MbscModule, 
+BrowserModule,
+BsDatepickerModule.forRoot(),
+NgIdleKeepaliveModule.forRoot(),
+MomentModule,
+BrowserAnimationsModule,
+Ng2SearchPipeModule,
+DataTablesModule,
+AppRoutingModule,
+FormsModule,
+HttpClientModule,
+ModalModule.forRoot(),
+NgxPaginationModule,
+ToastrModule.forRoot(), // ToastrModule added
+LoadingBarRouterModule,
+LoadingBarModule,
+LoadingBarHttpClientModule
+],
+providers: [ActivateGuard,AuthserviceService,DeactivateGuard],
+bootstrap: [AppComponent]
 })
 export class AppModule { }

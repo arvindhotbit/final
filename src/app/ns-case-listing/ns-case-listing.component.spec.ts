@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeleteGoodGuyComponent } from './delete-good-guy.component';
+import { NsCaseListingComponent } from './ns-case-listing.component';
 
-describe('DeleteGoodGuyComponent', () => {
-  let component: DeleteGoodGuyComponent;
-  let fixture: ComponentFixture<DeleteGoodGuyComponent>;
+describe('NsCaseListingComponent', () => {
+  let component: NsCaseListingComponent;
+  let fixture: ComponentFixture<NsCaseListingComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeleteGoodGuyComponent ]
+      declarations: [ NsCaseListingComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeleteGoodGuyComponent);
+    fixture = TestBed.createComponent(NsCaseListingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

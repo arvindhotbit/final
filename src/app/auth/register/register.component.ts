@@ -13,12 +13,14 @@ import * as $ from 'jquery';
 export class RegisterComponent implements OnInit {
   logotitle = "Trustling - Real Time Screening";
   showdata: any;
+  showdatagroup: any;
   loading = false;
   constructor(public _authservice: AuthserviceService, private toastr: ToastrService, private _tablelist: TableDataService) { }
 
   ngOnInit(): void {
     this.resetForm();
     this.roleslist();
+    this.usergrouplist();
   }
   resetForm(formdata?: NgForm) {
     if (formdata)
@@ -31,7 +33,7 @@ export class RegisterComponent implements OnInit {
       sn: "",
       email: "",
       password: "",
-      empNo: "",
+      usergroup: "",
       department: "",
       roles: ""
 
@@ -58,7 +60,16 @@ export class RegisterComponent implements OnInit {
       this.showdata = res.result;
       console.log(this.showdata);
 
-    })
+    });
+  }
+
+  usergrouplist()
+  {
+    this._tablelist.usergrouplistpage().subscribe((res) => {
+      this.showdatagroup = res.result;
+      console.log(this.showdatagroup);
+
+    });
   }
 
 }

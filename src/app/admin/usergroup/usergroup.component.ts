@@ -3,7 +3,7 @@ import { NgForm, FormBuilder, FormGroup, FormArray, FormControl,FormsModule } fr
 import { map } from 'rxjs/operators';
 import {TableDataService} from '../../shared/table-data.service';
 import {AuthserviceService} from '../../auth/authservice.service';
-import {addzonescheme} from '../../shared/tabular';
+import {usergroup} from '../../shared/tabular';
 import { ToastrService } from 'ngx-toastr';
 import * as $ from 'jquery';
 import { element } from 'protractor';
@@ -30,7 +30,7 @@ export class UsergroupComponent implements OnInit {
   IS_UPDATE= false;
   ref_keys= false;
   DELETE_FLG= false;
-  selectedNeutralRow : addzonescheme;
+  selectedusergroupRow : usergroup;
   public selectedAll = "";
   public SelectedIDs:any = [];
   checkbox: boolean;
@@ -58,9 +58,10 @@ export class UsergroupComponent implements OnInit {
   noisewordcol:boolean=true;
   oldzoneidcol:boolean=true;
   oldnoisewordcol:boolean=true;
+  masterSelected: string[];
   changetypecol:boolean=true;
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
- 
+    this.masterSelected = [];
     this.myData = localStorage.getItem('Role');
     this.UserId = localStorage.getItem('Id');
     this.UserName = localStorage.getItem('Username');
@@ -70,7 +71,7 @@ export class UsergroupComponent implements OnInit {
     
     this.resetForm();
     this.refreshEmployeeList();
-   
+    this.viewmessage();
   }
 
 
@@ -78,24 +79,50 @@ export class UsergroupComponent implements OnInit {
  resetForm(form?: NgForm) {
    if (form)
   form.reset();
-     this._tableservice.selectzone = {
+     this._tableservice.selectedusergroup = {
         REF_KEY: "" ,
         ROLE : this.myData,
         USER_ID : this.UserId,
         USER_NAME : this.UserName,
         USER_ZONE : "QA",
-        COUNTRY_NAME : "",
+        GROUP_NAME : "",
         ZONE_ID : "",
-        HIST_ID :"",
-        APPROVE_STATUS : this.apstatus,
-        CHANGE_TYPE : ""
- 
    }
   }
 
 
+  viewmessage() {
+
+    this._tableservice.onNewMessage().subscribe(msg => {
+      if (msg.reload == true) {
+        this.refreshEmployeeList();
+      }
+    });
+  }
 
   
+  isItemChecked(id) {
+    return this.masterSelected.includes(id)
+  }
+
+
+  checkUncheckAll() {
+    if (this.masterSelected.length == this.showdata.length) {
+      this.masterSelected = []
+    } else {
+      this.masterSelected = this.showdata.map(sdp => sdp.GROUP_ID)
+    }
+
+  }
+  isAllSelected(id) {
+    if (this.masterSelected.includes(id)) {
+      this.masterSelected = [...this.masterSelected].filter(ms => ms != id)
+    } else {
+      this.masterSelected = [...this.masterSelected, id]
+    }
+
+  }
+
  
   refreshEmployeeList()
   {
@@ -103,8 +130,8 @@ export class UsergroupComponent implements OnInit {
     console.log(myData);
     if(myData === "makers")
     {
-      this._tableservice.addzonelistpage().subscribe((res)=>{
-        this.showdata = res.result;
+      this._tableservice.usergrouplistpage().subscribe((res)=>{
+        this.showdata = res.result || [];
         this.tbl_header = res.metadata;
         console.log(this.tbl_header);
       })
@@ -118,8 +145,8 @@ export class UsergroupComponent implements OnInit {
     }
     else if(myData === "checkers")
     {
-      this._tableservice.addzonelistpage().subscribe((res)=>{
-        this.showdata = res.result;
+      this._tableservice.usergrouplistpage().subscribe((res)=>{
+        this.showdata = res.result || [];
         this.tbl_header = res.metadata;
         console.log(this.showdata);
       })
@@ -131,8 +158,8 @@ export class UsergroupComponent implements OnInit {
     }
     else if(myData === "admin")
     {
-      this._tableservice.addzonelistpage().subscribe((res)=>{
-        this.showdata = res.result;
+      this._tableservice.usergrouplistpage().subscribe((res)=>{
+        this.showdata = res.result || [];
         this.tbl_header = res.metadata;
         console.log(this.showdata);
       })
@@ -161,60 +188,52 @@ export class UsergroupComponent implements OnInit {
   submitform(form: NgForm){
 
    
-    if (form.value.REF_KEY == "") {
+  
       this.toggle = !this.toggle;
       $("#addForm").toggle();
-  this._tableservice.addzonelistpost(form.value).subscribe((res)=>{
+  this._tableservice.addusergrouplistpost(form.value).subscribe((res)=>{
     //  this.resetForm(form);
    this.refreshEmployeeList();
-    this.toastr.success(res.message, 'Zone List Record Add');
+    this.toastr.success(res.message, 'User Group Record Add');
 
   });
-}
-else
-{
-this._tableservice.addzonelistput(form.value).subscribe((res) => {
-  this.toggle = !this.toggle;
-  $("#addForm").toggle();
-    // this.resetForm(form);
-    var showdatas = res.result;
-    console.log("update" + showdatas);
-    this.refreshEmployeeList();
-    this.toastr.info(res.message, 'Zone List Update');
 
-  });
-}
+
 }
 
 
 
 
 
-onEdit(addzone: addzonescheme,bt:string) {
+onEdit(addzone: usergroup,bt:string) {
   this.btn_name = "Update";
-  this._tableservice.selectzone = addzone;
-  this.selectedNeutralRow = addzone;
+  this._tableservice.selectedusergroup = addzone;
+  this.selectedusergroupRow = addzone;
 }
 
 
 
 
-deleteSelected(form: NgForm){
-  this.delete_toggle = !this.delete_toggle;
-  var myData = localStorage.getItem('Role');
-    console.log(myData);
-    if(myData === "makers")
-    {
-  
-      this.SelectedIDs.forEach( (obj) => {
-        this._tableservice.addzonedelpage(obj).subscribe((res) => {
-          this.refreshEmployeeList();
-          this.resetForm(form);
-          this.toastr.warning('Data Delete Successfully', 'Neutral Words');
-        });
-      });
-    }
-  
+deleteSelected(form: NgForm) {
+  if (this.masterSelected.length <= 0) {
+    alert("Delete Item Select This Row")
+  }
+  else {
+    this._tableservice.usergroupdel(this.masterSelected.join(',')).subscribe((res) => {
+      this.toastr.warning(res.message, 'Sensitive Word');
+      this.refreshEmployeeList();
+      this.masterSelected = [];
+    }, (error) => {
+      console.error('error caught in component')
+      this.toastr.error(error, 'Sensitive Word');
+
+
+
+    });
+
+  }
+
+
 }
 changetext(status:string,form:NgForm)
 {
@@ -232,11 +251,11 @@ changetextr(status:string,form:NgForm)
   this.UserName = localStorage.getItem('Username');
   console.log(this.apstatus);
 }
-ChkdeleteSelected(form:NgForm,addzone:addzonescheme)
+ChkdeleteSelected(form:NgForm,addzone:usergroup)
 {
 
-    this._tableservice.selectzone = addzone;
-    this.selectedNeutralRow = addzone;
+    this._tableservice.selectedusergroup = addzone;
+    this.selectedusergroupRow = addzone;
     console.log(form.value,addzone);
 
       this._tableservice.addzonedelapproved({...form.value,...addzone}).subscribe((res) => {

@@ -27,6 +27,7 @@
     "@ngx-loading-bar/router": "^5.1.0",
     "@types/socket.io-client": "^1.4.33",
     "angular-datatables": "^9.0.2",
+    "angular-disable-browser-back-button": "^1.0.2",
     "angular2-jwt": "^0.2.3",
     "angular2-moment": "^1.9.0",
     "bn-ng-idle": "^1.0.1",

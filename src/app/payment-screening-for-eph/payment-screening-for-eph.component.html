@@ -1,1 +1,320 @@
-<p>payment-screening-for-eph works!</p>
+<app-header></app-header>
+
+
+
+
+
+<div class="data-table-area mg-b-15">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="sparkline13-list">
+          <div class="sparkline13-graph">
+            <div class="datatable-dashv1-list custom-datatable-overright">
+              <div class="topbtn">
+                <div class="main-sparkline13-hd">
+                  <div class="part">
+                    <h1>Payment Screen EPH<small>(Select Row To Update)</small></h1>
+                  </div>
+                  <div class="btn-group btn-group-sm">
+                       <button appBackbutton class=" btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i>
+                      Back</button>
+                    <div class="dropdown btn-group ">
+                      <button class=" dropdown-toggle btn btn-primary btn-sm" type="button" data-toggle="dropdown"><i
+                          class="fa fa-toggle-down"></i> Column
+                      </button>
+                      <ul class="dropdown-menu trust-menu">
+                        <li class="dropdown-item">
+                          <label for="zoneidcol"> <input type="checkbox" [checked]="zoneidcol"
+                              (change)="zoneidcol=!zoneidcol" id="zoneidcol" />&nbsp;Zone Id</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="noisewordcol"> <input type="checkbox" [checked]="noisewordcol "
+                              (change)="noisewordcol =!noisewordcol " id="noisewordcol" />&nbsp;Noise Word</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="oldzoneidcol"> <input type="checkbox" [checked]="oldzoneidcol "
+                              (change)="oldzoneidcol =!oldzoneidcol " id="oldzoneidcol" />&nbsp;Old Zone Id</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="oldnoisewordcol"> <input type="checkbox" [checked]="oldnoisewordcol"
+                              (change)="oldnoisewordcol =!oldnoisewordcol " id="oldnoisewordcol" />&nbsp;Old Noise
+                            Word</label>
+                        </li>
+                        <li class="dropdown-item">
+                          <label for="changetypecol"> <input type="checkbox" [checked]="changetypecol"
+                              (change)="changetypecol =!changetypecol " id="changetypecol" />&nbsp;Change Type</label>
+                        </li>
+                      </ul>
+                    </div>
+                    <ng-container *ngIf="_isaccess">
+                      <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Approved',myform)"><i class="fa fa
+                        -check-square-o"></i> Approve</button>
+                    <button class="btn btn-primary btn-sm" [class.disabled]="!this.histmasterSelected.length" (click)="ChkdeleteSelected('Rejected',myform)"><i class="fa fa-times"></i> Reject</button>
+                     </ng-container>
+                     <ng-container *ngIf="!_isaccess">
+                     <button *ngIf="_InsertButtonAccess"  (click)="addform()" class="btn btn-primary btn-sm" [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}"><i class="fa fa-plus"></i>  Add Form</button>
+                     <button *ngIf="_updateButtonAccess" (click)="updateform()"
+                     class="btn btn-primary btn-sm" [class.disabled]="!this.masterSelected.length" ><i
+                       class="fa fa-edit"></i> Update</button>
+                     <button  *ngIf="_DeleteButtonAccess"  class="btn btn-primary btn-sm" (click)="deleteSelected(myform)" [class.disabled]="!this.masterSelected.length"><i  class="fa fa-trash"></i> Delete</button>
+                     </ng-container>
+                  </div>
+                </div>
+              </div>
+
+
+           
+             
+        
+
+
+
+
+
+
+              <table class="table table-bordered table-condensed table-sm table-hover col-vs" id="test1table">
+                <thead class="table_header">
+                  <tr>
+                    <th class="text-center"  *ngIf="!_isaccess"><input type="checkbox" name="all" [checked]="this.masterSelected.length ==  this.showdata.length" (change)="checkUncheckAll()"/></th>
+                    <th class="text-center" *ngIf="_isaccess"><input type="checkbox" name="all" [checked]="this.histmasterSelected.length ==  this.showdata.length" (change)="histcheckUncheckAll()"/></th>
+                    <th>Sr.no</th>
+                  
+                  <!-- <th *ngIf="_isaccess"><span> 
+                    <select name="USER_ZONE"  [(ngModel)]="zonevaluechk">
+                    <option *ngFor="let zone of zonearray " [value]="zone.ZONE_ID">{{zone.ZONE_ID}}</option>
+                  </select>
+                </span></th> -->
+                    <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="FIELD_LABEL"
+                          [(ngModel)]="field_label" /></span> </th>
+                          <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="SCAN"
+                            [(ngModel)]="scan" /></span> </th>
+                    <ng-container *ngIf="_isaccess">
+                    
+                      <th *ngIf="oldnoisewordcol"><span><input type="text" class="form-control"
+                            placeholder="NEW_FIELD_LABEL" [(ngModel)]="old_field_label" /></span> </th>
+                            <th *ngIf="oldnoisewordcol"><span><input type="text" class="form-control"
+                                placeholder="NEW_SCAN" [(ngModel)]="old_scan" /></span> </th>
+                      <th *ngIf="changetypecol">
+                        <span>
+
+                          <select name="changetype" class="form-control" [(ngModel)]="changetype" (ngModelChange)="postChangetype($event)">
+                            <option value="INSERT">INSERT</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="UPDATE">UPDATE</option>
+                          </select>
+                        </span>
+                      </th>
+
+                    </ng-container>
+                    <th *ngIf="ref_keys">REF KEY</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="showdata?.length;else no_data_templ">
+                  <ng-container
+                    *ngFor="let item of showdata | eph:field_label:scan:old_field_label:old_scan | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
+                    <tr
+                      [ngClass]="{'disabledelitem': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
+                      (click)="onEdit(item)" [class.selected]="item === selectedpsephtralRow">
+
+
+                      <td *ngIf="!_isaccess" style="text-align: center;">
+                        <input type="checkbox"
+                        [checked]="isItemChecked(item.REF_KEY)" id="{{item.REF_KEY}}" name="delete"
+                          value="{{item.REF_KEY}}"  (change)="isAllSelected(item.REF_KEY)"></td>
+                
+                      <td *ngIf="_isaccess" style="text-align: center;"><input type="checkbox"
+                          [checked]="ishistItemChecked(item.HIST_ID)" id="{{item.HIST_ID}}" name="deletechecker"
+                          value="{{item.HIST_ID}}" (change)="histisAllSelected(item.HIST_ID)"></td>
+
+                      <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>                   
+                      <td *ngIf="noisewordcol">{{item.FIELD_LABEL}}</td>
+                      <td *ngIf="noisewordcol">{{item.SCAN}}</td>
+
+                      <ng-container *ngIf="_isaccess">
+                        <td *ngIf="noisewordcol">{{item.OLD_FIELD_LABEL}}</td>
+                        <td *ngIf="oldnoisewordcol">{{item.OLD_SCAN}}</td>
+                        <td *ngIf="changetypecol" style="text-align: center;">{{item.CHANGE_TYPE}}</td>
+
+                      </ng-container>
+                    </tr>
+                  </ng-container>
+                </tbody>
+                <ng-template #no_data_templ>
+                  <tbody>
+                    <tr>
+                      <td style="text-align: center;" colspan="8"> No data found...</td>
+                    </tr>
+                  </tbody>
+                </ng-template>
+              </table>
+
+
+
+
+
+
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="align-items-md-start d-flex justify-content-lg-end">
+                    <select id="PerPage" [(ngModel)]="pageSize" *ngIf="showdata?.length">
+                      <option [ngValue]="5">5</option>
+                      <option [ngValue]="10">10</option>
+                      <option [ngValue]="25">25</option>
+                      <option [ngValue]="50">50</option>
+                    </select>
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-6">
+                  <form #myform="ngForm" (ngSubmit)="submitform(myform)" id="addForm" style="display: none;">
+                  
+                    <div class="panel-body">
+                      <h4>Add Item</h4>
+                    </div>
+                 
+                 
+
+                       
+
+
+                        <div class="form-group">
+                            <label>FIELD_LABEL</label>
+                            <input type="text" class="form-control" [class.is-invalid]="FIELD_LABEL.invalid && FIELD_LABEL.touched"
+                            [class.is-valid]="FIELD_LABEL.valid" name="FIELD_LABEL" #FIELD_LABEL="ngModel"
+                              [(ngModel)]="_tableservice.selectedpseph.FIELD_LABEL" required maxlength="80">
+                              <span class="help-block" *ngIf="FIELD_LABEL.errors?.required && FIELD_LABEL.touched">
+                                NOISE WORD  is required
+                              </span>
+                          </div>
+                          <div class="form-group">
+                              <label>SCAN</label>
+                              <select class="form-control" name="SCAN" #SCAN="ngModel" [(ngModel)]="_tableservice.selectedpseph.SCAN">
+                               <option value="Y">Yes</option>
+                               <option value="N">No</option>
+                             </select>
+                           </div>
+                
+                      <div style="display: none;">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>User Id</label>
+                            <input type="text" class="form-control" name="USER_ID" 
+                              [(ngModel)]="UserId" required>
+                          </div>
+                          <div class="form-group">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" name="USER_NAME" 
+                              [(ngModel)]="UserName" required>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>User Zone</label>
+                            <input type="text" class="form-control" name="USER_ZONE"
+                              [(ngModel)]="Userzone" required>
+                          </div>
+                          <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" class="form-control" name="ROLE" [(ngModel)]="myData" required>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div></div>
+                          <input type="text" class="form-control" name="HIST_ID" 
+                            [(ngModel)]="ybunch">
+                          <input type="text" class="form-control" name="APPROVE_STATUS" 
+                            [(ngModel)]="apstatus">
+                          <input type="text" class="form-control" name="CHANGE_TYPE" 
+                            [(ngModel)]="changetype">
+                        </div>
+                      </div>
+               
+      <input type="submit" [ngStyle]="!myform.form.valid && {'cursor': 'not-allowed'}" [disabled]="!myform.form.valid" class="btn btn-success" value="Submit">
+                  </form>
+                </div>
+                <div class="col-6">
+                  <form #myUform="ngForm" (ngSubmit)="UpdateSubmitForm(myUform)" id="updateform" style="display: none;">
+                    
+                    <div class="panel-body">
+                      <h4>Update form</h4>
+                    </div>
+              
+                        <input type="hidden" name="REF_KEY" #REF_KEY="ngModel"
+                          [(ngModel)]="_tableservice.selectedpseph.REF_KEY">
+
+                     
+                        <div class="form-group">
+                          <label>FIELD_LABEL</label>
+                          <input type="text" class="form-control" [class.is-invalid]="FIELD_LABEL.invalid && FIELD_LABEL.touched"
+                          [class.is-valid]="FIELD_LABEL.valid" name="FIELD_LABEL" #FIELD_LABEL="ngModel"
+                            [(ngModel)]="_tableservice.selectedpseph.FIELD_LABEL" required maxlength="80">
+                            <span class="help-block" *ngIf="FIELD_LABEL.errors?.required && FIELD_LABEL.touched">
+                              NOISE WORD  is required
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label>SCAN</label>
+                            <select class="form-control" name="SCAN" #SCAN="ngModel" [(ngModel)]="_tableservice.selectedpseph.SCAN">
+                             <option value="Y">Yes</option>
+                             <option value="N">No</option>
+                           </select>
+                         </div>
+                      <div style="display: none;">
+                      
+                          <div class="form-group">
+                            <label>User Id</label>
+                            <input type="text" class="form-control" name="USER_ID" 
+                              [(ngModel)]="UserId" required>
+                          </div>
+                          <div class="form-group">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" name="USER_NAME" 
+                              [(ngModel)]="UserName" required>
+                          </div>
+                    
+                   
+                          <div class="form-group">
+                            <label>User Zone</label>
+                            <input type="text" class="form-control" name="USER_ZONE"
+                              [(ngModel)]="Userzone" required>
+                          </div>
+                          <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" class="form-control" name="ROLE" [(ngModel)]="myData" required>
+                          </div>
+                      
+                      
+                         
+                          <input type="text" class="form-control" name="HIST_ID" 
+                            [(ngModel)]="ybunch">
+                          <input type="text" class="form-control" name="APPROVE_STATUS" 
+                            [(ngModel)]="apstatus">
+                          <input type="text" class="form-control" name="CHANGE_TYPE" 
+                            [(ngModel)]="changetype">
+                       </div>
+                    
+                    <input type="submit"  [disabled]="!myUform.form.valid" [ngStyle]="!myUform.form.valid && {'cursor': 'not-allowed
+                    '}" class="btn btn-success" value="Update Item">
+                  </form>
+                </div>
+              </div>
+
+
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

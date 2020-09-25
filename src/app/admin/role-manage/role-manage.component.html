@@ -49,6 +49,11 @@
                         [ngClass]="{'btn-default' : toggle, 'btn-success': !toggle}" data-toggle="modal"
                         data-target="#myModal"><i class="fa fa-plus"></i> Add
                         Form</button>
+                        <button 
+                        class="btn btn-primary btn-sm"  data-toggle="modal"
+                        data-target="#myModal2"><i
+                          class="fa fa-edit"></i> Update</button>
+
                       <button class="btn btn-primary btn-sm" (click)="deleteSelected(myform)"
                         [class.disabled]="isdelete_button"><i class="fa fa-trash"></i> Delete</button>
                     </ng-container>
@@ -75,7 +80,7 @@
                     *ngFor="let item of showdata |neutralfilter:zone:noise:oldzone:oldnoise:changetype | paginate: { itemsPerPage: pageSize, currentPage: p } let i=index ">
                     <tr
                       [ngClass]="{'disabled': (item.IS_DELETE == valuedelete),'disabledback': (item.IS_UPDATE == valuedelete)}"
-                      (click)="onEdit(item,'Update')" [class.selected]="item === selectedpaysysRow">
+                      (click)="onEdit(item)" [class.selected]="item === selectedrolesRow">
                       <td style="text-align: center;"><input type="checkbox" [(ngModel)]="item.isSelected"
                           id="{{item.REF_KEY}}" name="delete" value="{{item.REF_KEY}}" (change)="isAllSelected()"></td>
                       <td *ngIf="nsn">{{ (p - 1) * pageSize + i + 1 }}</td>
@@ -270,6 +275,281 @@
                     <td><input type="checkbox" name="update" [(ngModel)]="paymentscreenadk_update"> Update</td>
                     <td> <input type="checkbox" name="delete" [(ngModel)]="paymentscreenadk_delete"> Delete</td>
                     <td><input type="checkbox" name="approval" [(ngModel)]="paymentscreenadk_check"> Approval</td>
+                  </tr>
+                  <tr ngModelGroup="paymentscreeneph">
+                    <td>8</td>
+                    <td class="text-left"><label for="">Payment Screen Eph</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="paymentscreeneph_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="paymentscreeneph_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="paymentscreeneph_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="paymentscreeneph_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="paymentscreeneph_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="matchscorethreshold">
+                    <td>9</td>
+                    <td class="text-left"><label for="">Match Score Threshold</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="matchscorethreshold_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="matchscorethreshold_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="matchscorethreshold_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="matchscorethreshold_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="matchscorethreshold_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="pep">
+                    <td>10</td>
+                    <td class="text-left"><label for="">Pep</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="pep_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="pep_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="pep_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="pep_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="pep_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="namescreening">
+                    <td>11</td>
+                    <td class="text-left"><label for="">Name Screening</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="namescreening_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="namescreening_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="namescreening_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="namescreening_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="namescreening_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="zonevsglobal">
+                    <td>12</td>
+                    <td class="text-left"><label for="">Zone vs global</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="zonevsglobal_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="zonevsglobal_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="zonevsglobal_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="zonevsglobal_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="zonevsglobal_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="customerbasicnoposition">
+                    <td>13</td>
+                    <td class="text-left"><label for="">Customer Basic Number Position</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="customerbasicnoposition_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="customerbasicnoposition_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="customerbasicnoposition_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="customerbasicnoposition_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="customerbasicnoposition_check"> Approval
+                    </td>
+                  </tr>
+                  <tr ngModelGroup="caselisting">
+                    <td>14</td>
+                    <td class="text-left"><label for="">Case Listing</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="caselisting_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="caselisting_add"> Add</td>
+                
+                    <td colspan="3"><input type="checkbox"  name="approval" [(ngModel)]="caselisting_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="report">
+                    <td>14</td>
+                    <td class="text-left"><label for="">Reports</label></td>
+                    <td colspan="5"><input type="checkbox" name="view" [(ngModel)]="report_view"> View</td>
+                   
+                  </tr>
+
+
+                </table>
+              </div>
+
+
+
+              <input type="hidden" [(ngModel)]="_accessPages" name="pages" [value]="_accessPages" />
+              <div style="display: none;">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>User Id</label>
+                    <input type="text" class="form-control" name="USER_ID" [value]="UserId" [(ngModel)]="UserId">
+                  </div>
+                  <div class="form-group">
+                    <label>User Name</label>
+                    <input type="text" class="form-control" name="USER_NAME" [value]="UserName" [(ngModel)]="UserName">
+                  </div>
+                </div>
+                <div class="col-md-4">
+
+                  <div class="form-group">
+                    <label>Role</label>
+                    <input type="text" class="form-control" name="ROLE" [value]="myData" [(ngModel)]="myData">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div></div>
+
+                  <input type="text" class="form-control" name="APPROVE_STATUS" value="{{apstatus}}"
+                    [(ngModel)]="apstatus">
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <input type="submit"  class="btn btn-success float-right" value="{{btn_name}}">
+        </form>
+      </div>
+
+
+
+    </div>
+  </div>
+</div>
+
+
+<!-- The Modal -->
+<div class="modal" id="myModal2">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Assign Roles</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form #myuform="ngForm" (ngSubmit)="updatesubmitform(myuform)">
+           {{myuform.value | json}}
+          <div class="row">
+            <div class=" col-md-12">
+
+              <input type="hidden" name="REF_KEY" #REF_KEY="ngModel" [(ngModel)]="paysyssendrefkey">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Role Name</label>
+                    <input type="text" class="form-control" [class.is-invalid]="ROLE_NAME.invalid && ROLE_NAME.touched"
+                    [class.is-valid]="ROLE_NAME.valid" name="ROLE_NAME" #ROLE_NAME="ngModel"
+                      [(ngModel)]="_tableservice.selectroleslist.ROLE_NAME" required>
+                      <span class="help-block" *ngIf="ROLE_NAME.errors?.required && ROLE_NAME.touched">
+                        Role Name is required
+                      </span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="routeauth" class="btn btn-default"><input type="checkbox" id="routeauth" name="ROUTE_AUTH"
+                      #Route_Auth="ngModel" [(ngModel)]="_Routeauthpermission" required> Route Permission</label>
+
+                </div>
+              </div>
+
+
+
+
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center table-striped table-condensed table-sm"
+                  ngModelGroup="ROLE_AUTHORITY">
+                  <tr>
+                    <th rowspan="1"></th>
+                    <th rowspan="2">Pages Name</th>
+                    <th></th>
+                    <th colspan="3">2-eye Users</th>
+
+                    <th>4-eye Users</th>
+                  </tr>
+                  <tr>
+                    <th>Index</th>
+                    <th><input type="checkbox" (change)="selectViewAll($event)"> View</th>
+                    <th><input type="checkbox" (change)="selectAddAll($event)"> Add</th>
+                    <th><input type="checkbox" (change)="selectUpdateAll($event)"> Update</th>
+                    <th> <input type="checkbox" (change)="selectDeleteAll($event)"> Delete</th>
+                    <th><input type="checkbox" (change)="selectApprovalAll($event)"> Approval</th>
+                  </tr>
+                  <tr ngModelGroup="neutral_words">
+                    <td>1</td>
+                    <td class="text-left"><label for="">Neutral Words</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="neutral_words_view" (ngModelChange)="napl($event)" *ngIf="neutral_words_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="neutral_words_add" (ngModelChange)="napl($event)"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="neutral_words_update" (ngModelChange)="napl($event)"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="neutral_words_delete" (ngModelChange)="napl($event)"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="neutral_words_check" (ngModelChange)="chknapl($event)"  *ngIf="neutral_check_auth"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="blacklisted">
+                    <td>2</td>
+                    <td class="text-left"><label for="">Blacklisted Bic</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="blacklisted_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="blacklisted_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="blacklisted_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="blacklisted_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="blacklisted_check"> Approval</td>
+                  </tr>
+
+
+
+                  <tr ngModelGroup="highriskcountry">
+                    <td>3</td>
+                    <td class="text-left"><label for="">High Risk Country</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="highriskcountry_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="highriskcountry_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="highriskcountry_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="highriskcountry_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="highriskcountry_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="internallistdef">
+                    <td>4</td>
+                    <td class="text-left"><label for="">Internal List Defination</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="internallistdef_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="internallistdef_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="internallistdef_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="internallistdef_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="internallistdef_check"> Approval</td>
+                  </tr>
+
+
+
+                  <tr ngModelGroup="internallistwatchlist">
+                    <td>5</td>
+                    <td class="text-left"><label for="">Internal List Watchlist</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="internallistwatchlist_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="internallistwatchlist_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="internallistwatchlist_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="internallistwatchlist_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="internallistwatchlist_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="sanctionedcities">
+                    <td>6</td>
+                    <td class="text-left"><label for="">Sanctioned Cities</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="sanctionedcities_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="sanctionedcities_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="sanctionedcities_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="sanctionedcities_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="sanctionedcities_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="sensitive_word">
+                    <td>7</td>
+                    <td class="text-left"><label for="">Sensitive Words</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="sensitive_word_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="sensitive_word_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="sensitive_word_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="sensitive_word_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="sensitive_word_check"> Approval</td>
+                  </tr>
+
+                  <tr ngModelGroup="paymentscreenadk">
+                    <td>8</td>
+                    <td class="text-left"><label for="">Payment Screen Adk</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="paymentscreenadk_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="paymentscreenadk_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="paymentscreenadk_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="paymentscreenadk_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="paymentscreenadk_check"> Approval</td>
+                  </tr>
+                  <tr ngModelGroup="paymentscreeneph">
+                    <td>8</td>
+                    <td class="text-left"><label for="">Payment Screen Eph</label></td>
+                    <td><input type="checkbox" name="view" [(ngModel)]="paymentscreeneph_view"> View</td>
+                    <td><input type="checkbox" name="add" [(ngModel)]="paymentscreeneph_add"> Add</td>
+                    <td><input type="checkbox" name="update" [(ngModel)]="paymentscreeneph_update"> Update</td>
+                    <td> <input type="checkbox" name="delete" [(ngModel)]="paymentscreeneph_delete"> Delete</td>
+                    <td><input type="checkbox" name="approval" [(ngModel)]="paymentscreeneph_check"> Approval</td>
                   </tr>
 
                   <tr ngModelGroup="matchscorethreshold">

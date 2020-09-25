@@ -17,7 +17,10 @@ import { JsonPipe } from '@angular/common';
 })
 export class LoginComponent implements OnInit {
    
-  constructor(public _authservice:AuthserviceService, private toastr: ToastrService,private router: Router) { }
+  constructor(public _authservice:AuthserviceService, private toastr: ToastrService,private router: Router) 
+  {
+    this._authservice.canActivateLogin = false;
+   }
   message : string = "";
   Username :string = "";
   useridplaceholder = "Enter a UserId";
@@ -38,7 +41,7 @@ export class LoginComponent implements OnInit {
         sn: "",
         email: "",
         password: "",
-        empNo: "",
+        usergroup: "",
         department: "",
         roles: ""
     
@@ -50,6 +53,7 @@ submitform(formdata: NgForm){
   this.loading = true;
 this._authservice.loginuser(formdata.value).subscribe(
 (res) =>{
+  this.loading = false;
   console.log("access",res);
 localStorage.setItem('token',res.token);
 localStorage.setItem('Id',res.id);
@@ -92,6 +96,7 @@ else
 (error)=>{
 
 console.log(error),
+this.loading = false;
 this.message = "login failed";
 });
  

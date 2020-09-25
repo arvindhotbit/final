@@ -206,7 +206,7 @@ export class SanctionedCitiesComponent implements OnInit {
 
     this._tableservice.getassignaccesslist().subscribe((res) => {
       this.orig_value = res.result;
-      this._page_authority = parseJSON(this.orig_value);
+      this._page_authority = JSON.parse(this.orig_value);
       console.log("arvind", this._page_authority);
       if (this._page_authority.sanctionedcities.approval == false) {
         this.valuedelete = "1";

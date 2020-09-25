@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit,HostListener } from '@angular/core';
 import { AuthserviceService } from '../../auth/authservice.service';
 import { TableDataService } from '../../shared/table-data.service';
 import { Auth } from '../../auth/auth';
@@ -29,7 +29,21 @@ export class HomeComponent implements OnInit {
     // this.countdata();
    this._access_management();
   }
-  
+  @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
+    console.log("Processing beforeunload...");
+    event.returnValue = false;
+}
+canDeactivate() {
+  if(window.location.pathname == "/login")
+  {
+    return confirm("Do you really want to leave?");
+  }
+  else
+  {
+   return true;
+  }
+ 
+}
   _access_management = ()=>{
     if (this.myData === "admin") {
             this.features = [
@@ -39,6 +53,7 @@ export class HomeComponent implements OnInit {
               { "name": "PaysysId", "icon": "fa-outdent", "pagelink": "paysys" },
               { "name": "Zone List", "icon": "fa-plus-circle", "pagelink": "add-zone" },
               { "name": "Manage Roles", "icon": "fa-plus-circle", "pagelink": "roles_manage" },
+              { "name": "User Group", "icon": "fa-plus-circle", "pagelink": "user-group" },
     
             ];
           }

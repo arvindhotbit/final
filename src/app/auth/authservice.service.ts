@@ -10,6 +10,7 @@ import {environment} from '../../environments/environment';
 })
 export class AuthserviceService {
   authscheme:  Auth;
+  canActivateLogin = true;
   isloggedin():boolean{
     return true;
     }

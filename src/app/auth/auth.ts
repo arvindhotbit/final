@@ -9,7 +9,7 @@ export interface Auth {
     sn: string,
     email: string,
     password: string,
-    empNo: string,
+    usergroup: string,
     department: string,
     roles: string
   
