@@ -68,8 +68,7 @@
                     <th>Sr.no</th>
                     <th *ngIf="zoneidcol"><span><input type="text" class="form-control" placeholder="Role Name"
                           [(ngModel)]="zone" /></span></th>
-                    <!-- <th *ngIf="noisewordcol"><span><input type="text" class="form-control" placeholder="Assign"
-                          [(ngModel)]="noise" /></span> </th> -->
+                  
 
 
 
@@ -134,7 +133,7 @@
 
 
 <!-- The Modal -->
-<div class="modal" id="myModal">
+<div class="modal" id="myModal" #pRef>
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
@@ -388,7 +387,7 @@
             </div>
           </div>
 
-          <input type="submit"  class="btn btn-success float-right" value="{{btn_name}}">
+          <input type="submit"   class="btn btn-success float-right "   value="{{btn_name}}">
         </form>
       </div>
 

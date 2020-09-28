@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild,AfterViewInit } from '@angular/core';
 import { NgForm, FormBuilder, FormGroup, FormArray, FormControl,FormsModule } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import {TableDataService} from '../../shared/table-data.service';
@@ -16,7 +16,7 @@ import {Location} from '@angular/common';
   templateUrl: './role-manage.component.html',
   styleUrls: ['./role-manage.component.css']
 })
-export class RoleManageComponent implements OnInit {
+export class RoleManageComponent implements OnInit,AfterViewInit {
   public pageSize: number = 10;
   public myData:string;
   public UserId:string;
@@ -172,6 +172,7 @@ export class RoleManageComponent implements OnInit {
   cbn_check_auth:boolean = true;
   cbn_crud:boolean = true;
   checkboxs:any = [];
+  @ViewChild('pRef', {static: false}) pRef: ElementRef;
 
   constructor(public _tableservice:TableDataService,public _authservice:AuthserviceService, private toastr: ToastrService,private _location: Location) {
  
@@ -187,9 +188,14 @@ export class RoleManageComponent implements OnInit {
     
     this.resetForm();
     this.refreshEmployeeList();
-    
+     
   }
 
+
+  ngAfterViewInit() {
+console.log(this.pRef.nativeElement);
+  
+  }
    selectViewAll = (e) => {
     if(e.target.checked == true)
     {
@@ -781,8 +787,9 @@ chknapl(e)
   this._tableservice.roleslistpost(form.value).subscribe((res)=>{
     //  this.resetForm(form);
    this.refreshEmployeeList();
-    this.toastr.success('data inserted successfully', 'Neutral Words');
-
+    this.toastr.success('data inserted successfully', 'Role Created');
+    (<any>$(this.pRef.nativeElement)).modal('toggle');
+    return false;
   });
 
 

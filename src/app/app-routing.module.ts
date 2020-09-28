@@ -65,7 +65,7 @@ const routes: Routes = [
       {path: 'superAdmin', component:HomeComponent, canDeactivate: [DeactivateGuard]},
       {path: 'customer-basic-number', component:CaseDetailComponent,canActivate : [ActivateGuard]},
       {path: 'NS_Case_Decision', component:NsCaseListingComponent,canActivate : [ActivateGuard]},
-      {path: 'user-group', component:UsergroupComponent,canActivate : [ActivateGuard]},
+      {path: 'user-group', component:UsergroupComponent},
       {
         path: 'report',            //<---- parent component declared here
         component: HomepageComponent,

@@ -90,6 +90,7 @@ constructor(private idle: Idle, private keepalive: Keepalive,
 
  logout() {
    this.childModal.hide();
+   this.appService.loggedOut();
    this.appService.setUserLoggedIn(false);
    this.router.navigate(['/']);
  }

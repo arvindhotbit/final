@@ -9,7 +9,7 @@ import {AuthserviceService} from './auth/authservice.service';
 export class ActivateGuard implements CanActivate {
   constructor(public _authservice:AuthserviceService, private toastr: ToastrService,private router: Router) { }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return this._authservice.canActivateLogin || confirm("Do you really want to go back to login?");
+    return this._authservice.canActivateLogin;
   }
 
   
