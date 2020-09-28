@@ -788,7 +788,7 @@ chknapl(e)
     //  this.resetForm(form);
    this.refreshEmployeeList();
     this.toastr.success('data inserted successfully', 'Role Created');
-    (<any>$(this.pRef.nativeElement)).modal('toggle');
+   this.pRef.nativeElement.click();
     return false;
   });
 
