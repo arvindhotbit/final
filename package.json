@@ -26,7 +26,7 @@
     "@ngx-loading-bar/http-client": "^5.1.0",
     "@ngx-loading-bar/router": "^5.1.0",
     "@types/socket.io-client": "^1.4.33",
-    "angular-datatables": "^9.0.2",
+    "angular-datatables": "^19.0.0",
     "angular-disable-browser-back-button": "^1.0.2",
     "angular2-jwt": "^0.2.3",
     "angular2-moment": "^1.9.0",
@@ -54,8 +54,8 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.901.11",
-    "@angular/cli": "^9.1.11",
+    "@angular-devkit/build-angular": "^21.1.2",
+    "@angular/cli": "^21.1.2",
     "@angular/compiler-cli": "^9.1.12",
     "@angular/language-service": "^9.1.12",
     "@types/datatables.net": "^1.10.19",
